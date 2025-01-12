@@ -32,6 +32,16 @@ export default defineConfig({
           { text: '基础', link: '/Python/Base/'},
         ]
       },
+      { text: '​⚒️​​​ Tools', 
+        items: [
+          { text: '其他', link: '/Tools/Base/'},
+        ]
+      },
+      { text: '​🔖​​​ Design', 
+        items: [
+          { text: 'OAuth 2.0', link: '/Design/OAuth/'},
+        ]
+      },
     ],
     socialLinks: [
       {
