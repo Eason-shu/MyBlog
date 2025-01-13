@@ -27,6 +27,11 @@ export default defineConfig({
           { text: '基础', link: '/Java/Base/'},
         ]
       },
+      { text: '​💻​​ Web', 
+        items: [
+          { text: 'Vue', link: '/Web/Vue/'},
+        ]
+      },
       { text: '​🏯​​ Python', 
         items: [
           { text: '基础', link: '/Python/Base/'},
