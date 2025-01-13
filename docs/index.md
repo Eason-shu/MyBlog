@@ -1,6 +1,5 @@
 ---
 layout: home
-# 首页部分元素定制
 blog:
  name: '编程学习随笔'
  motto: 
