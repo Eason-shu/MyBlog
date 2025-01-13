@@ -9,15 +9,11 @@ tags:
 sticky: 6
 outline: [2,3]
 top: 1
+recommend: 2
 date: 2025-01-01
-buttonAfterArticle:
-  openTitle: 投币
-  closeTitle: 下次一定
-  content: '<img src="../../public/pay.jpg">'
-  icon: aliPay
 ---
 
-
+# Vue3+Ts 学习
 
 * 官网：https://cn.vuejs.org/
 

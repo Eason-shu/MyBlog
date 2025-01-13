@@ -27,6 +27,12 @@ const blogTheme = getThemeConfig({
   },
   themeColor: 'vp-default',
   author: '红豆稀饭中',
+  buttonAfterArticle: {
+    openTitle: '赞赏',
+    closeTitle: '下次一定',
+    content: '<img src="https://pic1.imgdb.cn/item/67850dc4d0e0a243d4f3f43c.jpg">',
+    icon: 'aliPay'
+  }
 })
 
 export { blogTheme }

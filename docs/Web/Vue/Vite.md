@@ -11,13 +11,11 @@ tags:
 sticky: 4
 outline: [2,3]
 top: 1
+recommend: 1
 date: 2025-01-11
-buttonAfterArticle:
-  openTitle: 投币
-  closeTitle: 下次一定
-  content: '<img src="../../public/pay.jpg">'
-  icon: aliPay
 ---
+
+# vite 介绍
 
 `vite` 是一个基于浏览器原生 `ES-Module` 的前端构建工具。官网描述为 `下一代前端开发与构建工具`。
 

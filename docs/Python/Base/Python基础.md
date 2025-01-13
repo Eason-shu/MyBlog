@@ -10,15 +10,13 @@ tags:
 sticky: 1
 outline: [2,3]
 top: 1
+recommend: 1
 date: 2025-01-01
-buttonAfterArticle:
-  openTitle: 投币
-  closeTitle: 下次一定
-  content: '<img src="../../public/pay.jpg">'
-  icon: aliPay
 ---
 
 # Python基础学习笔记
+
+- 参考图解Python: https://www.showmeai.tech/tutorials/56
 
 # 一 环境搭建
 
@@ -84,6 +82,8 @@ Python 在诞生之初，因为其功能不好，运转功率低，不支持多�
 
 ## 2.2 注释
 
+![Python的注释（Comments）规则](images/eebec39f410f44e1bf9cf97e2c1e2312.png)
+
 - 快捷键：`Ctrl+/`
 
 ### 2.2.1 块注释
@@ -138,6 +138,8 @@ are also implicitly created anytime a new section starts.
 ## 2.3 命名规范
 
 - 作用：方便管理,便于区分,基本规范
+
+![编程语言的标识符（ identifier ）命名规范](images/da7f1be0122b4638bc27ced7718d0aa4.png)
 
 ### 2.3.1 模块
 
@@ -219,7 +221,28 @@ Class FooBar:
         print(print_)
 ```
 
+### 2.3.6 关键字
+
+- 下面的列表显示了在Python中的保留字。这些保留字不能用作常数或变数，或任何其他标识符名称。
+
+![Python的33个保留字（ keyword ）](images/e35db02bcead4dc19e180bef723455d4.png)
+
+### 2.3.7 行和缩进
+
+- 学习 Python 与其他语言最大的区别就是，Python 的代码块不使用大括号 **{}** 来控制类，函数以及其他逻辑判断。python 最具特色的就是用缩进来写模块。
+
+  缩进可使用tab或空格等，空白数量是可变的，但是所有代码块语句必须包含相同的缩进空白数量。
+
+![Python的缩进（indentation）规则](images/2aa8bd8bbcf145c2b41e4f13cc4fa2b9.png)
+
 ## 2.4 基本语法
+
+- Python基本数据类型一般分为6种：数值（Numbers）、字符串（String）、列表（List）、元组（Tuple）、字典（Dictionary）、集合（Set）。本文详细讲解Python中变量赋值、数据类型以及数据类型的转换。
+- 变量存储在内存中的值，这就意味着在创建变量时会在内存中开辟一个空间。基于变量的数据类型，解释器会分配指定内存，并决定什么数据可以被存储在内存中。因此，变量可以指定不同的数据类型，这些变量可以存储整数，小数或字符。
+
+![Python常用的6种标准数据类型](images/5ba08a9d932e4fdd9a0bdb186940fc0f.png)
+
+![使用等号 = 给变量赋值](images/3db1d264e2ba44df82d1807177e4910e.png)
 
 ### 2.4.1 第一个程序
 
@@ -261,6 +284,8 @@ if __name__ == '__main__':
 
 #### 2.3.2.1 字符串
 
+![Python数据类型 | 字符串（String）](images/a3c669f8791d481db6e72a4b369c1df4.png)
+
 - 字符串英文 string ，是 python 中随处可见的数据类型，字符串的识别也非常的简单，就是用「引号」括起来的。
 - 引号包括单引号 `' '` ，双引号 `" "` 和 三引号 `''' '''` ，比如 `'abc'` ，`"123"` 等等。
 - 占位符：
@@ -293,6 +318,8 @@ if __name__ == '__main__':
 ![image-20250112130853820](images/image-20250112130853820.png)
 
 #### 2.3.2.2 整数
+
+![Python数据类型 | 数值（Numbers）](images/4278d3235593491ba5da8b8ad9852ed4.png)
 
 - 整数英文为 integer 。代码中的整数跟我们平常认识的整数一样，包括正整数、负整数和零，是没有小数点的数字。
 - Python 可以处理任意大小的整数，例如：`1`，`100`，`-8080`，`0`，等等。
@@ -704,6 +731,8 @@ print(CONST.GRAVITY)  # 输出: 9.8
 
 ### 2.5.1 列表（List）
 
+![列表（List）](images/814d3f01986c4abcb4e1b8d5339536bc.png)
+
 - 列表是一种可变的有序集合，可以存储任意类型的数据，包括其他列表。列表使用方括号 `[]` 来创建，元素之间用逗号分隔。
 
 ```python
@@ -1003,6 +1032,8 @@ if __name__ == '__main__':
 
 ### 2.5.2 元组（tuple）
 
+![Python数据类型 | 元组（Tuple）](images/2e50f1981f494a638e4089c010addd76.png)
+
 - 元组是一种`不可变`的有序集合，使用圆括号 `()` 来创建，元素之间用逗号分隔。
 - 当元组只有一个元素时，需要在元素后面添加一个逗号，以与普通的括号表示法区分。
 
@@ -1072,6 +1103,8 @@ print(sub_tuple)  # 输出: (2, 3, 4)
 ## 2.6 字典与Set
 
 ### 2.6.1 字典(Dictionary)
+
+![Python数据类型 | 字典（Dictionary）](images/b25ae62d7469410eac5e90efccbc2a68.png)
 
 - 字典是另一种可变容器模型，且可存储任意类型对象。
 - 字典的每个键值(key=>value)对用冒号(:)分割，每个对之间用逗号(,)分割，整个字典包括在花括号({})中 
@@ -1220,7 +1253,9 @@ if __name__ == '__main__':
   - 由于字典是无序的，元素的存储顺序可能与添加顺序不同。如果需要有序的键值对集合，可以使用 `collections.OrderedDict`。
   - 键必须是可哈希的，这意味着不能使用列表或字典作为键，但可以使用元组作为键。
 
-### 2.6.2 Set
+### 2.6.2 集合（Set）
+
+![集合（Set）的4个特性](images/49e54a7797a24b5ea563483057583da0.png)
 
 - 集合是一种`无序的、不重复`的数据集合，使用花括号 `{}` 或者 `set()` 函数来创建。
 - 集合中的元素必须是可哈希的，通常是不可变的数据类型，如整数、浮点数、字符串和元组，但不能包含列表、字典等可变对象。
@@ -1346,3 +1381,317 @@ for element in my_set:
 - 注意：
   - 集合是无序的，元素的存储顺序是不确定的。
   - 集合中的元素必须是可哈希的，不能包含列表、字典等可变对象。
+
+## 2.7 运算符
+
+![Python运算符知识地图<a href=](images/027afeacc61346fa9e2f9c73623a3454.png)
+
+Python 语言支持以下类型的运算符:
+
+- 算术运算符
+- 比较（关系）运算符
+- 赋值运算符
+- 逻辑运算符
+- 位运算符
+- 成员运算符
+- 身份运算符
+- 运算符优先级
+
+### 2.7.1 位运算符（重点掌握）
+
+- 二进制运算
+
+| 运算符 | 描述                                                         | 实例                                                         |
+| :----- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| &      | 按位与运算符：参与运算的两个值,如果两个相应位都为1,则该位的结果为1,否则为0 | (a & b) 输出结果 12 ，二进制解释： 0000 1100                 |
+| \|     | 按位或运算符：只要对应的二个二进位有一个为1时，结果位就为1。 | (a \| b) 输出结果 61 ，二进制解释： 0011 1101                |
+| ^      | 按位异或运算符：当两对应的二进位相异时，结果为1              | (a ^ b) 输出结果 49 ，二进制解释： 0011 0001                 |
+| ~      | 按位取反运算符：对数据的每个二进制位取反,即把1变为0,把0变为1 。**~x** 类似于 **-x-1** | (~a ) 输出结果 -61 ，二进制解释： 1100 0011，在一个有符号二进制数的补码形式。 |
+| <<     | 左移动运算符：运算数的各二进位全部左移若干位，由 **<<** 右边的数字指定了移动的位数，高位丢弃，低位补0。 | a << 2 输出结果 240 ，二进制解释： 1111 0000                 |
+| >>     | 右移动运算符：把”>>”左边的运算数的各二进位全部右移若干位，**>>** 右边的数字指定了移动的位数 | a >> 2 输出结果 15 ，二进制解释： 0000 1111                  |
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:18
+Author:   EasonShu
+Version:  V 0.1
+File:     Operator.py
+Describe: 
+"""
+if __name__ == '__main__':
+    # 位移运算符
+    a = 0x01 # 0000 0001
+    b = 0x02 # 0000 0010
+    print(a << 1) # 0000 0010
+    print(a >> 1) # 0000 0000
+    print(a & b)# 0000 0000：相应位都为1,则该位的结果为1,否则为0
+    print(a | b)# 0000 0011
+    print(a ^ b)# 0000 0011
+    print(~a) # 1111 1110
+    
+```
+
+1. 左移运算符 `<<`：向左移动
+   - `print(a << 1)`：将 `a` 的二进制表示向左移动 1 位。对于 `a = 0x01`（二进制 `0000 0001`），左移 1 位后变为 `0000 0010`，结果为十进制的 `2`。
+2. 右移运算符 `>>`：向右移动
+   - `print(a >> 1)`：将 `a` 的二进制表示向右移动 1 位。对于 `a = 0x01`（二进制 `0000 0001`），右移 1 位后变为 `0000 0000`，结果为十进制的 `0`。
+3. 按位与运算符 `&`：同1为1，否则为0
+   - `print(a & b)`：对 `a` 和 `b` 的二进制表示进行按位与操作。对于 `a = 0x01`（二进制 `0000 0001`）和 `b = 0x02`（二进制 `0000 0010`），按位与操作时，只有当相应位都为 1 时结果为 1，否则为 0，结果为 `0000 0000`，即十进制的 `0`。
+4. 按位或运算符 `|`：有1为1
+   - `print(a | b)`：对 `a` 和 `b` 的二进制表示进行按位或操作。只要相应位中有一个为 1 结果就为 1，对于 `a = 0x01`（二进制 `0000 0001`）和 `b = 0x02`（二进制 `0000 0010`），结果为 `0000 0011`，即十进制的 `3`。
+5. 按位异或运算符 `^`：相同为0，不同为1
+   - `print(a ^ b)`：对 `a` 和 `b` 的二进制表示进行按位异或操作。当相应位不同时结果为 1，相同时结果为 0，对于 `a = 0x01`（二进制 `0000 0001`）和 `b = 0x02`（二进制 `0000 0010`），结果为 `0000 0011`，即十进制的 `3`。
+6. 按位取反运算符 `~`：按位取反，1变0，0变1
+   - `print(~a)`：对 `a` 的二进制表示进行按位取反操作。对于 `a = 0x01`（二进制 `0000 0001`），取反后变为 `1111 1110`，结果为十进制的 `-2`（因为在 Python 中，整数是以补码形式存储的，对于有符号整数，最高位为符号位，取反操作会涉及到符号位的变化）。
+
+### 2.7.2 优先级
+
+![Python运算符优先级](images/bc37e2a3588c420792b9fda3aab025c0.png)
+
+## 2.8 流程语句
+
+### 2.8.1 Python条件语句 (if-else)
+
+- if 语句的判断条件可以用>（大于）、<(小于)、==（等于）、>=（大于等于）、<=（小于等于）来表示其关系。
+
+![Python条件语句的执行流程](images/d07e8fe5ba6748869393450155b4fb49.png)
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:26
+Author:   EasonShu
+Version:  V 0.1
+File:     IF.py
+Describe: 
+"""
+if __name__ == '__main__':
+    # 课程分数
+    score = int(input('请输入课程分数：'))
+    if score >= 90:
+        print('优秀')
+    elif score >= 80:
+        print('良好')
+    elif score >= 70:
+        print('中等')
+    elif score >= 60:
+        print('及格')
+    else:
+        print('不及格')
+```
+
+### 2.8.2 循环语句 (While)
+
+- 循环语句允许我们执行一个语句或语句组多次，下面是在大多数编程语言中的循环语句的一般形式
+
+![循环语句的3种常见形式](images/f9925b9727c144fcb8826ef9d5147903.png)
+
+```python
+
+
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:28
+Author:   EasonShu
+Version:  V 0.1
+File:     While.py
+Describe: 
+"""
+if __name__ == '__main__':
+    time = 0
+    while time < 60:
+        print(time)
+        time += 1
+        if time == 60:
+            print('时间到')
+            break
+```
+
+![break语句 / continue语句 / pass语句](images/54475f65bc99423ab8e30f191452611b.png)
+
+### 2.8.3 for循环语句
+
+- Python中有很多序列形态的数据结构（如列表或字符串等），可以使用for循环进行遍历。
+
+![for循环语句的基本形式](images/e0a590e923f747609478257ff55b413f.png)
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:31
+Author:   EasonShu
+Version:  V 0.1
+File:     For.py
+Describe: 
+"""
+if __name__ == '__main__':
+    for i in range(10):
+        print(i)
+    
+```
+
+### 2.8.4  break语句
+
+- Python break语句，打破了最小封闭的for或while循环。
+- break语句用来终止循环语句，即循环条件没有False条件或者序列还没被完全递归完，也会停止执行循环语句。
+- 在嵌套循环中，break语句将停止执行最深层的循环，并开始执行下一行代码。
+
+![break语句的执行流程](images/c261be22c4044ff58c065cd3194b0551.png)
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:31
+Author:   EasonShu
+Version:  V 0.1
+File:     For.py
+Describe: 
+"""
+if __name__ == '__main__':
+    for i in range(100):
+        print(i)
+        if(i == 60):
+            print('时间到')
+            break
+
+```
+
+### 2.8.5 continue语句
+
+Python continue 语句用来告诉Python跳过当前循环的剩余语句，然后继续进行下一轮循环（而break是跳出整个循环）。
+
+continue语句用在while和for循环中。
+
+![continue语句的执行流程](images/2995abe3903e4bf99723450ab2185ebc.png)
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:31
+Author:   EasonShu
+Version:  V 0.1
+File:     For.py
+Describe: 
+"""
+if __name__ == '__main__':
+    for i in range(10):
+        if i == 9:
+            print('时间到')
+            continue
+        print(i)
+```
+
+### 2.8.6 pass语句
+
+- Python pass 是空语句，是为了保持程序结构的完整性。pass 不做任何事情，一般用做占位语句。
+
+![pass语句的执行流程](images/6766786fe5184453926f82bfff6de224.png)
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:36
+Author:   EasonShu
+Version:  V 0.1
+File:     Pass.py
+Describe: 
+"""
+if __name__ == '__main__':
+    if True:
+        pass
+```
+
+## 2.9 函数
+
+你可以定义一个由自己想要功能的函数，以下是简单的规则：
+
+- 函数代码块以 **def** 关键词开头，后接函数标识符名称和圆括号 **()**。
+- 任何传入参数和自变量必须放在圆括号中间，圆括号之间可以用于定义参数。
+- 函数的第一行语句可以选择性地使用文档字符串—用于存放函数说明。
+- 函数内容以冒号 **:** 起始，并且缩进。
+- **return [表达式]** 结束函数，选择性地返回一个值给调用方，不带表达式的 return 相当于返回 None。
+
+![一个函数实例](images/dcaba5f0bb0945eab8da651fc085a254.png)
+
+![定义函数 & 调用函数](images/d5fcf4a2558344c798b7195533e93cf2.png)
+
+```python
+# _*_ coding: utf-8 _*_
+"""
+Time:     2025/1/13 下午8:39
+Author:   EasonShu
+Version:  V 0.1
+File:     Function.py
+Describe: 
+"""
+def get_data(data):
+    """
+    获取数据
+    :param data:
+    :return:
+    """
+    return data
+
+if __name__ == '__main__':
+    data = get_data(1)
+    print(data)
+```
+
+### 2.9.1 函数调用
+
+以下是调用函数时可使用的正式参数类型：
+
+- 必需参数
+- 关键字参数
+- 默认参数
+- 不定长参数
+
+![函数调用](images/6247e49df7fb436b8168864c7ee03646.png)
+
+```python
+ def save_to_sqlite(self, articles):
+        try:
+            conn = sqlite3.connect(self.db_name)
+            cursor = conn.cursor()
+            cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS articles (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        href TEXT NOT NULL,
+                        title TEXT NOT NULL
+                    )
+                ''')
+            conn.commit()
+            for article in articles:
+                cursor.execute('''
+                        INSERT INTO articles (href, title) VALUES (?, ?)
+                    ''', (article['href'], article['title']))
+            conn.commit()
+            print(f"Info: {len(articles)} articles saved to database successfully!")
+        except sqlite3.Error as e:
+            print(f"Database error: {e}")
+        finally:
+            conn.close()
+
+```
+
+### 2.9.2 匿名函数
+
+python 使用 lambda 来创建匿名函数。
+
+所谓匿名，意即不再使用 def 语句这样标准的形式定义一个函数。
+
+- lambda 只是一个表达式，函数体比 def 简单很多。
+- lambda的主体是一个表达式，而不是一个代码块。仅仅能在lambda表达式中封装有限的逻辑进去。
+- lambda 函数拥有自己的命名空间，且不能访问自己参数列表之外或全局命名空间里的参数。
+- 虽然lambda函数看起来只能写一行，却不等同于C或C++的内联函数，后者的目的是调用小函数时不占用栈内存从而增加运行效率。
+
+![匿名函数（lambda函数）](images/82a787c0692646f3a2eeadf42b0970ae.png)
+
+```python
+# 使用 map 函数和匿名函数将列表中的元素都乘以 2
+numbers = [1, 2, 3, 4, 5]
+doubled_numbers = list(map(lambda x: x * 2, numbers))
+print(doubled_numbers)  # 输出 [2, 4, 6, 8, 10]
+```
+
