@@ -1,14 +1,7 @@
 ---
-description: - Vue (发音为 /vjuː/，类似 view) 是一款用于构建用户界面的 JavaScript 框架。
+description: - Vue (发音为 /vjuː/，类似 view) 是一款用于构建用户界面JavaScript 框架。
 title: Vue3+Ts
 cover: https://img.icons8.com/color/500/vue-js.png
-categories: 
-   - 学习
-   - 前端
-   - 前端工程化
-tags: 
-  - Vite
-  - Vue3
 sticky: 5
 outline: [2,3]
 top: 2
