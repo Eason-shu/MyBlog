@@ -121,3 +121,301 @@ from fake_useragent import UserAgent
 ![Python包（Package）](images/536e936e43374e828198efe66f09c360.png)
 
 ![image-20250114124051434](images/image-20250114124051434.png)
+
+## 1.3 文件操作
+
+- 读写文件是最常见的操作之一，Python内置了读写文件的函数，整体是比较方便的。
+- 在磁盘上读写文件的功能都是由操作系统提供的，读写文件就是请求操作系统打开一个文件对象（通常称为文件描述符），然后通过操作系统提供的接口从这个文件对象中读取数据（读文件），或者把数据写入这个文件对象（写文件）。
+
+![Python文件读写知识地图<a href=](images/6f28a8a07f4b4af2b1c340fc56cf81e6.png)
+
+### 1.3.1 基本操作
+
+- 在 Python 中，可以使用`open()`函数打开一个文件进行读取。`open()`函数接受文件路径和打开模式作为参数。
+- filename：一个包含了你要访问的文件名称的字符串值，通常是一个文件路径，mode：打开文件的模式，有很多种，默认是只读方式r。
+- 为了更方便地管理文件资源，避免忘记关闭文件，可以使用`with`语句，当`with`块结束时，文件会自动关闭，无论块内的操作是否出现异常。
+
+**模式：**
+
+| 模式 | 操作       | 说明                                                         |
+| :--- | :--------- | :----------------------------------------------------------- |
+| r    | 只读       | 默认模式，如果文件不存在就报错，存在就正常读取。             |
+| w    | 只写       | 如果文件不存在，新建文件然后写入；如果存在，先清空文件内容，再写入。 |
+| a    | 追加       | 如果文件不存在，新建文件，然后写入；如果存在，在文件的最后追加写入。 |
+| x    | 新建       | 如果文件存在则报错，如果不存在就新建文件，然后写入内容，比w模式更安全。 |
+| b    | 二进制模式 | 比如rb、wb、ab，以bytes类型操作数据                          |
+| +    | 读写模式   | 比如r+、w+、a+                                               |
+
+```python
+"""
+ @Author: EasonShu
+ @FileName: FileRead.py
+ @DateTime: 2025/1/14 下午4:55
+"""
+if __name__ == '__main__':
+    # path : 文件路径
+    # 使用原始字符串，避免转义字符问题
+    path = r'E:\OCR\Pyhon-Learn\Tools\test.txt'
+    try:
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                print(line.strip())  # 打印行，strip() 去除行末的换行符
+    except FileNotFoundError:
+        print(f"文件 {path} 未找到，请检查文件路径。")
+    except Exception as e:
+        print(f"读取文件时出现错误：{e}")
+```
+
+![image-20250114165911607](images/image-20250114165911607.png)
+
+- 追加写入
+
+```python
+   # 追加 写入
+    try:
+        with open(path, 'a') as f:
+            f.write('\n')
+            f.write('Hello, World!')
+    except FileNotFoundError:
+        print(f"文件 {path} 未找到，请检查文件路径。")
+    except Exception as e:
+        print(f"写入文件时出现错误：{e}")
+```
+
+- 二进制写入
+
+```python
+    # 二进制写入
+    try:
+        with open(path, 'wb') as f:
+            f.write(b'Hello, World!')
+    except FileNotFoundError:
+        print(f"文件 {path} 未找到，请检查文件路径。")
+    except Exception as e:
+        print(f"写入文件时出现错误：{e}")
+```
+
+### 1.3.2 数据缓冲和刷新
+
+- Python 的文件写入操作通常会使用缓冲机制。这意味着数据可能不会立即写入到磁盘，而是先存储在内存缓冲区中。
+- 可以使用`flush()`方法手动将缓冲区的数据写入磁盘
+
+```python
+file_path = "output.txt"
+file = open(file_path, "w")
+file.write("Some data")
+file.flush()  # 强制将缓冲区数据写入磁盘
+file.close()
+```
+
+### 1.3.3 文件编码
+
+**ASCII 编码**：
+
+- ASCII（American Standard Code for Information Interchange）是最基本的字符编码，它使用 7 位二进制数表示 128 个字符，包括英文字母、数字、标点符号和一些控制字符。
+- 例如，字符 `A` 的 ASCII 编码是 65，在二进制中表示为 `01000001`。
+- 在 Python 中，如果文件只包含 ASCII 字符，可以使用默认的编码方式打开文件。
+
+**UTF-8 编码**：
+
+- UTF-8 是一种广泛使用的字符编码，它是 Unicode 的一种实现方式，可以表示世界上几乎所有的字符。
+- UTF-8 使用变长编码，对于英文字符，它使用 1 个字节表示，和 ASCII 兼容；对于其他字符，使用多个字节表示。
+- 打开 UTF-8 编码的文件时，可以指定编码参数：
+
+```python
+with open('utf8_file.txt', 'r', encoding='utf-8') as file:
+    content = file.read()
+```
+
+- 当写入文件时，也可以指定 UTF-8 编码：
+
+```python
+with open('utf8_file.txt', 'w', encoding='utf-8') as file:
+    file.write('你好，世界！')
+```
+
+**文件编码的检测和转换**：
+
+- 有时可能需要检测文件的编码，可以使用 `chardet` 库（需要安装：`pip install chardet`）
+
+```python
+import chardet
+with open('unknown_encoding_file.txt', 'rb') as file:
+    raw_data = file.read()
+    result = chardet.detect(raw_data)
+    encoding = result['encoding']
+    print(f"文件编码是: {encoding}")
+```
+
+## 1.4 文件目录与OS模块
+
+我们在实际开发中，经常需要对文件进行读取、遍历、修改等操作，通过 python 的标准内置os模块，能够以简洁高效的方式完成这些操作。常见的操作整理如下：
+
+- 文件夹操作：包括文件夹的创建、修改（改名/移动），查询（查看、遍历）、删除等。
+- 文件操作：包括文件的创建、修改、读取、删除等。
+- 路径操作：文件夹或文件的路径操作，如绝对路径，文件名与路径分割，扩展名分割等
+
+```python
+import os
+```
+
+![Python OS模块知识地图<a href=](images/8c68ac8a590949369df8814795fb2ae6.png)
+
+### 1.4.1 查询操作
+
+- listdir ： 文件及目录列表
+- getcwd ：获取当前目录
+- chdir ：更换目录
+- stat ：文件及目录基本信息
+- walk ：递归遍历目录
+
+```python
+"""
+ @Author: EasonShu
+ @FileName: OsTest.py
+ @DateTime: 2025/1/14 下午5:12
+"""
+if __name__ == '__main__':
+    # Os 模块 查询测试
+    import os
+    print(os.getcwd())# 获取当前工作目录
+    print(os.listdir())# 获取当前目录下所有文件和文件夹
+    # 文件目录基本信息
+    print(os.stat('OsTest.py'))
+    # 更换工作目录
+    os.chdir('../')
+    print(os.getcwd())
+    # 递归查询所有文件和文件夹
+    for root, dirs, files in os.walk('.'):
+        print(files)
+
+```
+
+![image-20250114171633740](images/image-20250114171633740.png)
+
+其中 stat 函数返回的是文件或者目录的基本信息，具体如下：
+
+- **st_mode:** inode 保护模式
+- **st_ino:** inode 节点号。
+- **st_dev:** inode 驻留的设备。
+- **st_nlink:** inode 的链接数。
+- **st_uid:** 所有者的用户ID。
+- **st_gid:** 所有者的组ID。
+- **st_size:** 普通文件以字节为单位的大小
+- **st_atime:** 上次访问的时间。
+- **st_mtime:** 最后一次修改的时间。
+- **st_ctime:** 创建时间。
+
+### 1.4.2 创建操作
+
+- mkdir ：新建单个目录，若目录路径中父目录不存在，则创建失败
+- makedirs ：新建多个目录，若目录路径中父目录不存在，则自动创建
+
+```python
+"""
+ @Author: EasonShu
+ @FileName: OsTest.py
+ @DateTime: 2025/1/14 下午5:12
+"""
+if __name__ == '__main__':
+    # Os 模块 创建测试
+    import os
+    import random
+    # mkdir ：新建单个目录，若目录路径中父目录不存在，则创建失败
+    # makedirs ：新建多个目录，若目录路径中父目录不存在，则自动创建
+    os.makedirs('test_dir/test_dir2', exist_ok=True)
+    print(os.listdir('test_dir'))
+    for i in range(10):
+        # 随机生成文件名
+        file_name = 'test_file_' + str(random.randint(1, 100)) + '.txt'
+        # 随机生成文件内容
+        file_content = 'This is a test file.'
+        # 创建文件
+        with open(os.path.join('test_dir', file_name), 'w') as f:
+            f.write(file_content)
+```
+
+![image-20250114171833047](images/image-20250114171833047.png)
+
+### 1.4.3 删除操作
+
+- rmdir ：删除单个空目录，目录不为空则报错
+- removedirs ： 按路径删除递归多级空目录，目录不为空则报错
+
+```python
+"""
+ @Author: EasonShu
+ @FileName: OsTest.py
+ @DateTime: 2025/1/14 下午5:12
+"""
+if __name__ == '__main__':
+    # Os 模块 创建测试
+    import os
+    import random
+    # mkdir ：新建单个目录，若目录路径中父目录不存在，则创建失败
+    # makedirs ：新建多个目录，若目录路径中父目录不存在，则自动创建
+    os.makedirs('test_dir/test_dir2', exist_ok=True)
+    print(os.listdir('test_dir'))
+    for i in range(10):
+        # 随机生成文件名
+        file_name = 'test_file_' + str(random.randint(1, 100)) + '.txt'
+        # 随机生成文件内容
+        file_content = 'This is a test file.'
+        # 创建文件
+        with open(os.path.join('test_dir', file_name), 'w') as f:
+            f.write(file_content)
+    # rmdir ：删除单个空目录，目录不为空则报错
+    # removedirs ： 按路径删除递归多级空目录，目录不为空则报错
+    os.removedirs('test_dir/test_dir2')
+    print(os.listdir('test_dir'))
+    os.rmdir('test_dir')
+```
+
+### 1.4.4 修改操作
+
+- rename ：重命名目录或文件，可修改文件或目录的路径（即移动操作），若目标文件目录不存在，则报错。
+- renames ：重命名目录或文件，若目标文件目录不存在，则自动创建
+
+```python
+"""
+ @Author: EasonShu
+ @FileName: OsTest.py
+ @DateTime: 2025/1/14 下午5:12
+"""
+if __name__ == '__main__':
+    # Os 模块 创建测试
+    import os
+    import random
+    # mkdir ：新建单个目录，若目录路径中父目录不存在，则创建失败
+    # makedirs ：新建多个目录，若目录路径中父目录不存在，则自动创建
+    os.makedirs('test_dir/test_dir2', exist_ok=True)
+    print(os.listdir('test_dir'))
+    for i in range(10):
+        # 随机生成文件名
+        file_name = 'test_file_' + str(random.randint(1, 100)) + '.txt'
+        # 随机生成文件内容
+        file_content = 'This is a test file.'
+        # 创建文件
+        with open(os.path.join('test_dir', file_name), 'w') as f:
+            f.write(file_content)
+    # rmdir ：删除单个空目录，目录不为空则报错
+    # removedirs ： 按路径删除递归多级空目录，目录不为空则报错
+    os.removedirs('test_dir/test_dir2')
+    print(os.listdir('test_dir'))
+    # rename ：重命名目录或文件，可修改文件或目录的路径（即移动操作），若目标文件目录不存在，则报错。
+    # renames ：重命名目录或文件，若目标文件目录不存在，则自动创建
+    os.renames('test_dir', 'test_dir2')
+    print(os.listdir('.'))
+    os.renames('test_dir2', 'test_dir')
+```
+
+### 1.4.5 其他判断
+
+- exists ：判断文件或目录是否存在
+- abspath ：返回绝对路径
+- isfile/isdir ：判断是否为文件/目录
+- basename/dirname：获取路径尾部和路径头部。其实就是以路径中最后一个 `/` 为分割符，分为头（head） 和尾（tail）两部分，tail 是 basename 返回的内容，head 是 dirname 返回的内容。经常用于获取文件名，目录名等操作
+- join ：合成路径，即把两个参数使用系统路径分割符进行连接，形成完整路径。
+- split ：分割文件名和文件夹，即把 path 以最后一个斜线”/“为分隔符，切割为 head 和 tail ，以 (head, tail) 元组的形式返回。
+- splitext ：分割路径名和文件扩展名，把path 以最后一个扩展名分隔符“.”分割，切割为 head 和 tail ，以 (head, tail) 元组的形势返回。注意与 split 的区别是分隔符的不同。
