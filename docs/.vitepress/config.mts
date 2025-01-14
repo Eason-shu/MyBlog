@@ -39,7 +39,7 @@ export default defineConfig({
       },
       { text: '​⚒️​​​ Tools', 
         items: [
-          { text: '其他', link: '/Tools/Base/'},
+          { text: '编程工具', link: '/Tools/Code/'},
         ]
       },
       { text: '​🔖​​​ Design', 
