@@ -437,3 +437,245 @@ for arg in sys.argv[1:]:
         f.close()
 ```
 
+## 1.6 类与对象
+
+### 1.6.1 面向对象（OOP）
+
+- 面向对象编程，在英文中称之为Object Oriented Programming，简称OOP，是一种程序设计思想。OOP把对象作为程序的基本单元，一个对象包含了数据和操作数据的函数。
+
+### 1.6.2 对象概念
+
+- **类(Class)**： 用来描述具有相同的属性和方法的对象的集合。它定义了该集合中每个对象所共有的属性和方法。对象是类的实例。
+- **方法**：类中定义的函数。
+- **类变量**：类变量在整个实例化的对象中是公用的。类变量定义在类中且在函数体之外。类变量通常不作为实例变量使用。
+- **数据成员**：类变量或者实例变量用于处理类及其实例对象的相关的数据。
+- **方法重写**：如果从父类继承的方法不能满足子类的需求，可以对其进行改写，这个过程叫方法的覆盖（override），也称为方法的重写。
+- **局部变量**：定义在方法中的变量，只作用于当前实例的类。
+- **实例变量**：在类的声明中，属性是用变量来表示的，这种变量就称为实例变量，实例变量就是一个用 self 修饰的变量。
+- **继承**：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待。例如，有这样一个设计：一个Dog类型的对象派生自Animal类，这是模拟”是一个（is-a）”关系（例图，Dog是一个Animal）。
+- **实例化**：创建一个类的实例，类的具体对象。
+- **对象**：通过类定义的数据结构实例。对象包括两个数据成员（类变量和实例变量）和方法。
+
+### 1.6.3 类定义
+
+- 类实例化后，可以使用其属性，实际上，创建一个类之后，可以通过类名访问其属性。
+
+```python
+class ClassName:
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+```
+
+#### 1.6.3.1 构造函数
+
+类有一个名为 `__init__()` 的特殊方法（**构造方法/构造函数**），该方法在类实例化时会自动调用
+
+```java
+class ImagesClear:     
+    '''
+     
+    '''
+    def __init__(self, image_dir, record_file):
+        self.image_dir = image_dir
+        self.record_file = record_file 
+```
+
+- 调用时机：类定义了 `__init__()` 方法，类的实例化操作会自动调用 `__init__()` 方法。如下实例化类NewClass，对应的 `__init__()` 方法就会被调用
+
+```java
+ ImagesClear(imagepath, file)
+```
+
+- self代表类的实例，而非类，实例就拥有构造器的属性
+- 在类的内部，我们可以使用 **def** 关键字来定义类方法，类方法必须包含参数self, 且其为第一个参数，self代表的是类的实例
+
+```java
+import os
+
+
+class ImagesClear:
+    '''
+
+    '''
+
+    def __init__(self, image_dir, record_file):
+        self.image_dir = image_dir
+        self.record_file = record_file
+        print(" init ")
+
+    def clear_images(self):
+        try:
+            # 读取记录文件内容
+            with open(self.record_file, "r") as f:
+                lines = f.readlines()
+            # 提取记录文件中需保留的文件名部分
+            preserve_names = set()
+            for line in lines:
+                line = line.strip()
+                # 提取文件名相关部分（去掉扩展名及前面的路径部分）
+                name_parts = line.split(".")[0].split("/")
+                if len(name_parts) > 1:
+                    preserve_names.add(name_parts[1])
+                else:
+                    # 如果分割后不符合预期格式，跳过该行记录
+                    continue
+
+            # 遍历图像目录及其子目录
+            for root, dirs, files in os.walk(self.image_dir):
+                for file in files:
+                    if file.endswith(".jpg"):
+                        print(f"正在处理文件: {file}")
+                        # 判断文件名是否包含对应要匹配的部分，若匹配则保留
+                        if any(name in file for name in preserve_names):
+                            print(f"文件 {file} 匹配成功，保留")
+                        else:
+                            print(f"文件 {file} 未匹配，删除")
+                            try:
+                                os.remove(os.path.join(root, file))
+                            except OSError as e:
+                                print(f"删除文件 {os.path.join(root, file)} 时出现错误: {e}")
+        except FileNotFoundError:
+            print(f"记录文件 {self.record_file} 不存在，请检查路径是否正确！")
+        except Exception as e:
+            print(f"在处理过程中出现其他错误: {e}")
+
+
+if __name__ == "__main__":
+    imagepath = r"F:\Images"  # 使用原始字符串表示路径，避免转义问题
+    file = r"F:\Images\fileState.txt"
+    ImagesClear(imagepath, file)
+
+```
+
+#### 1.6.3.2 继承
+
+- Python 同样支持类的继承。派生类的定义如下所示,子类（派生类/DerivedClass）会继承父类（基类/BaseClass）的属性和方法。
+- BaseClassName（实例中的基类名）必须与派生类定义在一个作用域内。除了类，还可以用表达式，基类定义在另一个模块中时这一点非常有用:
+
+```python
+class DerivedClass(BaseClass):
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+```
+
+```python
+#类定义
+class person:
+    #定义基本属性
+    name = ''
+    age = 0
+    #定义私有属性,私有属性在类外部无法直接进行访问
+    __weight = 0
+    #定义构造方法
+    def __init__(self,n,a,w):
+        self.name = n
+        self.age = a
+        self.__weight = w
+    def talk(self):
+        print("%s的年龄是 %d 岁。" %(self.name,self.age))
+#单继承示例
+class student(person):
+    grade = ''
+    def __init__(self,n,a,w,g):
+        #调用父类的构函
+        people.__init__(self,n,a,w)
+        self.grade = g
+    #覆写父类的方法
+    def talk(self):
+        print("%s的年龄是 %d 岁，目前在读 %d 年级"%(self.name,self.age,self.grade))
+s = student('小Show',12,60,5)
+s.talk()
+```
+
+> 多继承
+
+- Python同样支持多继承形式。多继承的类定义
+
+```python
+class DerivedClassName(Base1, Base2, Base3):
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+```
+
+- 需要注意圆括号中父类的顺序，若是父类中有相同的方法名，而在子类使用时未指定，python从左至右搜索 即方法在子类中未找到时，从左到右查找父类中是否包含方法。
+
+```python
+#类定义
+class person:
+    #定义基本属性
+    name = ''
+    age = 0
+    #定义私有属性,私有属性在类外部无法直接进行访问
+    __weight = 0
+    #定义构造方法
+    def __init__(self,n,a,w):
+        self.name = n
+        self.age = a
+        self.__weight = w
+    def speak(self):
+        print("%s的年龄是 %d 岁。" %(self.name,self.age))
+#单继承示例
+class student(person):
+    grade = ''
+    def __init__(self,n,a,w,g):
+        #调用父类的构函
+        people.__init__(self,n,a,w)
+        self.grade = g
+    #覆写父类的方法
+    def talk(self):
+        print("%s的年龄是 %d 岁，目前在读 %d 年级"%(self.name,self.age,self.grade))
+#另一个类，多重继承之前的准备
+class speaker():
+    topic = ''
+    name = ''
+    def __init__(self,n,t):
+        self.name = n
+        self.topic = t
+    def talk(self):
+        print("%s是一个演说家，今天ta演讲的主题是 %s"%(self.name,self.topic))
+#多重继承
+class sample(speaker,student):
+    a =''
+    def __init__(self,n,a,w,g,t):
+        student.__init__(self,n,a,w,g)
+        speaker.__init__(self,n,t)
+test = sample("ShowMeAI",25,80,4,"Python")
+test.talk()   #方法名同，默认调用的是在括号中排前地父类的方法
+```
+
+> 方法重写
+
+- 如果你的父类方法的功能不能满足你的需求，你可以在子类重写你父类的方法
+- **super()**函数是用于调用父类(超类)的一个方法。
+
+```python
+class Parent:        # 定义父类
+   def my_method(self):
+      print ('调用父类方法')
+class Child(Parent): # 定义子类
+   def my_method(self):
+      print ('调用子类方法')
+c = Child()          # 子类实例
+c.my_method()         # 子类调用重写方法
+super(Child,c).my_method() #用子类对象调用父类已被覆盖的方法
+```
+
+#### 1.6.3.3 类属性与方法
+
+- 类的私有属性
+
+**`__private_attrs`**：由两个下划线开头，声明为私有属性，不能在类的外部被使用或直接访问。在类内部的方法中可以使用，使用方法为 **`self.__private_attrs`**。
+
+- 类的方法
+
+- 在类的内部定义的成员方法，必须包含参数 **self**，且为第一个参数，**self** 代表的是类的实例，self 的名字并不是规定死的，也可以使用 **this**，但建议还是按照约定使用 **self**。
+
