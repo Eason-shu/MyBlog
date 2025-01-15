@@ -157,3 +157,372 @@ cmd /c "cd /d D:\Code-Environment\minio&& .\minio.exe server  --address "127.0.0
 ![image-20250115110040529](images/image-20250115110040529.png)
 
 ![image-20250115110308026](images/image-20250115110308026.png)
+
+## 1.8 SpringBoot 整合
+
+### 1.8.1 配置整合
+
+- 依赖
+
+```xml
+    <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+```
+
+- application.yaml
+
+```yaml
+# minio 配置
+minio:
+  endpoint: http://127.0.0.1:9000 #Minio服务所在地址
+  bucketName: car-data #存储桶名称
+  accessKey: 8uqkGMngGC3cWKggJFxr #访问的key
+  secretKey: Fuofb4vUHY9UvKo10bs96yzMtweptHa7mSTz3x1C #访问的秘钥
+```
+
+- 配置类
+
+```java
+package com.pafx.config;
+
+import io.minio.MinioClient;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+/**
+ * @Description minio配置类
+ * @Author EasonShu
+ * @Data 2025/1/15 下午1:06
+ */
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "minio")
+@Slf4j
+public class MinioConfig {
+    private String endpoint;
+    private String accessKey;
+    private String secretKey;
+    private String bucketName;
+
+    @Bean
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint(endpoint)
+                .credentials(accessKey, secretKey)
+                .build();
+    }
+}
+
+```
+
+### 1.8.2 工具类
+
+```java
+package com.pafx.utils;
+
+import com.pafx.config.MinioConfig;
+import io.minio.*;
+import io.minio.http.Method;
+import io.minio.messages.Bucket;
+import io.minio.messages.Item;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.FastByteArrayOutputStream;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Description MMIO工具类
+ * @Author EasonShu
+ * @Data 2025/1/15 下午1:17
+ */
+@Component
+@Slf4j
+public class MinioUtil {
+    @Autowired
+    private MinioConfig prop;
+
+    @Resource
+    private MinioClient minioClient;
+
+
+    /**
+     * 查看存储bucket是否存在
+     *
+     * @return boolean
+     */
+    public Boolean bucketExists(String bucketName) {
+        Boolean found;
+        try {
+            found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return found;
+    }
+
+    /**
+     * 创建存储bucket
+     *
+     * @return Boolean
+     */
+    public Boolean makeBucket(String bucketName) {
+        try {
+            minioClient.makeBucket(MakeBucketArgs.builder()
+                    .bucket(bucketName)
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除存储bucket
+     *
+     * @return Boolean
+     */
+    public Boolean removeBucket(String bucketName) {
+        try {
+            minioClient.removeBucket(RemoveBucketArgs.builder()
+                    .bucket(bucketName)
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 获取全部bucket
+     */
+    public List<Bucket> getAllBuckets() {
+        try {
+            List<Bucket> buckets = minioClient.listBuckets();
+            return buckets;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 文件上传
+     *
+     * @param file 文件
+     * @return Boolean
+     */
+    public String upload(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        if (StringUtils.isBlank(originalFilename)) {
+            throw new RuntimeException();
+        }
+        String fileName = UuidUtils.generateUuid() + originalFilename.substring(originalFilename.lastIndexOf("."));
+        String objectName = CommUtils.getNowDateLongStr("yyyy-MM-dd") + "/" + fileName;
+        try {
+            PutObjectArgs objectArgs = PutObjectArgs.builder().bucket(prop.getBucketName()).object(objectName)
+                    .stream(file.getInputStream(), file.getSize(), -1).contentType(file.getContentType()).build();
+            //文件名称相同会覆盖
+            minioClient.putObject(objectArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return objectName;
+    }
+
+    /**
+     * 预览图片
+     *
+     * @param fileName
+     * @return
+     */
+    public String preview(String fileName) {
+        // 查看文件地址
+        GetPresignedObjectUrlArgs build = new GetPresignedObjectUrlArgs().builder().bucket(prop.getBucketName()).object(fileName).method(Method.GET).build();
+        try {
+            String url = minioClient.getPresignedObjectUrl(build);
+            return url;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param fileName 文件名称
+     * @param res      response
+     * @return Boolean
+     */
+    public void download(String fileName, HttpServletResponse res) {
+        GetObjectArgs objectArgs = GetObjectArgs.builder().bucket(prop.getBucketName())
+                .object(fileName).build();
+        try (GetObjectResponse response = minioClient.getObject(objectArgs)) {
+            byte[] buf = new byte[1024];
+            int len;
+            try (FastByteArrayOutputStream os = new FastByteArrayOutputStream()) {
+                while ((len = response.read(buf)) != -1) {
+                    os.write(buf, 0, len);
+                }
+                os.flush();
+                byte[] bytes = os.toByteArray();
+                res.setCharacterEncoding("utf-8");
+                // 设置强制下载不打开
+                // res.setContentType("application/force-download");
+                res.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
+                try (ServletOutputStream stream = res.getOutputStream()) {
+                    stream.write(bytes);
+                    stream.flush();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 查看文件对象
+     *
+     * @return 存储bucket内文件对象信息
+     */
+    public List<Item> listObjects() {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder().bucket(prop.getBucketName()).build());
+        List<Item> items = new ArrayList<>();
+        try {
+            for (Result<Item> result : results) {
+                items.add(result.get());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return items;
+    }
+
+    /**
+     * 删除
+     *
+     * @param fileName
+     * @return
+     * @throws Exception
+     */
+    public boolean remove(String fileName) {
+        try {
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(prop.getBucketName()).object(fileName).build());
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+}
+```
+
+### 1.8.3 请求接口
+
+```java
+package com.pafx.web.mange;
+
+import com.pafx.annotation.ResponseEncrypt;
+import com.pafx.base.result.Result;
+import com.pafx.config.MinioConfig;
+import com.pafx.constant.StorageModeEnum;
+import com.pafx.mange.model.SysAttachment;
+import com.pafx.mange.service.SysAttachmentService;
+import com.pafx.utils.MinioUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.pafx.utils.FileUtils.*;
+
+/**
+ * @Description 系统附件信息表对象功能接口
+ * @Author EasonShu
+ * @Data 2025/1/15 上午10:08
+ */
+@Api(tags = "附件信息表对象功能接口")
+@RestController
+@RequestMapping("/admin/role/attachment")
+public class SysAttachmentController {
+
+    @Autowired
+    private MinioUtil minioUtil;
+    @Autowired
+    private MinioConfig prop;
+    @Autowired
+    private SysAttachmentService sysAttachmentService;
+
+
+    /**
+     * 上传文件
+     */
+    @PostMapping("/upload")
+    @ApiOperation(value = "1:文件上传")
+    @ResponseEncrypt
+    public Result upload(@RequestParam("file") MultipartFile file) {
+        String data = minioUtil.upload(file);
+        String url = prop.getEndpoint() + "/" + prop.getBucketName() + "/" + data;
+        SysAttachment sysAttachment = new SysAttachment();
+        sysAttachment.setStorageMode(StorageModeEnum.MinIO.name());
+        sysAttachment.setOriginName(file.getOriginalFilename());
+        sysAttachment.setObjectName(data);
+        try {
+            sysAttachment.setHash(calculateFileMD5(file));
+        } catch (NoSuchAlgorithmException | IOException e) {
+            sysAttachment.setHash("");
+        }
+        sysAttachment.setMimeType(file.getContentType());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String storagePath = sdf.format(new Date());
+        sysAttachment.setStoragePath(storagePath);
+        String originalFileName = file.getOriginalFilename();
+        if (originalFileName != null && originalFileName.contains(".")) {
+            sysAttachment.setSuffix(originalFileName.substring(originalFileName.lastIndexOf(".") + 1));
+        }
+        sysAttachment.setSizeByte(String.valueOf(file.getSize()));
+        sysAttachment.setSizeInfo(humanReadableByteCountBin(file.getSize()));
+        sysAttachment.setUrl(url);
+        sysAttachment.setRemark("");
+        sysAttachment.setCreatTime(new Date());
+        sysAttachment.setSystemId(1);
+        boolean saved = sysAttachmentService.save(sysAttachment);
+        if (!saved) {
+            return Result.fail("上传失败");
+        }
+        return Result.success(url);
+    }
+}
+```
+
