@@ -442,55 +442,11 @@ public class MinioUtil {
 ### 1.8.3 请求接口
 
 ```java
-package com.pafx.web.mange;
-
-import com.pafx.annotation.ResponseEncrypt;
-import com.pafx.base.result.Result;
-import com.pafx.config.MinioConfig;
-import com.pafx.constant.StorageModeEnum;
-import com.pafx.mange.model.SysAttachment;
-import com.pafx.mange.service.SysAttachmentService;
-import com.pafx.utils.MinioUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static com.pafx.utils.FileUtils.*;
-
-/**
- * @Description 系统附件信息表对象功能接口
- * @Author EasonShu
- * @Data 2025/1/15 上午10:08
- */
-@Api(tags = "附件信息表对象功能接口")
-@RestController
-@RequestMapping("/admin/role/attachment")
-public class SysAttachmentController {
-
-    @Autowired
-    private MinioUtil minioUtil;
-    @Autowired
-    private MinioConfig prop;
-    @Autowired
-    private SysAttachmentService sysAttachmentService;
-
-
-    /**
+  /**
      * 上传文件
      */
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
     @ApiOperation(value = "1:文件上传")
-    @ResponseEncrypt
     public Result upload(@RequestParam("file") MultipartFile file) {
         String data = minioUtil.upload(file);
         String url = prop.getEndpoint() + "/" + prop.getBucketName() + "/" + data;
@@ -521,8 +477,35 @@ public class SysAttachmentController {
         if (!saved) {
             return Result.fail("上传失败");
         }
-        return Result.success(url);
+        return Result.success(sysAttachment);
     }
-}
 ```
 
+### 1.8.4 表结构设计
+
+```sql
+DROP TABLE IF EXISTS sys_attachment;
+CREATE TABLE sys_attachment(
+    `attachment_id` INT AUTO_INCREMENT COMMENT '自增Id' ,
+    `storage_mode` VARCHAR(90) NOT NULL DEFAULT 'local' COMMENT '存储模式:local=本地,oss=阿里云,qiniu=七牛云,cos=腾讯云' ,
+    `origin_name` VARCHAR(90) NOT NULL  COMMENT '原文件名' ,
+    `object_name` VARCHAR(90) NOT NULL  COMMENT '新文件名' ,
+    `hash` VARCHAR(255) NOT NULL  COMMENT '文件hash' ,
+    `mime_type` VARCHAR(90) NOT NULL  COMMENT '资源类型' ,
+    `storage_path` VARCHAR(255) NOT NULL  COMMENT '存储目录' ,
+    `suffix` VARCHAR(90) NOT NULL  COMMENT '文件后缀' ,
+    `size_byte` VARCHAR(255) NOT NULL  COMMENT '字节数' ,
+    `size_info` VARCHAR(255) NOT NULL  COMMENT '文件大小' ,
+    `url` VARCHAR(90) NOT NULL  COMMENT 'url地址' ,
+    `remark` VARCHAR(255)   COMMENT '备注' ,
+    `creat_time` DATETIME NOT NULL  COMMENT '创建时间' ,
+    `system_id` INT  DEFAULT 1 COMMENT '系统id' ,
+    PRIMARY KEY (attachment_id)
+)  COMMENT = '附件信息表';
+```
+
+### 1.8.5 测试
+
+![image-20250115170253068](images/image-20250115170253068.png)![image-20250115170334186](images/image-20250115170334186.png)
+
+![image-20250115170347039](images/image-20250115170347039.png)
