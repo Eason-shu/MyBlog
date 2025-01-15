@@ -18,7 +18,7 @@ date: 2025-01-13
 
 # 本地对象存储服务MinIO （Window）
 
-- 中文文档：https://www.minio.org.cn/docs/minio/windows/index.html
+- 中文文档：<https://www.minio.org.cn/docs/minio/windows/index.html>
 
 - MinIO是一个对象存储解决方案，它提供了与Amazon Web Services S3兼容的API，并支持所有核心S3功能。 MinIO有能力在任何地方部署 - 公有云或私有云，裸金属基础设施，编排环境，以及边缘基础设施。
 
@@ -32,9 +32,9 @@ date: 2025-01-13
 
 ## 1.2 下载安装
 
-- https://www.minio.org.cn/download.shtml#/windows
+- <https://www.minio.org.cn/download.shtml#/windows>
 
-- https://link.csdn.net/?from_id=140205289&target=https%3A%2F%2Fdl.minio.org.cn%2Fserver%2Fminio%2Frelease%2Fwindows-amd64%2Fminio.exe
+- <https://link.csdn.net/?from_id=140205289&target=https%3A%2F%2Fdl.minio.org.cn%2Fserver%2Fminio%2Frelease%2Fwindows-amd64%2Fminio.exe>
 
   ![image-20250115103312833](images/image-20250115103312833.png)
 
@@ -61,7 +61,7 @@ date: 2025-01-13
 
 ## 1.3 Web访问
 
-在浏览器中地址栏输入【http://127.0.0.1:9000】（以自己启动minio服务时的WebUI 端口为准，每次启动服务随机生成），访问本地的MinIO服务控制台
+在浏览器中地址栏输入【<http://127.0.0.1:9000】（以自己启动minio服务时的WebUI> 端口为准，每次启动服务随机生成），访问本地的MinIO服务控制台
 
 ![image-20250115103703688](images/image-20250115103703688.png)
 
@@ -71,7 +71,7 @@ date: 2025-01-13
 
 ## 1.4 指定端口号启动服务】
 
-前面启动服务时，像控制台地址【http://127.0.0.1:9001】中的端口号，每次会自动生成，且不利于记忆。因此我们可以指定***控制台端口号 9001；服务端口号9000；***
+前面启动服务时，像控制台地址【<http://127.0.0.1:9001】中的端口号，每次会自动生成，且不利于记忆。因此我们可以指定***控制台端口号> 9001；服务端口号9000；***
 
 ```bash
 .\minio.exe server D:\minio\data --console-address "127.0.0.1:9001" --address "127.0.0.1:9000"
@@ -136,12 +136,12 @@ cmd /c "cd /d D:\Code-Environment\minio&& .\minio.exe server  --address "127.0.0
 输入桶的名称，命名规则：
 
 - 长度必须介于3（最小）到63（最大）个字符之间；
--  只能由小写字母、数字、点（.）和连字符（-）组成；
--  不得包含两个相邻的句点或与连字符相邻的句点；
--  不得格式化为IP地址（例如192.168.5.4）；
--  不能以前缀xn–开头；
--  不能以后缀-s3alias结尾；
--  Bucket名称在分区内必须唯一；
+- 只能由小写字母、数字、点（.）和连字符（-）组成；
+- 不得包含两个相邻的句点或与连字符相邻的句点；
+- 不得格式化为IP地址（例如192.168.5.4）；
+- 不能以前缀xn–开头；
+- 不能以后缀-s3alias结尾；
+- Bucket名称在分区内必须唯一；
 - 这里创建名为【ssdl】的存储桶，其他都采用默认，点击【Create Bucket】创建即可；
 
 ![image-20250115105154116](images/image-20250115105154116.png)
@@ -157,6 +157,3 @@ cmd /c "cd /d D:\Code-Environment\minio&& .\minio.exe server  --address "127.0.0
 ![image-20250115110040529](images/image-20250115110040529.png)
 
 ![image-20250115110308026](images/image-20250115110308026.png)
-
-
-
