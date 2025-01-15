@@ -419,3 +419,21 @@ if __name__ == '__main__':
 - join ：合成路径，即把两个参数使用系统路径分割符进行连接，形成完整路径。
 - split ：分割文件名和文件夹，即把 path 以最后一个斜线”/“为分隔符，切割为 head 和 tail ，以 (head, tail) 元组的形式返回。
 - splitext ：分割路径名和文件扩展名，把path 以最后一个扩展名分隔符“.”分割，切割为 head 和 tail ，以 (head, tail) 元组的形势返回。注意与 split 的区别是分隔符的不同。
+
+## 1.5 错误与异常
+
+![异常处理 | try / except ··· else](images/d0a753e4669b49918c1a721ad4fb258d.png)
+
+- Python中的语法错误和异常很容易被辨认，我们也可以借助try…except来做相应的处理。
+
+```python
+for arg in sys.argv[1:]:
+    try:
+        f = open(arg, 'r')
+    except IOError:
+        print('无法打开文件', arg)
+    else:
+        print(arg, '有', len(f.readlines()), '行')
+        f.close()
+```
+
