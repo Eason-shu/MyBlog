@@ -24,7 +24,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '​⛰️​​ Java', 
         items: [
-          { text: '基础', link: '/Java/Base/'},
+          { text: '孙哥说', link: '/Java/Service/'},
         ]
       },
       { text: '​💻​​ Web', 
