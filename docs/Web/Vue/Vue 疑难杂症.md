@@ -15,7 +15,6 @@ recommend: 3
 date: 2025-01-11
 ---
 
-
 # Vue 疑难杂症整理
 
 ## 1.1 defineOptions
@@ -28,9 +27,9 @@ date: 2025-01-11
 ```html
 <script lang="ts">
 import { defineComponent } from "vue";
-// defineComponent({
-//   name: "" 
-// });
+ defineComponent({
+  name: "" 
+});
 <template>
 </script>
 ```
@@ -45,10 +44,10 @@ defineOptions({
 </script>
 ```
 
-- 阻塞[透传]的非 props 属性
+阻塞透传的非 props 属性
 
 > [!TIP]
-> 开发中我们可能需要阻止透传非 props 属性，比如我们希望组件的属性只允许在组件内部使用，而不是在父组件中透传。vue 3.3 提供了 inheritAttrs 选项，默认为 true，表示允许透传，设置为 false 表示不允许透传。通过 defineOptions 宏，我们可以在 <script setup> 中设置 inheritAttrs 选项，来阻止透传非 props 属性。
+> 开发中我们可能需要阻止透传非 props 属性，比如我们希望组件的属性只允许在组件内部使用，而不是在父组件中透传。vue 3.3 提供了 inheritAttrs 选项，默认为 true，表示允许透传，设置为 false 表示不允许透传。通过 defineOptions 宏，我们可以在 `<script setup>` 中设置 inheritAttrs 选项，来阻止透传非 props 属性。
 
 
 ```html
