@@ -780,3 +780,112 @@ print(time.mktime(time.strptime(a,"%a %b %d %H:%M:%S %Y")))
 - `datetime` 支持与 `date` 进行相等比较，但结果一定为 `False` ，除此之外只支持与另一 `datetime` 对象执行 `==`，`≤`，`<`，`≥`，`>` 等比较操作。
 - 支持与 `timedelta` 相加，结果为 `datetime`；支持与 `timedelta` 对象进行加减，结果依然为 `datetime` 对象，与另一 `datetime` 对象进行相减，得到 `timedelta` 对象。
 - 同样支持哈希。
+
+## 1.9 多线程模块
+
+- 线程（thread）是操作系统中能够进行运算的最小单位，包含于进程之中，一个进程可以有多个线程，这意味着一个进程中可以并发多个线程，即为多线程。
+- 对于一个python程序，如果需要同时大量处理多个任务，有使用多进程和多线程两种方法。
+- 在python中，实现多线程主要通过threading模块，而多进程主要通过multiprocessing模块。
+
+### 1.9.1 线程与进程
+
+- 这两个模块的主要区别是：threading模块基于线程，而multiprocessing模块基于进程。
+
+- threading模块使用共享内存来实现多线程，所有线程都共享一样的变量（这点在后续的实例中可以感受到）；
+
+- 而multiprocessing基于子进程，每个子进程之间都有独立的变量和数据结构。
+
+- 两者的区别意味着threading更使用于I/O密集型任务（例如需要进行多表格读取操作），multiprocessing模块更适用于包含较多计算的CPU密集型任务（矩阵运算，图片处理类任务）。
+
+### 1.9.2 生命周期
+
+一个线程完整的生命周期包括新建——就绪——运行——阻塞——死亡。
+
+![图 1 线程状态转换图](images/b976e5aa3af9323cbbf9d3019def8c6d.png)
+
+- 新建：即新创建一个线程对象
+- 就绪：调用start方法后，线程对象等待运行，什么时候开始运行取决于调度
+- 运行：线程处于运行状态
+- 阻塞：处于运行状态的线程被堵塞，通俗理解就是被卡住了，可能的原因包括但不限于程序自身调用sleep方法阻塞线程运行，或调用了一个阻塞式I/O方法，被阻塞的进程会等待何时解除阻塞重新运行
+- 死亡：线程执行完毕或异常退出，线程对象被销毁并释放内存
+
+### 1.9.3 主线程与子线程
+
+- 我们讲的多线程实际上指的就是只在主线程中运行多个子线程，而主线程就是我们的python编译器执行的线程，所有子线程和主线程都同属于一个进程。
+- 在未添加子线程的情况下，默认就只有一个主线程在运行，他会将我们写的代码从开头到结尾执行一遍，后文中我们也会提到一些主线程与子线程的关系。
+
+### 1.9.4 线程的创建
+
+> 直接使用Thread创建线程对象
+
+```text
+Thread类创建新线程的基本语法如下：
+Newthread = Thread(target=function, args=(argument1,argument2,...))
+Newthread: 创建的线程对象
+function: 要执行的函数
+argument1,argument2: 传递给线程函数的参数，为tuple类型
+```
+
+```java
+
+from threading import Thread
+import time
+from time import sleep
+ 
+ 
+# 自定义的函数，可以替换成其他任何函数
+def task(threadName, number, letter):
+    print(f"【线程开始】{threadName}")
+    m = 0
+    while m < number:
+        sleep(1)
+        m += 1
+        current_time = time.strftime('%H:%M:%S', time.localtime())
+        print(f"[{current_time}] {threadName} 输出 {letter}")
+    print(f"【线程结束】{threadName}")
+ 
+ 
+thread1 = Thread(target=task, args=("thread_1", 4, "a"))  # 线程1：执行任务打印4个a
+thread2 = Thread(target=task, args=("thread_2", 2, "b"))  # 线程2：执行任务打印2个b
+ 
+thread1.start()  # 线程1开始
+thread2.start()  # 线程2开始
+ 
+thread1.join()  # 等待线程1结束
+thread2.join()  # 等待线程2结束
+```
+
+> 使用join阻塞线程
+
+```python
+
+ 
+from threading import Thread
+import time
+from time import sleep
+ 
+ 
+# 自定义的函数，可以替换成其他任何函数
+def task(threadName, number, letter):
+    print(f"【线程开始】{threadName}")
+    m = 0
+    while m < number:
+        sleep(1)
+        m += 1
+        current_time = time.strftime('%H:%M:%S', time.localtime())
+        print(f"[{current_time}] {threadName} 输出 {letter}")
+    print(f"【线程结束】{threadName}")
+ 
+ 
+thread1 = Thread(target=task, args=("thread_1", 6, "a"))  # 线程1：假设任务为打印6个a
+thread2 = Thread(target=task, args=("thread_2", 4, "b"))  # 线程2：假设任务为打印4个b
+thread3 = Thread(target=task, args=("thread_3", 2, "c"))  # 线程3：假设任务为打印2个c
+ 
+thread1.start()  # 线程1启动
+thread2.start()  # 任务2启动
+thread2.join()   # 等待线程2
+thread3.start()  # 线程2完成任务后线程3才启动
+thread1.join()   # 等待线程1完成线程
+thread3.join()   # 等待线程3完成线程
+```
+
