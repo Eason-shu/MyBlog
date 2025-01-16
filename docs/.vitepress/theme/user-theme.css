@@ -3,15 +3,15 @@
 
 /* 浅色模式使用的变量 */
 html[theme] {
-  --vp-c-user-1:red;
+  --vp-c-user-1:#3170a7;
   --vp-c-user-2:blue;
   --vp-c-user-3:green;
-  --vp-c-user-soft:rgba(255,0,0,.5);
+  --vp-c-user-soft:#41b349;
 }
 
 /* 深色模式使用的变量 */
 html[theme].dark {
-  --vp-c-user-1:yellow;
+  --vp-c-user-1:#fcc307;
   --vp-c-user-2:purple;
   --vp-c-user-3:orange;
   --vp-c-user-soft:rgba(255,255,0,.5);

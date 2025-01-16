@@ -18,7 +18,6 @@ const blogTheme = getThemeConfig({
     showNum: true
   },
   footer: {
-    version: false,
     copyright: 'MIT License | 红豆稀饭中',
     icpRecord: {
       name: '蜀ICP备2024112904号',
