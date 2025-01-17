@@ -34,7 +34,7 @@ export default defineConfig({
       },
       { text: '​🏯​​ Python', 
         items: [
-          { text: '基础', link: '/Python/Base/'},
+          { text: '基础知识', link: '/Python/Base/'},
         ]
       },
       { text: '​⚒️​​​ Tools', 
