@@ -38,7 +38,7 @@ const blogTheme = getThemeConfig({
       { type: 'text', content: '👇 微信 👇' },
       {
         type: 'image',
-        src: 'https://i.postimg.cc/gkfh7K3g/20250117152227.jpg'
+        src: 'https://img520.com/FlKCPV.jpg'
       },
       {
         type: 'text',
