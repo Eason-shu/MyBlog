@@ -1,6 +1,14 @@
 
 import { getThemeConfig } from '@sugarat/theme/node'
+import type { Theme } from '@sugarat/theme'
+const baseUrl = 'https://www.lottecoffee.cn/'
+const RSS: Theme.RSSOptions = {
+  title: 'CoffeeCoder',
+  baseUrl,
+  copyright: 'Copyright (c) 2023-present, CoffeeCoder',
+}
 const blogTheme = getThemeConfig({
+  RSS,
   hotArticle: {
     title: '🔥 精选文章',
     nextText: '换一组',
@@ -24,7 +32,7 @@ const blogTheme = getThemeConfig({
       link: 'https://beian.miit.gov.cn/'
     }
   },
-  themeColor: 'vp-default',
+  themeColor: 'vp-green',
   author: '红豆稀饭中',
   buttonAfterArticle: {
     openTitle: '赞赏',
@@ -38,7 +46,7 @@ const blogTheme = getThemeConfig({
       { type: 'text', content: '👇 微信 👇' },
       {
         type: 'image',
-        src: 'https://i.postimg.cc/gkfh7K3g/20250117152227.jpg'
+        src: 'https://img520.com/FlKCPV.jpg'
       },
       {
         type: 'text',
