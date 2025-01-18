@@ -9,8 +9,12 @@ export default defineConfig({
   description: '一个喜欢写笔记的coder',
   lastUpdated: true,
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['meta', { name: 'baidu-site-verification', content: 'codeva-Kg8XGl2F3h' }]
   ],
+  sitemap: {
+    hostname: 'https://www.lottecoffee.cn'
+  },
   themeConfig: {
     outline: {
       level: [2, 3],
