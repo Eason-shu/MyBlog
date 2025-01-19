@@ -22,10 +22,12 @@ strong {
   text-shadow: 0.8px 0;
 }
 
-blockquote {
+.vp-doc blockquote {
   border: 2px dotted #b9a7a7;
   padding: 15px;
   border-radius: 5px;
+  transition: border-color .5s;
+  color: var(--vp-c-text-2);
 }
 
 
