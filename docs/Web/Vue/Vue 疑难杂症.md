@@ -249,7 +249,7 @@ const updateCounter = (value: number) => {
 
 ## 1.4 defineModel
 
-> !TIP]
+> [!TIP]
 >
 > `defineModel()` 返回的值是一个 **ref**。它可以像其他 **ref** 一样被访问以及修改，不过它能起到在[父组件](https://zhida.zhihu.com/search?content_id=240045702&content_type=Article&match_order=1&q=父组件&zhida_source=entity)和当前变量之间的双向绑定的作用
 >
@@ -309,5 +309,369 @@ const emit = defineEmits(['update:modelValue'])
 
 在上面的例子中我们直接将`defineModel`的返回值使用`v-model`绑定到input输入框上面，无需定义 `modelValue` 属性和监听 `update:modelValue` 事件，代码更加简洁。`defineModel`的返回值是一个`ref`，我们可以在子组件中修改`model`变量的值，并且父组件中的`inputValue`变量的值也会同步更新，这样就可以实现双向绑定。
 
+## 1.5 provide和inject 依赖注入
 
+>[!WARNING]
+>
+>`provide`和`inject`方法就是Vue 3实现这种依赖注入的工具。父组件通过`provide`提供数据，后代组件通过`inject`获取数据。这种模式特别适用于需要跨组件传递状态或配置的情况。
+
+- 父组件
+
+```vue
+<template>
+  <div>
+    <h1>Parent Component</h1>
+    <child-component></child-component>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ParentComponent',
+  setup() {
+    const message = 'Hello from Parent Component';
+ 
+    // 使用provide提供数据
+    provide('message', message);
+
+    return {};
+  },
+};
+</script>
+
+```
+
+- 子组件
+
+```vue
+<template>
+  <div>
+    <h2>Child Component</h2>
+    <p>{{ message }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ChildComponent',
+  setup() {
+    // 使用inject获取父组件提供的数据
+    const message = inject('message');
+    return {
+      message,
+    };
+  },
+};
+</script>
+
+```
+
+>[!WARNING]
+>
+>我们可以通过`provide`和`inject`共享一个对象，而不是单个值。
+
+```vue
+<template>
+  <div>
+    <h1>Parent Component</h1>
+    <child-component></child-component>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ParentComponent',
+  setup() {
+    const user = {
+      name: 'John Doe',
+      age: 30
+    };
+
+    provide('user', user);
+
+    return {};
+  },
+};
+</script>
+
+```
+
+- 子组件
+
+```vue
+<template>
+  <div>
+    <h2>Child Component</h2>
+    <p>Name: {{ user.name }}</p>
+    <p>Age: {{ user.age }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ChildComponent',
+  setup() {
+    const user = inject('user');
+    return {
+      user,
+    };
+  },
+};
+</script>
+
+```
+
+> [!WARNING]
+>
+> 我们还可以共享一个函数，子组件可以调用这个函数。
+
+```vue
+<template>
+  <div>
+    <h1>Parent Component</h1>
+    <child-component></child-component>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ParentComponent',
+  setup() {
+    const increment = (num) => num + 1;
+
+    provide('increment', increment);
+
+    return {};
+  },
+};
+</script>
+
+```
+
+```vue
+<template>
+  <div>
+    <h2>Child Component</h2>
+    <p>Increment 5: {{ increment(5) }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ChildComponent',
+  setup() {
+    const increment = inject('increment');
+    return {
+      increment,
+    };
+  },
+};
+</script>
+
+```
+
+>[!WARNING]
+>
+>如果我们想提供响应式数据，可以使用`ref`或`reactive`
+
+```vue
+<template>
+  <div>
+    <h1>Parent Component</h1>
+    <child-component></child-component>
+  </div>
+</template>
+
+<script>
+import { ref, provide } from 'vue';
+
+export default {
+  name: 'ParentComponent',
+  setup() {
+    const count = ref(0);
+
+    provide('count', count);
+
+    return {};
+  },
+};
+</script>
+
+```
+
+```vue
+<template>
+  <div>
+    <h2>Child Component</h2>
+    <p>Count: {{ count }}</p>
+    <button @click="increment">Increment</button>
+  </div>
+</template>
+
+<script>
+import { inject } from 'vue';
+
+export default {
+  name: 'ChildComponent',
+  setup() {
+    const count = inject('count');
+
+    const increment = () => {
+      count.value++;
+    };
+
+    return {
+      count,
+      increment,
+    };
+  },
+};
+</script>
+
+```
+
+## 1.6 defineExpose(暴露子组件的方法)
+
+>[!WARNING]
+>
+>`defineExpose` 是 Vue 3 的 Composition API 中一个新的实用函数，用于在 `<script setup> `语法下显式暴露组件的公共属性和方法
+>
+>这在处理子组件时特别有用，允许父组件访问子组件的特定属性或方法
+>
+
+- 父组件渲染子组件 Child 并通过 ref 获取子组件的实例。
+- 子组件中的 count 和 increment 方法通过 defineExpose 暴露出来。
+- 当点击父组件中的 “Access Child Methods” 按钮时，父组件可以访问并调用子组件的 count 和 increment
+
+子组件
+
+```vue
+<template>
+  <div>
+    <p>Count: {{ count }}</p>
+    <button @click="increment">Increment</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const count = ref(0);
+
+function increment() {
+  count.value++;
+}
+
+// 使用 defineExpose 来暴露 count 和 increment
+defineExpose({
+  count,
+  increment,
+});
+</script>
+
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <Child ref="childRef" />
+    <button @click="accessChild">Access Child Methods</button>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import Child from './Child.vue';
+
+const childRef = ref(null);
+
+function accessChild() {
+  if (childRef.value) {
+    console.log('Current count:', childRef.value.count);
+    childRef.value.increment();
+    console.log('Count after increment:', childRef.value.count);
+  }
+}
+
+onMounted(() => {
+  if (childRef.value) {
+    console.log('Child component mounted, initial count:', childRef.value.count);
+  }
+});
+</script>
+
+```
+
+## 1.7 vue 组件的ref
+
+>[!WARNING]
+>
+>在 Vue3 中，`ref` 可以用来获取对 DOM 元素或子组件实例的引用。当应用于子组件时，它允许你直接访问子组件的属性和方法，实现父子组件之间的通信和交互。
+
+- 子组件
+
+```vue
+  <script>
+  export default {
+    data() {
+      return {
+        childData: 'Initial data'
+      }
+    },
+    methods: {
+      setChildData(newData) {
+        this.childData = newData;
+        console.log('Data updated in child:', this.childData);
+      }
+    }
+  }
+  </script>
+
+  <template>
+    <div>{{ childData }}</div>
+  </template>
+```
+
+- 父组件
+
+```vue
+  <template>
+    <div>
+      <button @click="updateChildData">Update Child Data</button>
+      <ChildComponent ref="childRef" />
+    </div>
+  </template>
+
+  <script>
+  import { ref, onMounted } from 'vue';
+  import ChildComponent from './ChildComponent.vue';
+
+  export default {
+    components: {
+      ChildComponent
+    },
+    setup() {
+      const childRef = ref(null);
+
+      const updateChildData = () => {
+        if (childRef.value) {
+          // 调用子组件的方法
+          childRef.value.setChildData('New data from parent');
+        }
+      };
+
+      onMounted(() => {
+        console.log(childRef.value);
+      });
+
+      return {
+        childRef,
+        updateChildData
+      };
+    }
+  }
+  </script>
+```
 
