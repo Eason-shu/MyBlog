@@ -10,7 +10,7 @@ export default defineConfig({
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['meta', { name: 'baidu-site-verification', content: 'codeva-Kg8XGl2F3h' }]
+    ['meta', { name: 'msvalidate.01', content: '6DBA84142A7BE264C5E713EC0074CA33' }]
   ],
   sitemap: {
     hostname: 'https://www.lottecoffee.cn'
