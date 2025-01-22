@@ -29,6 +29,7 @@ export default defineConfig({
       { text: '​⛰️​​ Java', 
         items: [
           { text: '孙哥说', link: '/Java/Service/'},
+          { text: '源码笔记', link: '/Java/Source/'},
         ]
       },
       { text: '​💻​​ Web', 
