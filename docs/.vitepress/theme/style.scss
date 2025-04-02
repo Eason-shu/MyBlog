@@ -18,6 +18,13 @@ body {
   font-size: 17px;
 }
 
+@font-face {
+  font-family: 'MapleMono';
+  src: url('./assets/font/MapleMono-Bold.ttf') format('MapleMono');
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 strong {
   text-shadow: 0.8px 0;
