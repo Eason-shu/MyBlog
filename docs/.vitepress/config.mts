@@ -53,10 +53,6 @@ export default defineConfig({
           { text: 'OAuth 2.0', link: '/Design/OAuth/'},
         ]
       },
-      // {
-      //   text: '​🚩​​​ 开发文档',
-      //   link: '/Doc/'
-      // }
     ],
     socialLinks: [
       {
