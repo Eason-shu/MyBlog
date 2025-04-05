@@ -1,6 +1,6 @@
 ---
 description: MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 Java POJO（Plain Old Java Objects，普通老式 Java 对象）为数据库中的记录。
-title: Myabtis 的基本流程实现梳理
+title: Myabtis的基本流程实现
 cover: https://tse2-mm.cn.bing.net/th/id/OIP-C.h06QWEHkRSegHaZVySbNgwHaEK?rs=1&pid=ImgDetMain
 categories: 
    - 学习

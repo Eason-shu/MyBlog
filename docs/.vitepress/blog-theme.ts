@@ -26,35 +26,35 @@ const blogTheme = getThemeConfig({
     showNum: true
   },
   footer: {
-    copyright: 'MIT License | 红豆稀饭中',
+    copyright: 'MIT License | 瀚海',
     icpRecord: {
       name: '蜀ICP备2024112904号',
       link: 'https://beian.miit.gov.cn/'
     }
   },
   themeColor: 'vp-green',
-  author: '红豆稀饭中',
+  author: '瀚海',
   buttonAfterArticle: {
     openTitle: '赞赏',
     closeTitle: '下次一定',
     content: '<img src="https://pic1.imgdb.cn/item/67850dc4d0e0a243d4f3f43c.jpg">',
     icon: 'aliPay'
   },
-  popover: {
-    title: '公告',
-    body: [
-      { type: 'text', content: '👇 微信 👇' },
-      {
-        type: 'image',
-        src: 'https://img520.com/FlKCPV.jpg'
-      },
-      {
-        type: 'text',
-        content: '欢迎大家私信交流'
-      },
-    ],
-    duration: 0
-  },
+  // popover: {
+  //   title: '公告',
+  //   body: [
+  //     { type: 'text', content: '👇 微信 👇' },
+  //     {
+  //       type: 'image',
+  //       src: 'https://img520.com/FlKCPV.jpg'
+  //     },
+  //     {
+  //       type: 'text',
+  //       content: '欢迎大家私信交流'
+  //     },
+  //   ],
+  //   duration: 0
+  // },
 
 
 })

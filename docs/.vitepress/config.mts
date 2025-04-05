@@ -29,7 +29,7 @@ export default defineConfig({
       { text: '​⛰️​​ Java', 
         items: [
           { text: '分布式课程', link: '/Java/Service/'},
-          { text: '源码笔记', link: '/Java/Source/'},
+          { text: '源码阅读笔记', link: '/Java/Source/'},
         ]
       },
       { text: '​💻​​ Web', 
@@ -51,6 +51,11 @@ export default defineConfig({
       { text: '​🔖​​​ Design', 
         items: [
           { text: 'OAuth 2.0', link: '/Design/OAuth/'},
+        ]
+      },
+      { text: '​📚​​​ Life', 
+        items: [
+          { text: '生活随笔', link: '/Book/WeiXin'},
         ]
       },
     ],
