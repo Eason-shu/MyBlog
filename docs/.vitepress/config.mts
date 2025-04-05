@@ -28,7 +28,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '​⛰️​​ Java', 
         items: [
-          { text: '孙哥说', link: '/Java/Service/'},
+          { text: '分布式课程', link: '/Java/Service/'},
           { text: '源码笔记', link: '/Java/Source/'},
         ]
       },
