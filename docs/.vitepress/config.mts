@@ -1,6 +1,5 @@
 import { defineConfig } from 'vitepress'
 
-
 import { blogTheme } from './blog-theme'
 export default defineConfig({
   extends: blogTheme,
@@ -65,5 +64,5 @@ export default defineConfig({
         link: 'https://github.com/Eason-shu/MyBlog'
       }
     ]
-  }
+  },
 })

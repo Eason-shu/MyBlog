@@ -20,6 +20,7 @@
     "doc": "docs"
   },
   "devDependencies": {
+    "canvas-confetti": "^1.9.3",
     "pagefind": "^1.1.1",
     "sass": "^1.76.0",
     "typescript": "^5.4.5",

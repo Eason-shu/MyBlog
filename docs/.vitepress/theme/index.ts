@@ -1,4 +1,5 @@
 import BlogTheme from '@sugarat/theme'
+import confetti from "./components/confetti.vue"
 
 // 自定义样式重载
 import './style.scss'
@@ -6,4 +7,10 @@ import './style.scss'
 // 自定义主题色
 // import './user-theme.css'
 
-export default BlogTheme
+export default {
+    extends: BlogTheme,
+    enhanceApp({app}) { 
+        app.component('confetti' , confetti)
+      }
+}
+
