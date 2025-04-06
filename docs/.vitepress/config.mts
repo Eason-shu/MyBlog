@@ -50,6 +50,7 @@ export default defineConfig({
       { text: '​🔖​​​ Design', 
         items: [
           { text: 'OAuth 2.0', link: '/Design/OAuth/'},
+          { text: '汽车检测', link: '/Design/Car/'},
         ]
       },
       { text: '​📚​​​ Life', 
