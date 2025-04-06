@@ -55,7 +55,7 @@ export default defineConfig({
       },
       { text: '​📚​​​ Life', 
         items: [
-          { text: '生活随笔', link: '/Book/WeiXin'},
+          { text: '生活随笔', link: '/Book/WeiXin/'},
         ]
       },
     ],
