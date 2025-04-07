@@ -21,6 +21,7 @@
     "doc": "docs"
   },
   "devDependencies": {
+    "busuanzi.pure.js": "^1.0.3",
     "canvas-confetti": "^1.9.3",
     "pagefind": "^1.1.1",
     "sass": "^1.76.0",
