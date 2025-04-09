@@ -1,6 +1,6 @@
 ---
 description: 需求：今天，公司新要求对数据库的敏感数据进行加密，对手机号、身份证号、姓名等一些敏感数据进行加密处理？
-title: Mybatis实现敏感数据自动加解密
+title: Mybatis数据加解密
 categories: 
    - 学习
    - Java
@@ -9,7 +9,7 @@ tags:
    - Mybatis-plus
 sticky: 1
 outline: [2,3]
-top: 6
+top: 1
 recommend: 1
 date: 2025-04-04
 ---
@@ -17,7 +17,7 @@ date: 2025-04-04
 
 
 
-# Mybatisplus实现敏感数据自动加解密
+# Mybatisplus数据加解密
 
 > [!note]
 > 需求：今天，公司新要求对数据库的敏感数据进行加密，对手机号、身份证号、姓名等一些敏感数据进行加密处理？
