@@ -25,37 +25,50 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       { text: '首页', link: '/' },
-      { text: '​⛰️​​ Java', 
+      {
+        text: '​⛰️​​ Java',
         items: [
-          { text: '分布式课程', link: '/Java/Service/'},
-          { text: '源码阅读笔记', link: '/Java/Source/'},
+          { text: '分布式课程', link: '/Java/Service/' },
+          { text: '源码阅读笔记', link: '/Java/Source/' },
         ]
       },
-      { text: '​💻​​ Web', 
+      {
+        text: '​💻​​ Web',
         items: [
-          { text: 'Vue', link: '/Web/Vue/'},
+          { text: 'Vue', link: '/Web/Vue/' },
         ]
       },
-      { text: '​🏯​​ Python', 
+      {
+        text: '​🏯​​ Python',
         items: [
-          { text: '基础知识', link: '/Python/Base/'},
+          { text: '基础知识', link: '/Python/Base/' },
         ]
       },
-      { text: '​⚒️​​​ Tools', 
+      {
+        text: '​⚒️​​​ Tools',
         items: [
-          { text: '编程工具', link: '/Tools/Code/'},
-          { text: '摄影教程', link: '/Tools/Photo/'},
+          { text: '编程工具', link: '/Tools/Code/' },
+          { text: '摄影教程', link: '/Tools/Photo/' },
         ]
       },
-      { text: '​🔖​​​ Design', 
+      {
+        text: '​🔖​​​ Design',
         items: [
-          { text: 'OAuth 2.0', link: '/Design/OAuth/'},
-          { text: '汽车检测', link: '/Design/Car/'},
+          { text: 'OAuth 2.0', link: '/Design/OAuth/' },
+          { text: '汽车检测', link: '/Design/Car/' },
+          { text: '设计模式', link: '/Design/Design/' },
         ]
       },
-      { text: '​📚​​​ Life', 
+      {
+        text: '​🤖​​​ Project',
         items: [
-          { text: '生活随笔', link: '/Book/WeiXin/'},
+          { text: '项目开发', link: '/Project/Project/' },
+        ]
+      },
+      {
+        text: '​📚​​​ Life',
+        items: [
+          { text: '生活随笔', link: '/Book/WeiXin/' },
         ]
       },
     ],
