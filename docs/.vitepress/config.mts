@@ -32,6 +32,7 @@ export default defineConfig({
                     {text: '基础', link: '/Java/Base/'},
                     {text: '分布式课程', link: '/Java/Service/'},
                     {text: '源码阅读笔记', link: '/Java/Source/'},
+
                 ]
             },
             {
@@ -41,11 +42,17 @@ export default defineConfig({
                 ]
             },
             {
-                text: '​🏯​​ Python',
+                text: '​🏯​​ Android',
                 items: [
-                    {text: '基础知识', link: '/Python/Base/'},
+                    {text: 'Jetpack', link: '/Android/Jetpack/'},
                 ]
             },
+            // {
+            //     text: '​🏯​​ Python',
+            //     items: [
+            //         {text: '基础知识', link: '/Python/Base/'},
+            //     ]
+            // },
             {
                 text: '​⚒️​​​ Tools',
                 items: [
@@ -61,18 +68,18 @@ export default defineConfig({
                     {text: '设计模式', link: '/Design/Design/'},
                 ]
             },
-            {
-                text: '​🤖​​​ Project',
-                items: [
-                    {text: '项目开发', link: '/Project/Project/'},
-                ]
-            },
-            {
-                text: '​📚​​​ Life',
-                items: [
-                    {text: '生活随笔', link: '/Book/WeiXin/'},
-                ]
-            },
+            // {
+            //     text: '​🤖​​​ Project',
+            //     items: [
+            //         {text: '项目开发', link: '/Project/Project/'},
+            //     ]
+            // },
+            // {
+            //     text: '​📚​​​ Life',
+            //     items: [
+            //         {text: '生活随笔', link: '/Book/WeiXin/'},
+            //     ]
+            // },
         ],
         socialLinks: [
             {
