@@ -463,3 +463,581 @@ fun MyAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable(
 |    `LazyColumn`    |     垂直滚动列表（类似 `RecyclerView`）      | `kotlin LazyColumn { items(100) { Text("Item $it") } }` |
 |     `LazyRow`      |                 水平滚动列表                 |  `kotlin LazyRow { items(100) { Text("Item $it") } }`   |
 
+```kotlin
+package com.shu
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.shu.component.model.UiViewModelManager
+import com.shu.component.model.UiViewModelManager.showSuccessToast
+import com.shu.component.ui.AppColor
+import java.util.Calendar
+
+
+/**
+ * 登录界面
+ */
+class LoginActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme(
+                colorScheme = AppColor.toColorScheme()
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color(0xFFF8FBFF)
+                ) {
+                    // 登录界面
+                    LoginScreen()
+                    // 初始化 UI 管理器
+                    UiViewModelManager.Init()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginScreen() {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var rememberMe by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val versionName = getVersionName(LocalContext.current)
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(48.dp))
+
+        // 应用Logo
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "App Logo",
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(Color.White)
+                .padding(12.dp),
+            contentScale = ContentScale.Fit
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 欢迎文本
+        Text(
+            text = "欢迎回来",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF2D3748)
+        )
+
+        Text(
+            text = "请登录您的账户",
+            fontSize = 16.sp,
+            color = Color(0xFF718096),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+
+        Spacer(modifier = Modifier.height(36.dp))
+
+        // 用户名输入框
+        UsernameTextField(
+            value = username,
+            onValueChange = { username = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 密码输入框
+        PasswordTextField(
+            value = password,
+            onValueChange = { password = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // 记住我和忘记密码
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = rememberMe,
+                    onCheckedChange = { rememberMe = it },
+                    colors = androidx.compose.material3.CheckboxDefaults.colors(
+                        checkedColor = Color(0xFF4299E1)
+                    )
+                )
+                Text(
+                    text = "记住我",
+                    color = Color(0xFF4A5568),
+                    fontSize = 14.sp
+                )
+            }
+
+            Text(
+                text = "忘记密码?",
+                color = Color(0xFF4299E1),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable {
+                    Toast.makeText(context, "忘记密码功能", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 登录按钮
+        Button(
+            onClick = {
+                isLoading = true
+                // 模拟登录过程
+                android.os.Handler().postDelayed({
+                    isLoading = false
+                    showSuccessToast("登录成功！", duration = 3000)
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                }, 1500)
+
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4299E1),
+                contentColor = Color.White
+            )
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Text(
+                    text = "登 录",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        SystemSetting {
+
+        }
+
+        // 用户协议
+        UserAgreementSection()
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 唯一设备号
+        Text(
+            text = "唯一设备号：${getDeviceId()}",
+            color = Color(0xFFA0AEC0),
+            fontSize = 12.sp,
+        )
+        Spacer(modifier = Modifier.height(1.dp))
+        // 版本信息
+        Text(
+            text = "v$versionName © $currentYear 傻瓜一号",
+            color = Color(0xFFA0AEC0),
+            fontSize = 12.sp,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UsernameTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.shadow(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(12.dp)
+        ),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,  // 移除聚焦状态下的下划线
+            unfocusedIndicatorColor = Color.Transparent, // 移除非聚焦状态下的下划线
+            disabledIndicatorColor = Color.Transparent,  // 移除禁用状态下的下划线
+            cursorColor = Color(0xFF4A90E2),            // 光标颜色
+            focusedTextColor = Color(0xFF2C3E50),        // 文本颜色
+            unfocusedTextColor = Color(0xFF2C3E50)       // 文本颜色
+        ),
+        placeholder = {
+            Text(
+                "请输入用户名",
+                color = Color(0xFF828FA2)
+            )
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Person,
+                contentDescription = "用户名字段",
+                tint = Color(0xFF828FA2)
+            )
+        },
+        trailingIcon = {
+            if (value.isNotEmpty()) {
+                IconButton(
+                    onClick = { onValueChange("") }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "清除用户名",
+                        tint = Color(0xFF718096)
+                    )
+                }
+            }
+        },
+        singleLine = true,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasswordTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.shadow(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(12.dp)
+        ),
+        shape = RoundedCornerShape(12.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,  // 移除聚焦状态下的下划线
+            unfocusedIndicatorColor = Color.Transparent, // 移除非聚焦状态下的下划线
+            disabledIndicatorColor = Color.Transparent,  // 移除禁用状态下的下划线
+            cursorColor = Color(0xFF4A90E2),            // 光标颜色
+            focusedTextColor = Color(0xFF2C3E50),        // 文本颜色
+            unfocusedTextColor = Color(0xFF2C3E50)       // 文本颜色
+        ),
+        placeholder = {
+            Text(
+                "请输入密码",
+                color = Color(0xFF828FA2)
+            )
+        },
+        visualTransformation = PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Lock,
+                contentDescription = "密码字段",
+                tint = Color(0xFF718096)
+            )
+        },
+        trailingIcon = {
+            if (value.isNotEmpty()) {
+                IconButton(
+                    onClick = { onValueChange("") }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = "清除密码",
+                        tint = Color(0xFF718096)
+                    )
+                }
+            }
+        },
+        singleLine = true
+    )
+}
+
+@Composable
+fun UserAgreementSection() {
+    val context = LocalContext.current
+    val annotatedString = buildAnnotatedString {
+        append("登录即表示您同意我们的")
+        // 用户协议链接
+        pushStringAnnotation(tag = "terms", annotation = "https://example.com/terms")
+        withStyle(
+            style = SpanStyle(
+                color = Color(0xFF4299E1),
+                fontWeight = FontWeight.Medium,
+                textDecoration = TextDecoration.Underline
+            )
+        ) {
+            append("用户协议")
+        }
+        pop()
+        append("和")
+        // 隐私政策链接
+        pushStringAnnotation(tag = "privacy", annotation = "https://example.com/privacy")
+        withStyle(
+            style = SpanStyle(
+                color = Color(0xFF4299E1),
+                fontWeight = FontWeight.Medium,
+                textDecoration = TextDecoration.Underline
+            )
+        ) {
+            append("隐私政策")
+        }
+        pop()
+    }
+
+    Text(
+        text = annotatedString,
+        fontSize = 12.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                // 这里可以处理点击事件
+                Toast.makeText(context, "查看用户协议", Toast.LENGTH_SHORT).show()
+            }
+    )
+}
+
+
+@Composable
+fun SystemSetting(
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "系统设置",
+            fontSize = 12.sp,
+            color = Color(0xFF2C3E50),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLoginScreen() {
+    MaterialTheme(
+        colorScheme = AppColor.toColorScheme()
+    ) {
+        LoginScreen()
+    }
+}
+
+
+@Composable
+fun getVersionName(context: Context): String? {
+    return try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        pInfo.versionName
+    } catch (e: Exception) {
+        Log.e("getVersionName", "Error: ${e.message}")
+        "1.0.0" // 默认值
+    }
+}
+
+@Composable
+fun getDeviceId(): String {
+    var deviceId="q23sd02839103701983";
+     deviceId = Settings.System.getString(LocalContext.current.contentResolver, Settings.System.ANDROID_ID)
+    return deviceId
+}
+
+```
+
+![image-20250605210114809](images/image-20250605210114809.png)
+
+####  `Column` 
+
+#####  verticalArrangement
+
+控制子项在垂直方向上的排列方式（类似于传统视图的 gravity 或 LinearLayout 的权重）：
+
+```kotlin
+verticalArrangement = Arrangement.Top    // 默认值，顶部对齐
+verticalArrangement = Arrangement.Center // 垂直居中
+verticalArrangement = Arrangement.Bottom // 底部对齐
+verticalArrangement = Arrangement.SpaceEvenly // 均匀分布（包括首尾）
+verticalArrangement = Arrangement.SpaceBetween // 首尾不留空，中间均匀分布
+verticalArrangement = Arrangement.SpaceAround  // 首尾留空，中间均匀分布
+```
+
+#####  content
+
+定义子组件的 Lambda 块（通过 `ColumnScope` 内的 DSL 添加子项）：
+
+```kotlin
+content = {
+    Text("Item 1")
+    Spacer(modifier = Modifier.height(8.dp))
+    Button(onClick = {}) { Text("Button") }
+}
+```
+
+##### 其他对齐相关属性
+
+```kotlin
+horizontalAlignment = Alignment.Start   // 左对齐（LTR 布局下）
+horizontalAlignment = Alignment.End     // 右对齐（LTR 布局下）
+horizontalAlignment = Alignment.CenterHorizontally // 水平居中（默认值）
+```
+
+####  `Row` 
+
+##### `modifier`
+
+控制布局大小、内边距、背景等（与 `Column` 相同）：
+
+```kotlin
+modifier = Modifier
+    .fillMaxWidth()  // 填充最大宽度
+    .padding(16.dp)  // 内边距
+    .background(Color.LightGray) // 背景色
+```
+
+##### `horizontalArrangement`
+
+控制子项在**水平方向**的排列方式（核心属性）：
+
+```kotlin
+horizontalArrangement = Arrangement.Start      // 左对齐（默认）
+horizontalArrangement = Arrangement.Center    // 水平居中
+horizontalArrangement = Arrangement.End       // 右对齐
+horizontalArrangement = Arrangement.SpaceEvenly  // 均匀分布（包括首尾）
+horizontalArrangement = Arrangement.SpaceBetween // 首尾不留空，中间均匀分布
+horizontalArrangement = Arrangement.SpaceAround  // 首尾留空，中间均匀分布
+```
+
+#### `verticalAlignment`
+
+控制子项在**垂直方向**的对齐方式：
+
+```kotlin
+verticalAlignment = Alignment.Top      // 顶部对齐
+verticalAlignment = Alignment.CenterVertically // 垂直居中（默认）
+verticalAlignment = Alignment.Bottom   // 底部对齐
+```
+
+##### `content`
+
+通过 Lambda 定义子组件：
+
+```kotlin
+content = {
+    Text("Item 1")
+    Spacer(modifier = Modifier.width(8.dp))
+    Button(onClick = {}) { Text("Button") }
+}
+```
+
+##### `RowScope` 特有修饰符
+
+在 `content` 中，子组件可使用 `RowScope` 的专属修饰符：
+
+```kotlin
+Row(modifier = Modifier.fillMaxWidth()) {
+    Text("Left", modifier = Modifier.weight(1f))
+    Text("Right")
+}
+```
+
+- **`Modifier.align(Alignment.CenterVertically)`**：覆盖父容器的垂直对齐方式。
