@@ -1,5 +1,71 @@
 # Jetpack 教程
 
+![img](images/v2-002fb8a8d679f26b205a6306343157b4_1440w.webp)
+
+### 1. Architecture Components（架构组件）
+
+| 组件             | 核心功能                                                    |
+| ---------------- | ----------------------------------------------------------- |
+| **Data Binding** | 声明式UI绑定，将数据自动同步到界面元素，减少模板代码。      |
+| **Lifecycles**   | 管理Activity/Fragment生命周期，避免内存泄漏和复杂回调。     |
+| **LiveData**     | 具有生命周期感知的数据持有者，数据变化时自动更新UI。        |
+| **Navigation**   | 统一应用内导航逻辑，支持可视化路由和深层链接。              |
+| **Paging**       | 分页加载数据，优化大数据集处理（如RecyclerView）。          |
+| **Room**         | SQLite抽象层，提供编译时SQL校验和ORM支持。                  |
+| **ViewModel**    | 管理UI相关数据， survives配置变更（如屏幕旋转），支持MVVM。 |
+| **WorkManager**  | 可靠的后台任务调度，支持延迟执行和约束条件（如网络状态）。  |
+
+------
+
+### 2. Foundation（基础组件）
+
+| 组件             | 核心功能                                        |
+| ---------------- | ----------------------------------------------- |
+| **Android KTX**  | Kotlin扩展库，简化API调用（如协程、扩展函数）。 |
+| **AppCompat**    | 向后兼容新特性（如Material Design组件）。       |
+| **Auto/TV/Wear** | 分别支持车载、电视和智能手表应用的开发。        |
+| **Benchmark**    | 性能测试工具，检测代码执行效率。                |
+| **Multidex**     | 解决64K方法数限制，支持多DEX文件。              |
+| **Security**     | 加密文件和SharedPreferences的安全存储。         |
+| **Test**         | 提供单元测试和UI测试框架（如Espresso）。        |
+
+------
+
+### 3. Behavior Components（行为组件）
+
+| 组件                 | 核心功能                                         |
+| -------------------- | ------------------------------------------------ |
+| **CameraX**          | 简化相机开发，兼容旧设备，支持人像、HDR等模式。  |
+| **DownloadManager**  | 系统级后台下载服务，支持断点续传和状态监听。     |
+| **Media & Playback** | 统一媒体播放API（支持音频/视频/Google Cast）。   |
+| **Notifications**    | 兼容通知功能，支持穿戴设备和车载系统。           |
+| **Permissions**      | 简化运行时权限请求和检查。                       |
+| **Preferences**      | 快速构建用户设置界面，支持数据持久化。           |
+| **Sharing**          | 集成系统分享功能（如分享到社交平台）。           |
+| **Slices**           | 动态UI模板，可在搜索栏等系统级位置显示应用内容。 |
+
+------
+
+### 4. UI Components（界面组件）
+
+| 组件                | 核心功能                                                 |
+| ------------------- | -------------------------------------------------------- |
+| **Animation**       | 视图动画和过渡效果（如共享元素过渡）。                   |
+| **Emoji**           | 提供最新表情符号支持，无需系统更新。                     |
+| **Fragment**        | 模块化UI组件，简化Activity复杂界面的管理。               |
+| **Layout**          | 通过XML或代码声明界面结构（如ConstraintLayout）。        |
+| **Palette**         | 从图像提取主题色，动态适配UI风格。                       |
+| **Jetpack Compose** | *（补充）* 声明式UI框架，替代传统XML布局，提高开发效率。 |
+
+------
+
+### **关键优势**
+
+- **标准化**：Google官方推荐，减少兼容性问题。
+- **生产力**：减少模板代码（如LiveData+ViewModel替代Handler/AsyncTask）。
+- **健壮性**：内置生命周期管理，降低崩溃风险。
+- **模块化**：按需引入，避免APK膨胀。
+
 # 一 Jetpack Compose
 
 >随着 Android 开发技术的不断演进，用户界面的构建方式也经历了从传统的 XML 布局到 Jetpack Compose 的变革性转变。Jetpack Compose 是谷歌推出的一套全新的声明式 UI 框架，逐渐成为 Android 开发的主流趋势。那么，它与传统的 XML 布局究竟有哪些区别？让我们从多个角度进行全面解析。
@@ -1041,3 +1107,271 @@ Row(modifier = Modifier.fillMaxWidth()) {
 ```
 
 - **`Modifier.align(Alignment.CenterVertically)`**：覆盖父容器的垂直对齐方式。
+
+# 二 Room 
+
+以下是 Android Room 的主要特点：
+
+- 对象关系映射 (ORM)：Room 允许您将 Java 或 Kotlin 对象映射到数据库表中。您可以定义数据模型并使用注解来定义关系和约束。
+- 事务管理：Room 提供了事务管理的功能，可以确保数据的完整性和一致性。它还支持自动提交和回滚机制，类似于 JDBC 中的事务管理。
+- 数据库抽象：Room 提供了一个抽象层，使得您可以使用简单的 API 来执行 SQL 查询和操作数据库。您不需要编写手动的 SQL 语句，而是使用 Java 或 Kotlin 的查询 API。
+- 同步和异步操作：Room 支持同步和异步操作，使得您可以轻松地在后台线程中执行数据库操作，以避免阻塞主线程。
+- 数据库迁移：当您的应用程序更新时，可能需要更改数据库模式。Room 可以自动处理迁移过程，确保数据的一致性和完整性。
+- 并发支持：Room 支持多线程并发操作，可以有效地处理多个并发请求。
+- 嵌入式数据库：Room 支持嵌入式数据库，这意味着您可以将数据库文件嵌入到您的应用程序中，而不需要单独安装和管理 SQLite 数据库。
+- 支持跨平台：除了 Android 平台，Room 还支持 iOS 和桌面应用程序。
+
+> 依赖
+
+```groovy
+    // Room
+    implementation "androidx.room:room-runtime:2.5.0"
+    annotationProcessor "androidx.room:room-compiler:2.5.0"
+```
+
+> 实体类
+
+```java
+package com.shu.model;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+/**
+ * @Author : EasonShu
+ * @Date : 2025-06-08 09:35.
+ * @Description :
+ */
+@Entity(tableName = "people")
+public class User {
+    //主键 自动生成
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    //列的名称
+    @ColumnInfo(name = "user_name")
+    private String name;
+
+    //不写默认列的名称为age，sex
+    private int age;
+    private String sex;
+
+    public User(String name, int age, String sex) {
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+}
+```
+
+> 操作接口
+
+```java
+package com.shu.dao;
+
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
+
+import com.shu.model.User;
+
+import java.util.List;
+
+/**
+ * @Author : EasonShu
+ * @Date : 2025-06-08 09:36.
+ * @Description :
+ */
+@Dao
+public interface UserDao {
+
+    //添加  传递一个参数 对象
+    @Insert
+    void insertDataOne(User people);
+
+    //添加  可以传递多个参数 对象
+    @Insert
+    void insertDataS(User... people);
+
+    //删除
+    @Delete
+    int deleteDataS(User... people);
+
+    //修改 传入对象 设置 id 进行修改某一个
+    @Update
+    int updateData(User... people);
+
+    //查询 根据id倒序
+    @Query("select * from User order by id desc")
+    List<User> getPeoples();
+
+    //根据id查询
+    @Query("select * from User where id =:numb")
+    User getPeople(Integer numb);
+
+    //删除表数据
+    @Query("delete from User")
+    void deleteTableData();
+
+}
+```
+
+> 抽象类
+
+```java
+package com.shu;
+
+import android.content.Context;
+
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+
+import com.shu.dao.UserDao;
+import com.shu.model.User;
+
+/**
+ * @Author : EasonShu
+ * @Date : 2025-06-08 09:37.
+ * @Description : 数据库类
+ */
+// 标注此类为数据库类，包含的表为 User，版本号为 1
+@Database(entities = {User.class}, version = 1)
+public abstract class UserDataBase extends RoomDatabase {
+    // 定义一个抽象方法，返回 DAO（数据访问对象）实例，用于操作 User 表数据
+    public abstract UserDao userDao();
+
+    // 用于存储单例实例的静态变量，确保全局只有一个数据库实例
+    private static volatile UserDataBase INSTANCE;
+
+    // 获取数据库实例的静态方法，采用单例模式。
+    public static UserDataBase getINSTANCE(Context context) {
+        if (INSTANCE == null) {
+            synchronized (UserDataBase.class) {
+                if (INSTANCE == null) {
+                    // 使用 Room 的 databaseBuilder 构建数据库实例
+                    // 数据库类,数据库文件名
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), UserDataBase.class, "users").build();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+}
+
+```
+
+> 实现
+
+```java
+ /**
+     * 点击事件
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.add_data:
+                UserDataBase.getINSTANCE(this).userDao().insertDataOne(new User("shu", 18, "男"));
+                break;
+            case R.id.query_data:
+                List<User> peoples = UserDataBase.getINSTANCE(this).userDao().getPeoples();
+                for (User people : peoples) {
+                    System.out.println(people.getName() + " " + people.getAge() + " " + people.getSex());
+                }
+                break;
+            case R.id.delete_data:
+                UserDataBase.getINSTANCE(this).userDao().deleteTableData();
+                break;
+            case R.id.update_data:
+                UserDataBase.getINSTANCE(this).userDao().updateData(new User("shu", 18, "男"));
+                break;
+            default:
+                break;
+        }
+    }
+```
+
+| 注解          | 作用                                   | 参数说明                                                     |
+| ------------- | -------------------------------------- | ------------------------------------------------------------ |
+| `@Entity`     | 声明一个类对应数据库中的表。           | - `tableName`：自定义表名（默认类名） - `foreignKeys`：定义外键约束 - `indices`：定义索引（加速查询） |
+| `@PrimaryKey` | 标记字段为主键。                       | - `autoGenerate`：是否自增（如SQLite的`AUTOINCREMENT`）      |
+| `@ColumnInfo` | 自定义字段在数据库中的列名或配置。     | - `name`：修改列名（默认与字段名相同） - 其他：如`collate`（排序规则） |
+| `@Ignore`     | 忽略字段，不存储到数据库。             | 常用于临时计算字段或非持久化数据。                           |
+| `@Embedded`   | 嵌套对象，将其内部字段平铺到当前表中。 | 适合组合复用（如`Address`嵌入`User`表）。                    |
+
+```java
+@Entity(
+    tableName = "users",
+    foreignKeys = [ForeignKey(
+        entity = Department::class,
+        parentColumns = ["dept_id"],
+        childColumns = ["department_id"],
+        onDelete = ForeignKey.CASCADE // 级联删除
+    )],
+    indices = [Index(value = ["department_id"], unique = false)]
+)
+data class User(
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    @ColumnInfo(name = "user_name") val name: String,
+    val department_id: Long,
+    @Embedded val address: Address, // 嵌套字段（如street/city）
+    @Ignore val tempToken: String   // 不存储
+)
+```
+
+
+
+
+
+
+
+
+
+# 三 Lifecycle 
+
+# 四 LiceData
+
+# 五 ViewModel
+
+# 六 Data Binding
+
+# 七 Kotlin Flow
+
+# 八 WorkManger
+
