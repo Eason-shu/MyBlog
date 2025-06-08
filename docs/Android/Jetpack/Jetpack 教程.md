@@ -1110,6 +1110,10 @@ Row(modifier = Modifier.fillMaxWidth()) {
 
 # 二 Room 
 
+![img](images/v2-cac3ab421aa14d6cd7753dfb1e07a2e1_1440w.jpg)
+
+## 2.1 Room 基本使用
+
 以下是 Android Room 的主要特点：
 
 - 对象关系映射 (ORM)：Room 允许您将 Java 或 Kotlin 对象映射到数据库表中。您可以定义数据模型并使用注解来定义关系和约束。
@@ -1258,6 +1262,7 @@ package com.shu;
 
 import android.content.Context;
 
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -1271,7 +1276,7 @@ import com.shu.model.User;
  * @Description : 数据库类
  */
 // 标注此类为数据库类，包含的表为 User，版本号为 1
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class}, version = 1,  exportSchema = false)
 public abstract class UserDataBase extends RoomDatabase {
     // 定义一个抽象方法，返回 DAO（数据访问对象）实例，用于操作 User 表数据
     public abstract UserDao userDao();
@@ -1286,7 +1291,7 @@ public abstract class UserDataBase extends RoomDatabase {
                 if (INSTANCE == null) {
                     // 使用 Room 的 databaseBuilder 构建数据库实例
                     // 数据库类,数据库文件名
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), UserDataBase.class, "users").build();
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), UserDataBase.class, "users").allowMainThreadQueries().build();
                 }
             }
         }
@@ -1296,10 +1301,15 @@ public abstract class UserDataBase extends RoomDatabase {
 
 ```
 
+- 在数据库对应的DataBase中使用.allowMainThreadQueries()来声明可以再主线程操作。
+
 > 实现
 
+![image-20250608130712037](images/image-20250608130712037.png)
+
 ```java
- /**
+
+/**
      * 点击事件
      * @param view
      */
@@ -1355,11 +1365,132 @@ data class User(
 )
 ```
 
+## 2.2 数据库升级
 
+### 2.2.1 自动升级
 
+- 数据库的升级分为手动和自动增量式升级，注意：Room版本在2.4.0以下的版本仅支持手动升级
 
+- Room，当字段有变化，按照前面的使用方法添加删除某字段，即可完成自升级，当然改了字段得加版本。
+- 如果两个版本之间自动迁移，需要在 `@Database` 注解中的 `autoMigrations` 参数中添加一个 `@AutoMigration` 注解即可。
 
+```kotlin
+// 迁移前数据库定义
+@Database(entities = [AppData::class], version = 1, exportSchema = false)  
+abstract class AppDatabase: RoomDatabase() {
+    abstract fun appDao(): IAppDao
+}
+// 迁移时数据库定义
+@Database(entities = [AppData::class], version = 1, autoMigrations = [AutoMigration(from = 1, to = 2)], exportSchema = false)
+abstract class AppDatabase: RoomDatabase() {
+    abstract fun appDao(): IAppDao
+}
+```
 
+- `@Database` 注解表明这是一个 Room 数据库类
+- `entities = {User.class}` 指定数据库包含的表（这里只有 User 表）
+- `version = 1` 设置数据库版本号为 1
+- `exportSchema = false` 不导出数据库架构信息（通常用于版本控制）
+- `autoMigrations = {@AutoMigration(from = 1, to = 2)}` 配置从版本1到版本2的自动迁移
+
+### 2.2.2 手动升级
+
+- 如果只想升级**特定表**（例如修改 `User` 表结构但保留其他表不变），可以使用 `Migration` 类：
+
+```java
+// 定义 Migration(1 → 2)
+static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    @Override
+    public void migrate(SupportSQLiteDatabase database) {
+        // 只修改 User 表，其他表保持不变
+        database.execSQL("ALTER TABLE User ADD COLUMN age INTEGER DEFAULT 0");
+    }
+};
+
+// 应用迁移
+Room.databaseBuilder(context, AppDatabase.class, "database.db")
+    .addMigrations(MIGRATION_1_2)  // 添加自定义迁移
+    .build();
+```
+
+**适用情况**：
+
+- 修改表结构（如新增列、删除列）
+- 仅升级部分表，其他表保持不变
+- 复杂的数据迁移（如数据转换）
+
+> 完整案例
+
+假设我们有一个 `User` 表和一个 `Order` 表：
+
+```java
+// User 表（初始版本）
+@Entity
+public class User {
+    @PrimaryKey
+    public int id;
+    public String name;
+}
+
+// Order 表（保持不变）
+@Entity
+public class Order {
+    @PrimaryKey
+    public int orderId;
+    public String product;
+}
+
+// 数据库（版本 1）
+@Database(entities = {User.class, Order.class}, version = 1)
+public abstract class AppDatabase extends RoomDatabase {
+    public abstract UserDao userDao();
+    public abstract OrderDao orderDao();
+}
+```
+
+**2. 升级需求（版本 2）**
+
+- **修改 `User` 表**：新增 `age` 列
+- **保持 `Order` 表不变**
+
+**(1) 定义 Migration 类**
+
+```java
+static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    @Override
+    public void migrate(SupportSQLiteDatabase database) {
+        // 仅修改 User 表，Order 表不受影响
+        database.execSQL("ALTER TABLE User ADD COLUMN age INTEGER DEFAULT 0");
+    }
+};
+```
+
+**(2) 更新数据库版本和实体类**
+
+```java
+// 更新后的 User 类
+@Entity
+public class User {
+    @PrimaryKey
+    public int id;
+    public String name;
+    public int age;  // 新增字段
+}
+
+// 数据库版本升级到 2
+@Database(entities = {User.class, Order.class}, version = 2)
+public abstract class AppDatabase extends RoomDatabase {
+    // ...
+}
+```
+
+**(3) 应用迁移**
+
+```java
+AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "my-db")
+    .addMigrations(MIGRATION_1_2)  // 添加自定义迁移
+    .build();
+```
 
 
 
