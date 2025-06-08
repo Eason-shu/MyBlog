@@ -74,12 +74,12 @@ export default defineConfig({
             //         {text: '项目开发', link: '/Project/Project/'},
             //     ]
             // },
-            // {
-            //     text: '​📚​​​ Life',
-            //     items: [
-            //         {text: '生活随笔', link: '/Book/WeiXin/'},
-            //     ]
-            // },
+            {
+                text: '​📚​​​ Life',
+                items: [
+                    {text: '生活随笔', link: '/Book/WeiXin/'},
+                ]
+            },
         ],
         socialLinks: [
             {
