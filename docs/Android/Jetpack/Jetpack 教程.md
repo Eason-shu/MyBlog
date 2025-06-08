@@ -1496,6 +1496,234 @@ AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "my-db")
 
 # 三 Lifecycle 
 
+![lifecycle生命周期](images/1a959294064a4987f8709c3aab05bd59.jpeg)
+
+- lifecycle 是属于Android Jetpack（官方开发工具包）—— Architecture（架构组件）中的一员。
+- 【官方介绍】构建生命周期感知型组件，这些组件可以根据 Activity 或 Fragment 的当前生命周期状态调整行为。
+- 【白话】lifecycle可以和Activity或Fragment生命周期绑定，方便我们做一些跟生命周期相关的业务逻辑。
+
+### 3.1 应用场景
+
+- 控制视频缓冲的开始与停止：启动App的时候可以更快的开始缓冲视频，App销毁时停止缓冲。
+- 开始和停止网络连接：应用位于前台时可能需要实时传输数据，并在应用进入后台时自动暂停。
+- 控制页面动画的启动与停止：动画在页面可见时进行播放，不可见时停止。
+
+![image.png](images/5a3533da7032462d8d06e29b62b656a1tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp)
+
+### 3.2 使用
+
+被观察者：`LifecycleOwner`
+
+观察者：`LifecycleObserver`
+
+被监听的系统组件需要去实现 LifecycleOwner 接口，观察者需要实现 LifecycleObserver 接口。
+
+> 添加依赖
+
+```groovy
+implementation "androidx.lifecycle:lifecycle-service:2.2.0"
+```
+
+> 创建 MyServiceObserver 类，实现 LifecycleObserver 接口。使用 @OnLifecycleEvent 标记希望在 Server 生命周期发生变化时得到同步调用的方法。
+
+```java
+package com.shu;
+
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+
+import java.util.List;
+
+
+/**
+ * @Author : EasonShu
+ * @Date : 2025-06-08 13:36.
+ * @Description :
+ */
+public class LocationObserver implements LifecycleObserver {
+    private static final String TAG = "LocationObserver";
+    private final Context context;
+
+    private final LocationManager locationManager;
+    private static final long MIN_TIME_MS = 10000; // 10秒
+    private static final float MIN_DISTANCE_M = 10; // 10米
+
+
+
+    public LocationObserver(Context context, Lifecycle lifecycle) {
+        this.context = context;
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        // 注册生命周期观察者
+        lifecycle.addObserver(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void startLocationUpdates() {
+        Log.e(TAG, "startLocationUpdates: ");
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "startLocationUpdates: 获取权限成功");
+            requestLocationUpdates();
+
+        } else {
+            Log.e(TAG, "startLocationUpdates: 权限被拒绝");
+
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void stopLocationUpdates() {
+        Log.e(TAG, "stopLocationUpdates: ");
+        locationManager.removeUpdates(new android.location.LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                Log.d(TAG, "onLocationChanged: " + location.getLatitude() + " " + location.getLongitude());
+            }
+        });
+
+    }
+
+    public void requestLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_MS, MIN_DISTANCE_M, new android.location.LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                Log.e(TAG, "onLocationChanged: " + location.getLatitude() + " " + location.getLongitude());
+
+            }
+
+            @Override
+            public void onLocationChanged(@NonNull List<Location> locations) {
+                LocationListener.super.onLocationChanged(locations);
+            }
+
+            @Override
+            public void onFlushComplete(int requestCode) {
+                LocationListener.super.onFlushComplete(requestCode);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                LocationListener.super.onStatusChanged(provider, status, extras);
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+                LocationListener.super.onProviderEnabled(provider);
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+                LocationListener.super.onProviderDisabled(provider);
+            }
+        });
+
+    }
+
+
+}
+```
+
+> 使用
+
+```java
+ LocationObserver(this, getLifecycle());
+```
+
+> 使用 ProcessLifecycleOwner 监听应用程序的生命周期
+
+- 依赖
+
+```groovy
+implementation "androidx.lifecycle:lifecycle-process:2.2.0"
+```
+
+- 监听
+
+```java
+package com.shu;
+
+import android.util.Log;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+
+/**
+ * @Author : EasonShu
+ * @Date : 2025-06-08 13:57.
+ * @Description : 监听应用生命周期
+ */
+public class AppLifecycleObserver implements LifecycleObserver {
+    private static final String TAG = "AppLifecycle";
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded() {
+        Log.d(TAG, "应用进入前台");
+        // 执行应用进入前台时需要做的操作
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded() {
+        Log.d(TAG, "应用进入后台");
+        // 执行应用进入后台时需要做的操作
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    public void onAppCreated() {
+        Log.d(TAG, "应用首次创建");
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void onAppDestroyed() {
+        Log.d(TAG, "应用即将终止");
+    }
+}
+```
+
+```java
+package com.shu;
+
+import android.app.Application;
+
+import androidx.lifecycle.ProcessLifecycleOwner;
+
+/**
+ * @Author : EasonShu
+ * @Date : 2025-06-08 13:58.
+ * @Description :
+ */
+public class MyApp extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        // 注册应用生命周期观察者
+        ProcessLifecycleOwner.get().getLifecycle()
+                .addObserver(new AppLifecycleObserver());
+    }
+}
+```
+
+![image-20250608140301266](images/image-20250608140301266.png)
+
+
+
 # 四 LiceData
 
 # 五 ViewModel
