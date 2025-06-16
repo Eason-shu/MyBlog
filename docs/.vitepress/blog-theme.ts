@@ -55,7 +55,19 @@ const blogTheme = getThemeConfig({
     ],
     duration: 0
   },
-
+ oml2d: {
+    mobileDisplay: true,
+    models: [
+      {
+        path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
+        position: [0, 60],
+        scale: 0.08,
+        stageStyle: {
+          height: 450
+        }
+      }
+    ]
+  }
 
 })
 
