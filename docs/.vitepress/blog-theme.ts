@@ -61,7 +61,7 @@ const blogTheme = getThemeConfig({
       {
         path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
         position: [0, 60],
-        scale: 0.08,
+        scale: 0.055,
         stageStyle: {
           height: 450
         }
