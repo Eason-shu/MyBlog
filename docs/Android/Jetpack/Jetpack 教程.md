@@ -1724,13 +1724,755 @@ public class MyApp extends Application {
 
 
 
-# 四 LiceData
+# 四 LiveData
+
+LiveData 是 Android Jetpack 组件库中的一个可观察的数据持有者类，具有生命周期感知能力。它遵循观察者模式，允许 UI 组件（如 Activity 或 Fragment）观察数据的变化，并在数据发生变化时自动更新 UI。
+
+### 4.1 核心特点
+
+1. **生命周期感知**：自动管理订阅者的生命周期，避免内存泄漏
+2. **数据更新通知**：当数据变化时自动通知活跃的观察者
+3. **配置更改保持**：屏幕旋转等配置更改时不会丢失数据
+4. **资源共享**：多个观察者可以共享同一数据源
+
+### 4.2 基本用法
+
+> 1. 创建 LiveData 对象
+
+```java
+// 通常放在 ViewModel 中
+private MutableLiveData<String> currentName = new MutableLiveData<>();
+
+// 设置初始值
+currentName.setValue("Initial Value");
+```
+
+> 2. 观察 LiveData
+
+```java
+// 在 Activity/Fragment 中观察
+viewModel.currentName.observe(this, new Observer<String>() {
+    @Override
+    public void onChanged(String newName) {
+        // 更新 UI
+        textView.setText(newName);
+    }
+});
+
+// 使用 Lambda 简化
+viewModel.currentName.observe(this, newName -> {
+    textView.setText(newName);
+});
+```
+
+> 3. 更新 LiveData 值
+
+```java
+// 在主线程中
+liveData.setValue("New Value");
+
+// 在后台线程中
+liveData.postValue("New Value");
+```
+
+### 4.3 用户资料案例
+
+- 用户实体类
+
+```java
+package com.shu.model;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 用户信息管理
+ */
+public class UserProfileViewModel extends ViewModel {
+    // 当前用户数据
+    private MutableLiveData<User> currentUser = new MutableLiveData<>();
+    // 用户列表数据
+    private MutableLiveData<List<User>> userList = new MutableLiveData<>();
+    // 操作结果消息
+    private MutableLiveData<String> operationMessage = new MutableLiveData<>();
+
+    private List<User> users = new ArrayList<>();
+
+    public UserProfileViewModel() {
+        // 初始化一些测试数据
+        users.add(new User("张三", 25, "男", "13800138000"));
+        users.add(new User("李四", 30, "女", "13900139000"));
+        userList.setValue(new ArrayList<>(users));
+    }
+
+    // 获取当前用户
+    public LiveData<User> getCurrentUser() {
+        return currentUser;
+    }
+
+    // 获取用户列表
+    public LiveData<List<User>> getUserList() {
+        return userList;
+    }
+
+    // 获取操作消息
+    public LiveData<String> getOperationMessage() {
+        return operationMessage;
+    }
+
+    // 添加用户
+    public void addUser(User user) {
+        users.add(user);
+        userList.setValue(new ArrayList<>(users));
+        operationMessage.setValue("添加用户成功: " + user.getName());
+    }
+
+    // 查询用户
+    public void queryUser(String name) {
+        for (User user : users) {
+            if (user.getName().equals(name)) {
+                currentUser.setValue(user);
+                operationMessage.setValue("查询到用户: " + name);
+                return;
+            }
+        }
+        operationMessage.setValue("未找到用户: " + name);
+        currentUser.setValue(null);
+    }
+
+    // 更新用户
+    public void updateUser(User updatedUser) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getName().equals(updatedUser.getName())) {
+                users.set(i, updatedUser);
+                userList.setValue(new ArrayList<>(users));
+                operationMessage.setValue("更新用户成功: " + updatedUser.getName());
+                return;
+            }
+        }
+        operationMessage.setValue("更新失败，用户不存在: " + updatedUser.getName());
+    }
+
+    // 删除用户
+    public void deleteUser(String name) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getName().equals(name)) {
+                users.remove(i);
+                userList.setValue(new ArrayList<>(users));
+                operationMessage.setValue("删除用户成功: " + name);
+                return;
+            }
+        }
+        operationMessage.setValue("删除失败，用户不存在: " + name);
+    }
+}
+```
+
+- 布局文件
+
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <!-- 操作按钮 -->
+    <Button
+        android:id="@+id/add_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="新增用户(王五)" />
+
+    <Button
+        android:id="@+id/query_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="查询用户(张三)" />
+
+    <Button
+        android:id="@+id/delete_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="删除用户(李四)" />
+
+    <Button
+        android:id="@+id/update_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更新用户(张三年龄+1)" />
+
+    <!-- 用户信息显示 -->
+    <TextView
+        android:id="@+id/user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:text="用户信息将显示在这里" />
+
+    <TextView
+        android:id="@+id/current_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:text="用户信息将显示在这里" />
+
+
+
+
+</LinearLayout>
+```
+
+- 主函数
+
+```java
+package com.shu;
+
+import android.Manifest;
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.Settings;
+import android.util.Log;
+import android.view.View;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.shu.databinding.ActivityMainBinding;
+import com.shu.model.User;
+import com.shu.model.UserProfileViewModel;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
+
+/**
+ * @author EasonShu
+ */
+public class MainActivity extends AppCompatActivity {
+
+    private UserProfileViewModel viewModel;
+    private TextView userInfoText;
+    private TextView currentUserNameText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // 初始化ViewModel
+        viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
+
+        userInfoText = findViewById(R.id.user_info);
+        currentUserNameText= findViewById(R.id.current_user_name);
+        Button addButton = findViewById(R.id.add_data);
+        Button queryButton = findViewById(R.id.query_data);
+        Button deleteButton = findViewById(R.id.delete_data);
+        Button updateButton = findViewById(R.id.update_data);
+
+        // 设置按钮点击事件
+        addButton.setOnClickListener(v -> {
+            // 添加新用户
+            User newUser = new User("王五", 28, "男", "13700137000");
+            viewModel.addUser(newUser);
+        });
+
+        queryButton.setOnClickListener(v -> {
+            // 查询用户
+            viewModel.queryUser("张三");
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            // 删除用户
+            viewModel.deleteUser("李四");
+        });
+
+        updateButton.setOnClickListener(v -> {
+            // 更新用户
+            User updatedUser = new User("张三", 26, "男", "13800138001");
+            viewModel.updateUser(updatedUser);
+        });
+
+        // 观察用户列表数据
+        viewModel.getUserList().observe(this, users -> {
+            currentUserNameText.setText(users.toString());
+        });
+
+        // 观察当前用户数据变化
+        viewModel.getCurrentUser().observe(this, user -> {
+            if (user != null) {
+                userInfoText.setText(user.toString());
+            } else {
+                userInfoText.setText("暂无用户数据");
+            }
+        });
+
+        // 观察操作消息
+        viewModel.getOperationMessage().observe(this, message -> {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        });
+    }
+
+}
+```
+
+![image-20250621121401691](images/image-20250621121401691.png)
+
+**简单理解，一个观察者模式的实现**
 
 # 五 ViewModel
 
+ViewModel 是 Android Jetpack 架构组件的一部分，专门设计用于以生命周期感知的方式存储和管理 UI 相关数据。它的主要目的是将 UI 数据与 Activity/Fragment 分离，从而解决以下问题：
+
+1. **配置更改数据保留**：屏幕旋转时自动保留数据
+2. **避免内存泄漏**：不持有 Activity/Fragment 引用
+3. **UI 数据集中管理**：将数据逻辑与 UI 控制器分离
+
+### 5.1、ViewModel 核心特性
+
+|     特性     |                说明                |
+| :----------: | :--------------------------------: |
+| 生命周期感知 | 与 Activity/Fragment 生命周期关联  |
+|  数据持久性  |       配置更改时数据不会丢失       |
+|   资源共享   | 多个 Fragment 可共享同一 ViewModel |
+|   解耦设计   |       分离业务逻辑与 UI 代码       |
+
+### 5.2、ViewModel 生命周期
+
+- **创建**：当首次请求 ViewModel 时创建
+- **活跃**：在 Activity/Fragment 的 onStart() 到 onStop() 之间
+- **清除**：当关联的 Activity/Fragment 永久销毁时调用 onCleared()
+- **配置更改**：屏幕旋转时不会被销毁
+
 # 六 Data Binding
 
-# 七 Kotlin Flow
+Data Binding（数据绑定）是 Android Jetpack 的一部分，它允许开发者以声明式方式将布局中的 UI 组件直接绑定到应用中的数据源。这种方法可以减少样板代码，提高开发效率。
 
-# 八 WorkManger
+#### 6.1 核心优势：
+
+- **减少 findViewById 调用**：自动生成绑定类
+- **自动 UI 更新**：数据变化时自动刷新界面
+- **事件处理简化**：直接在布局中绑定点击等事件
+- **代码更简洁**：减少胶水代码，逻辑更清晰
+
+## 二、配置 Data Binding
+
+### 1. 启用 Data Binding
+
+在模块级 `build.gradle` 文件中添加：
+
+```gradle
+android {
+    ...
+    buildFeatures {
+        dataBinding true
+    }
+}
+```
+
+### 2. 基本使用步骤
+
+1. 将布局转换为 Data Binding 布局
+2. 创建绑定类
+3. 在代码中设置绑定关系
+
+## 三、Data Binding 基础用法
+
+### 1. 布局文件改造
+
+普通布局
+
+```xml
+<LinearLayout>
+    <TextView android:id="@+id/nameText"/>
+</LinearLayout>
+```
+
+Data Binding 布局：
+
+```xml
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable 
+            name="user"
+            type="com.example.User"/>
+    </data>
+    
+    <LinearLayout>
+        <TextView 
+            android:text="@{user.name}"
+            android:id="@+id/nameText"/>
+    </LinearLayout>
+</layout>
+```
+
+### 2. 绑定数据
+
+```java
+// 自动生成的绑定类名为：ActivityMainBinding（根据布局文件名）
+ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+User user = new User("张三", 25);
+binding.setUser(user);
+```
+
+## 四、Data Binding 高级特性
+
+### 1. 表达式语言
+
+在布局中使用表达式：
+
+```xml
+<TextView
+    android:text="@{user.lastName ?? user.firstName}"
+    android:visibility="@{user.age > 18 ? View.VISIBLE : View.GONE}"
+    android:padding="@{largeScreen ? @dimen/largePadding : @dimen/smallPadding}"/>
+```
+
+支持的运算符：
+
+- 数学：`+ - / * %`
+- 字符串连接：`+`
+- 逻辑：`&& ||`
+- 二元：`& | ^`
+- 一元：`+ - ! ~`
+- 移位：`>> >>> <<`
+- 比较：`== > < >= <=`
+- 类型判断：`instanceof`
+- 分组：`()`
+- 字面量：`character, String, numeric, null`
+- 转换：`cast`
+- 方法调用
+- 字段访问
+- 数组访问：`[]`
+- 三元运算符：`?:`
+
+### 2. 事件处理
+
+直接在布局中绑定事件：
+
+```xml
+<Button
+    android:onClick="@{() -> presenter.onSaveClick(user)}"
+    android:text="保存"/>
+```
+
+或使用方法引用
+
+```xml
+<Button
+    android:onClick="@{presenter::onSaveClick}"
+    android:text="保存"/>
+```
+
+### 3. 绑定适配器 (BindingAdapter)
+
+自定义属性绑定：
+
+```java
+@BindingAdapter("imageUrl")
+public static void setImageUrl(ImageView view, String url) {
+    Glide.with(view.getContext())
+         .load(url)
+         .into(view);
+}
+```
+
+在布局中使用：
+
+```xml
+<ImageView
+    app:imageUrl="@{user.avatarUrl}"/>
+```
+
+### 4. 双向绑定
+
+```xml
+<EditText
+    android:text="@={user.name}"/>
+```
+
+`@=` 符号表示双向绑定，当用户编辑文本时，会自动更新数据对象。
+
+
+
+# 七 WorkManger
+
+## 一、WorkManager 核心概念
+
+WorkManager 是 Android Jetpack 的一部分，用于管理后台任务，即使应用退出也能保证任务执行。它是 Android 推荐的后台任务解决方案，特别适合需要**可靠执行**的延迟性任务。
+
+### 核心特点：
+
+- **向后兼容**：自动选择合适的方式执行任务（JobScheduler, AlarmManager 或 BroadcastReceiver）
+- **工作约束**：可设置网络状态、充电状态等执行条件
+- **任务链**：支持顺序或并行任务组合
+- **可靠执行**：应用重启后任务继续执行
+- **灵活重试**：内置重试和退避策略
+
+## 二、WorkManager 基本使用
+
+### 1. 添加依赖
+
+```xml
+dependencies {
+    def work_version = "2.7.1"
+    
+    // Java 项目
+    implementation "androidx.work:work-runtime:$work_version"
+    
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+}
+```
+
+### 2. 创建工作类
+
+```java
+public class UploadWorker extends Worker {
+    public UploadWorker(Context context, WorkerParameters params) {
+        super(context, params);
+    }
+    
+    @Override
+    public Result doWork() {
+        // 在这里执行后台任务
+        try {
+            uploadData();
+            return Result.success(); // 任务成功完成
+        } catch (Exception e) {
+            return Result.failure(); // 任务失败
+        }
+    }
+    
+    private void uploadData() {
+        // 实际的上传逻辑
+    }
+}
+```
+
+### 3. 创建并提交工作请求
+
+```java
+// 创建约束条件
+Constraints constraints = new Constraints.Builder()
+    .setRequiredNetworkType(NetworkType.CONNECTED) // 需要网络连接
+    .setRequiresCharging(true) // 需要充电状态
+    .build();
+
+// 创建工作请求
+OneTimeWorkRequest uploadRequest = 
+    new OneTimeWorkRequest.Builder(UploadWorker.class)
+        .setConstraints(constraints)
+        .build();
+
+// 提交工作请求
+WorkManager.getInstance(context).enqueue(uploadRequest);
+```
+
+## 三、WorkManager 高级特性
+
+### 1. 输入/输出数据
+
+```
+// 创建输入数据
+Data inputData = new Data.Builder()
+    .putString("key", "value")
+    .putInt("number", 123)
+    .build();
+
+OneTimeWorkRequest workRequest = 
+    new OneTimeWorkRequest.Builder(MyWorker.class)
+        .setInputData(inputData)
+        .build();
+
+// 在 Worker 中获取输入数据
+public Result doWork() {
+    String value = getInputData().getString("key");
+    int number = getInputData().getInt("number", 0);
+    
+    // 创建输出数据
+    Data outputData = new Data.Builder()
+        .putBoolean("success", true)
+        .build();
+    
+    return Result.success(outputData);
+}
+```
+
+### 2. 周期性工作
+
+```
+// 每15分钟执行一次（实际间隔可能更长）
+PeriodicWorkRequest periodicRequest =
+    new PeriodicWorkRequest.Builder(MyWorker.class, 15, TimeUnit.MINUTES)
+        .build();
+
+WorkManager.getInstance(context).enqueue(periodicRequest);
+```
+
+> **注意**：最短间隔为15分钟，实际执行时间可能因系统优化而延迟
+
+### 3. 任务链（工作序列）
+
+```
+WorkManager.getInstance(context)
+    .beginWith(workA) // 先执行workA
+    .then(workB)      // workA成功后执行workB
+    .then(workC)      // workB成功后执行workC
+    .enqueue();
+```
+
+### 4. 唯一工作序列
+
+```
+// 如果已有同名序列在运行，则保持现有序列
+WorkManager.getInstance(context)
+    .beginUniqueWork("unique_name", 
+        ExistingWorkPolicy.KEEP, 
+        workA)
+    .then(workB)
+    .enqueue();
+```
+
+可选策略：
+
+- `KEEP`：保持现有序列
+- `REPLACE`：替换现有序列
+- `APPEND`：附加到现有序列
+
+## 四、WorkManager 实际案例
+
+### 案例1：图片压缩并上传
+
+```
+public class CompressAndUploadWorker extends Worker {
+    public CompressAndUploadWorker(Context context, WorkerParameters params) {
+        super(context, params);
+    }
+    
+    @Override
+    public Result doWork() {
+        // 获取输入数据
+        String imagePath = getInputData().getString("image_path");
+        
+        try {
+            // 1. 压缩图片
+            File compressedImage = compressImage(imagePath);
+            
+            // 2. 上传图片
+            String imageUrl = uploadToServer(compressedImage);
+            
+            // 准备输出数据
+            Data outputData = new Data.Builder()
+                .putString("image_url", imageUrl)
+                .build();
+                
+            return Result.success(outputData);
+        } catch (Exception e) {
+            return Result.failure();
+        }
+    }
+    
+    // 创建压缩上传任务链
+    public static void startCompressAndUpload(Context context, String imagePath) {
+        // 创建压缩工作请求
+        OneTimeWorkRequest compressRequest = 
+            new OneTimeWorkRequest.Builder(CompressWorker.class)
+                .setInputData(new Data.Builder()
+                    .putString("image_path", imagePath)
+                    .build())
+                .build();
+        
+        // 创建上传工作请求
+        OneTimeWorkRequest uploadRequest = 
+            new OneTimeWorkRequest.Builder(UploadWorker.class)
+                .build();
+        
+        // 创建序列
+        WorkManager.getInstance(context)
+            .beginWith(compressRequest)
+            .then(uploadRequest)
+            .enqueue();
+    }
+}
+```
+
+### 案例2：数据同步
+
+```
+public class SyncWorker extends Worker {
+    @Override
+    public Result doWork() {
+        Context context = getApplicationContext();
+        
+        // 同步用户数据
+        boolean userSuccess = syncUserData(context);
+        
+        // 同步设置数据
+        boolean settingsSuccess = syncSettings(context);
+        
+        // 同步消息
+        boolean messagesSuccess = syncMessages(context);
+        
+        if (userSuccess && settingsSuccess && messagesSuccess) {
+            // 全部成功
+            return Result.success();
+        } else {
+            // 部分失败，使用指数退避策略重试
+            return Result.retry();
+        }
+    }
+    
+    // 安排定期同步
+    public static void schedulePeriodicSync(Context context) {
+        Constraints constraints = new Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
+            .build();
+            
+        PeriodicWorkRequest syncRequest = 
+            new PeriodicWorkRequest.Builder(SyncWorker.class, 1, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build();
+                
+        // 使用唯一工作序列，避免重复
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "sync_work",
+            ExistingPeriodicWorkPolicy.KEEP,
+            syncRequest);
+    }
+}
+```
 
