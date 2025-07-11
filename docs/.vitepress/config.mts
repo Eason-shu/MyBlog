@@ -32,7 +32,6 @@ export default defineConfig({
                     {text: '基础', link: '/Java/Base/'},
                     {text: '分布式课程', link: '/Java/Service/'},
                     {text: '源码阅读笔记', link: '/Java/Source/'},
-
                 ]
             },
             {
@@ -47,37 +46,25 @@ export default defineConfig({
                     {text: 'Jetpack', link: '/Android/Jetpack/'},
                 ]
             },
-            // {
-            //     text: '​🏯​​ Python',
-            //     items: [
-            //         {text: '基础知识', link: '/Python/Base/'},
-            //     ]
-            // },
+            {
+                text: '​🏯​​ Python',
+                items: [
+                    {text: '基础知识', link: '/Python/Base/'},
+                ]
+            },
             {
                 text: '​⚒️​​​ Tools',
                 items: [
                     {text: '编程工具', link: '/Tools/Code/'},
+                    {text: 'OAuth 2.0', link: '/Design/OAuth/'},
                     {text: '摄影教程', link: '/Tools/Photo/'},
                 ]
             },
-            // {
-            //     text: '​🔖​​​ Design',
-            //     items: [
-            //         {text: 'OAuth 2.0', link: '/Design/OAuth/'},
-            //         {text: '汽车检测', link: '/Design/Car/'},
-            //         {text: '设计模式', link: '/Design/Design/'},
-            //     ]
-            // },
-            // {
-            //     text: '​🤖​​​ Project',
-            //     items: [
-            //         {text: '项目开发', link: '/Project/Project/'},
-            //     ]
-            // },
             {
                 text: '​📚​​​ Life',
                 items: [
-                    {text: '生活随笔', link: '/Book/WeiXin/'},
+                    {text: '微信读书', link: '/Book/WeiXin/'},
+                    {text: '汽车检测业务', link: '/Design/Car/'},
                 ]
             },
         ],
