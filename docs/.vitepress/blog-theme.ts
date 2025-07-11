@@ -3,9 +3,9 @@ import { getThemeConfig } from '@sugarat/theme/node'
 import type { Theme } from '@sugarat/theme'
 const baseUrl = 'https://www.lottecoffee.cn/'
 const RSS: Theme.RSSOptions = {
-  title: 'CoffeeCoder',
+  title: '白日梦想家Coder',
   baseUrl,
-  copyright: 'Copyright (c) 2023-present, CoffeeCoder',
+  copyright: 'Copyright (c) 2025-present, 白日梦想家Coder',
 }
 const blogTheme = getThemeConfig({
   RSS,
@@ -33,7 +33,7 @@ const blogTheme = getThemeConfig({
     }
   },
   themeColor: 'vp-green',
-  author: '瀚海',
+  author: '白日梦想家Coder',
   buttonAfterArticle: {
     openTitle: '赞赏',
     closeTitle: '下次一定',

@@ -5,7 +5,7 @@ import {blogTheme} from './blog-theme'
 export default defineConfig({
     extends: blogTheme,
     lang: 'zh-cn',
-    title: 'CoffeeCoder',
+    title: '白日梦想家Coder',
     description: '一个喜欢写笔记的coder',
     lastUpdated: true,
     head: [
@@ -60,14 +60,14 @@ export default defineConfig({
                     {text: '摄影教程', link: '/Tools/Photo/'},
                 ]
             },
-            {
-                text: '​🔖​​​ Design',
-                items: [
-                    {text: 'OAuth 2.0', link: '/Design/OAuth/'},
-                    {text: '汽车检测', link: '/Design/Car/'},
-                    {text: '设计模式', link: '/Design/Design/'},
-                ]
-            },
+            // {
+            //     text: '​🔖​​​ Design',
+            //     items: [
+            //         {text: 'OAuth 2.0', link: '/Design/OAuth/'},
+            //         {text: '汽车检测', link: '/Design/Car/'},
+            //         {text: '设计模式', link: '/Design/Design/'},
+            //     ]
+            // },
             // {
             //     text: '​🤖​​​ Project',
             //     items: [
@@ -84,7 +84,7 @@ export default defineConfig({
         socialLinks: [
             {
                 icon: 'github',
-                link: 'https://github.com/Eason-shu/MyBlog'
+                link: ''
             }
         ]
     },
