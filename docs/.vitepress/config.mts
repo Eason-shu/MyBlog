@@ -17,7 +17,7 @@ export default defineConfig({
     },
     themeConfig: {
         outline: {
-            level: [2, 3],
+            level: [3, 4],
             label: '目录'
         },
         returnToTopLabel: '回到顶部',
@@ -50,6 +50,8 @@ export default defineConfig({
                 text: '​🏯​​ Python',
                 items: [
                     {text: '基础知识', link: '/Python/Base/'},
+                    {text: '数据分析', link: '/Python/DataAnalysis/'},
+                    {text: '量化交易', link: '/Python/Quantization/'},
                 ]
             },
             {
