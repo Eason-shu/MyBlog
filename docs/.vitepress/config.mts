@@ -17,7 +17,7 @@ export default defineConfig({
     },
     themeConfig: {
         outline: {
-            level: [3, 4],
+            level: [1, 2],
             label: '目录'
         },
         returnToTopLabel: '回到顶部',

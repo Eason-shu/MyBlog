@@ -9,6 +9,7 @@ const RSS: Theme.RSSOptions = {
 }
 const blogTheme = getThemeConfig({
   RSS,
+  mermaid: true,
   hotArticle: {
     title: '🔥 精选文章',
     nextText: '换一组',
