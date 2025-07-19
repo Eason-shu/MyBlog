@@ -29,8 +29,8 @@ const blogTheme = getThemeConfig({
   footer: {
     copyright: 'MIT License | 瀚海',
     icpRecord: {
-      name: '蜀ICP备2024112904号',
-      link: 'https://beian.miit.gov.cn/'
+      name: '白日梦想家Coder',
+      link: ''
     }
   },
   themeColor: 'vp-green',
@@ -61,10 +61,10 @@ const blogTheme = getThemeConfig({
     models: [
       {
         path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
-        position: [0, 60],
+        position: [0, 40],
         scale: 0.055,
         stageStyle: {
-          height: 450
+          height: 400
         }
       }
     ]
