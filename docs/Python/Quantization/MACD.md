@@ -1,3 +1,22 @@
+---
+description: MACD指标，又称为指数平滑异同平均线，也称指数离差指标，是移动平均线原理的进一步发展，它利用快速移动平均线(EMA12)与慢速移动平均线(EMA26)聚合与分离的征兆，加上双重平滑运算来判断买进与卖出的时机。
+title: 认识MACD
+categories: 
+   - 学习
+   - Python
+tags: 
+   - 投资
+   - 量化
+sticky: 4
+outline: [2,3]
+top: 4
+recommend: 4
+date: 2025-06-01
+---
+
+
+
+
 # MACD
 
 ### 1.1 MACD介绍

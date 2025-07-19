@@ -1,3 +1,21 @@
+---
+description: 随机指标、即KDJ指标，主要用于推算行情涨跌的强弱势头，从而找出买点或卖点。KDJ是一个颇具实战意义的指标，因此深受广大投资者喜欢。
+title: 认识KDJ
+categories: 
+   - 学习
+   - Python
+tags: 
+   - 投资
+   - 量化
+sticky: 3
+outline: [2,3]
+top: 3
+recommend: 3
+date: 2025-06-01
+---
+
+
+
 # KDJ
 
 ## 1.1 基础认识
