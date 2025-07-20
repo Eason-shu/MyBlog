@@ -3,5 +3,4 @@
 
 ![alt text](image.png)
 <confetti />
-<DataPanel />
 

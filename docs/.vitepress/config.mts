@@ -33,9 +33,10 @@ extends: blogTheme,
             {
                 text: '​⛰️​​ Java',
                 items: [
-                    {text: '基础', link: '/Java/Base/'},
+                    {text: 'Java基础', link: '/Java/Base/'},
+                    {text: 'Mybatis', link: '/Java/Mybatis/'},
+                    {text: 'Spring', link: '/Java/Spring/'},
                     {text: '分布式课程', link: '/Java/Service/'},
-                    {text: '源码阅读笔记', link: '/Java/Source/'},
                 ]
             },
             {
