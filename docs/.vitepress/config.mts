@@ -1,34 +1,34 @@
 import {defineConfig} from 'vitepress'
 
 import {blogTheme} from './blog-theme'
-import { withSidebar } from 'vitepress-sidebar';
+import {withSidebar} from 'vitepress-sidebar';
 
 /**
  * 基础配置
  */
 const vitePressOptions = {
-extends: blogTheme,
+    extends: blogTheme,
     lang: 'zh-cn',
     title: '白日梦想家Coder',
     description: '一个喜欢写笔记的coder',
     lastUpdated: true,
     head: [
-    ['link', {rel: 'icon', href: '/favicon.ico'}],
-    ['meta', {name: 'msvalidate.01', content: '6DBA84142A7BE264C5E713EC0074CA33'}]
-],
+        ['link', {rel: 'icon', href: '/favicon.ico'}],
+        ['meta', {name: 'msvalidate.01', content: '6DBA84142A7BE264C5E713EC0074CA33'}]
+    ],
     sitemap: {
-    hostname: 'https://www.lottecoffee.cn'
-},
+        hostname: 'https://www.lottecoffee.cn'
+    },
     themeConfig: {
         outline: {
             level: [1, 2],
-                label: '目录'
+            label: '目录'
         },
         returnToTopLabel: '回到顶部',
-            sidebarMenuLabel: '相关文章',
-            lastUpdatedText: '上次更新于',
-            logo: '/logo.png',
-            nav: [
+        sidebarMenuLabel: '相关文章',
+        lastUpdatedText: '上次更新于',
+        logo: '/logo.png',
+        nav: [
             {text: '首页', link: '/'},
             {
                 text: '​⛰️​​ Java',
@@ -42,6 +42,7 @@ extends: blogTheme,
                 text: '​💻​​ Web',
                 items: [
                     {text: 'Vue', link: '/Web/Vue/'},
+                    {text: 'CSS', link: '/Web/Css/'},
                 ]
             },
             {
@@ -56,6 +57,15 @@ extends: blogTheme,
                     {text: '基础知识', link: '/Python/Base/'},
                     {text: '数据分析', link: '/Python/DataAnalysis/'},
                     {text: '量化交易', link: '/Python/Quantization/'},
+                ]
+            },
+            {
+                text: '​🏗️​​​ 嵌入式',
+                items: [
+                    {text: '基础知识', link: '/Mcu/Base/'},
+                    {text: 'STM32', link: '/Mcu/STM32/'},
+                    {text: 'Arduino', link: '/Mcu/Arduino/'},
+                    {text: '其他', link: '/Mcu/Other/'},
                 ]
             },
             {
@@ -74,7 +84,7 @@ extends: blogTheme,
                 ]
             },
         ],
-            socialLinks: [
+        socialLinks: [
             {
                 icon: 'github',
                 link: ''
