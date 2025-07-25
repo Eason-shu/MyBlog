@@ -36,6 +36,7 @@ const vitePressOptions = {
                     {text: 'Java基础', link: '/Java/Base/'},
                     {text: 'Mybatis', link: '/Java/Mybatis/'},
                     {text: '分布式课程', link: '/Java/Service/'},
+                    {text: 'Netty', link: '/Java/Netty/'},
                 ]
             },
             {
