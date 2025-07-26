@@ -21,6 +21,7 @@ date: 2025-06-01
 
 
 - 官网： https://www.tailwindcss.cn/docs/installation
+- 中文网站：https://tailwind.nodejs.cn
 
 # 一 环境篇
 
@@ -56,7 +57,7 @@ date: 2025-06-01
 
 #  二 TailwindCss 实践
 
-## 2.1 基础宽高
+## 2.1 宽高
 
 > [!TIP]
 >
@@ -146,7 +147,7 @@ date: 2025-06-01
 >
 > - `sm:`、`md:`、`lg:`、`xl:`、`2xl:`
 
-## 2.2 边距
+## 2.2 margin与padding
 
 >  margin
 
@@ -171,7 +172,7 @@ date: 2025-06-01
 
 ![13_AgAAJm8hGTcsD0a262RFMIJWFeg67fIG.png](images/bb909bd550874ea6814b16af87de43cdtplv-73owjymdk6-jj-mark-v100005o6Y6YeR5oqA5pyv56S-5Yy6IEAg5ZCR6Ziz6IqxMTY4q75.webp)
 
-## 2.3 边框
+## 2.3 border
 
 > [!TIP]
 >
@@ -217,3 +218,154 @@ date: 2025-06-01
 | rounded-full | border-start-start-radius: 9999px; border-end-start-radius: 9999px; |
 
 ![17_1.png](images/e1ea40254dc349f0b0df6c75828037c1tplv-73owjymdk6-jj-mark-v100005o6Y6YeR5oqA5pyv56S-5Yy6IEAg5ZCR6Ziz6IqxMTY4q75.webp)
+
+## 2.4 布局
+
+### 2.4.1 aspect-ratio
+
+> `aspect-ratio` 是一个实用类（utility class），用于控制元素的宽高比（width-to-height ratio）。
+>
+> 它基于 CSS 的 `aspect-ratio` 属性，可以轻松设置响应式布局中的固定比例容器（如视频、图片、卡片等）。
+
+| 类                           | 样式                                                    |
+| :--------------------------- | :------------------------------------------------------ |
+| `aspect-<ratio>`             | `aspect-ratio: <ratio>;`                                |
+| `aspect-square`              | `aspect-ratio: 1 / 1;`                                  |
+| `aspect-video`               | `aspect-ratio: var(--aspect-ratio-video); /* 16 / 9 */` |
+| `aspect-auto`                | `aspect-ratio: auto;`                                   |
+| `aspect-(<custom-property>)` | `aspect-ratio: var(<custom-property>);`                 |
+| `aspect-[<value>]`           | `aspect-ratio: <value>;`                                |
+
+```html
+<!-- 正方形 -->
+<div class="aspect-square bg-blue-500"></div>
+<!-- 16:9 视频比例 -->
+<div class="aspect-video bg-red-500"></div>
+<!-- 自定义 3:2 比例 -->
+<div class="aspect-[3/2] bg-green-500"></div>
+```
+
+### 2.4.2 columns
+
+> - 用于控制元素内列数的工具。
+
+- 使用 `columns-<number>` 工具（如 `columns-3`）设置应为元素内的内容创建的列数
+
+```html
+<div class="columns-3 ...">
+  <img class="aspect-3/2 ..." src="/img/mountains-1.jpg" />
+  <img class="aspect-square ..." src="/img/mountains-2.jpg" />
+  <img class="aspect-square ..." src="/img/mountains-3.jpg" />
+</div>
+```
+
+- 使用 `columns-xs` 和 `columns-sm` 等工具为元素内的内容设置理想的列宽
+
+```html
+<div class="columns-3xs ...">
+  <img class="aspect-3/2 ..." src="/img/mountains-1.jpg" />
+  <img class="aspect-square ..." src="/img/mountains-2.jpg" />
+  <img class="aspect-square ..." src="/img/mountains-3.jpg" />
+</div>
+```
+
+- 使用 `gap-<width>` 工具指定列之间的宽度
+
+```html
+<div class="columns-3 gap-8 ...">
+  <img class="aspect-3/2 ..." src="/img/mountains-1.jpg" />
+  <img class="aspect-square ..." src="/img/mountains-2.jpg" />
+  <img class="aspect-square ..." src="/img/mountains-3.jpg" />
+</div>
+```
+
+### 2.4.3 display
+
+> 用于控制元素显示框类型的工具。
+
+| `block`        | `display: block`        | 块级元素（独占一行）       |
+| -------------- | ----------------------- | -------------------------- |
+| `inline`       | `display: inline`       | 行内元素（不换行，无宽高） |
+| `inline-block` | `display: inline-block` | 行内块（可设宽高，不换行） |
+| `flex`         | `display: flex`         | 弹性布局容器               |
+| `grid`         | `display: grid`         | 网格布局容器               |
+| `hidden`       | `display: none`         | 隐藏元素（不占空间）       |
+| `table`        | `display: table`        | 表格布局容器               |
+| `inline-flex`  | `display: inline-flex`  | 行内弹性容器               |
+| `inline-grid`  | `display: inline-grid`  | 行内网格容器               |
+
+#### **(1) 块级 vs 行内元素**
+
+```html
+<!-- 块级元素 -->
+<div class="block bg-blue-200 p-2">Block Element</div>
+<!-- 行内元素 -->
+<span class="inline bg-red-200 p-2">Inline Element</span>
+```
+
+#### **(2) 弹性布局**
+
+```html
+<div class="flex justify-between">
+  <div class="bg-green-200 p-2">Item 1</div>
+  <div class="bg-green-200 p-2">Item 2</div>
+</div>
+```
+
+#### **(3) 隐藏元素**
+
+```html
+<div class="hidden">此元素不可见</div>
+```
+
+### 2.4.4 float
+
+> 用于控制元素周围内容封装的工具。
+
+| `float-right` | `float: right;`        |
+| ------------- | ---------------------- |
+| `float-left`  | `float: left;`         |
+| `float-start` | `float: inline-start;` |
+| `float-end`   | `float: inline-end;`   |
+| `float-none`  | `float: none;`         |
+
+- 使用 `float-right` 工具将元素浮动到其容器的右侧
+
+```html
+<article>
+  <img class="float-right ..." src="/img/mountains.jpg" />
+  <p>Maybe we can live without libraries, people like you and me. ...</p>
+</article>
+```
+
+- 使用 `float-left` 工具将元素浮动到其容器的左侧
+
+```html
+<article>
+  <img class="float-left ..." src="/img/mountains.jpg" />
+  <p>Maybe we can live without libraries, people like you and me. ...</p>
+</article>
+```
+
+- 使用 `float-start` 和 `float-end` 工具，它们使用 [逻辑属性](https://web.nodejs.cn/en-US/docs/Web/CSS/CSS_Logical_Properties/Basic_concepts) 根据文本方向映射到左侧或右侧
+
+```html
+<article>
+  <img class="float-start ..." src="/img/mountains.jpg" />
+  <p>Maybe we can live without libraries, people like you and me. ...</p>
+</article>
+<article dir="rtl">
+  <img class="float-start ..." src="/img/mountains.jpg" />
+  <p>... ربما يمكننا العيش بدون مكتبات، أشخاص مثلي ومثلك. ربما. بالتأكيد</p>
+</article>
+```
+
+- 使用 `float-none` 工具重置应用于元素的任何浮动
+
+```html
+<article>
+  <img class="float-none ..." src="/img/mountains.jpg" />
+  <p>Maybe we can live without libraries, people like you and me. ...</p>
+</article>
+```
+
