@@ -548,3 +548,468 @@ dear"
 "hello, " "d" "ear"
 ```
 
+## 2.6 存储类
+
+> [!TIP]
+>
+> **存储类**（storage class）用于确定 C 程序中变量/函数的存储位置、生命周期和作用域。变量作用域分为全局（global）和局部（local）两种，对应的存储类为“静态”和“自动”。具有全局的生命周期贯穿整个程序的执行过程，而局部变量则只能在局部范围内使用。对于函数而言，所有函数都具有全局生存期。
+
+### 2.6.1 auto 存储类
+
+> [!TIP]
+>
+> - *auto* 存储类是所有局部变量（local variables）默认的存储类。定义在函数中的变量默认为 *auto* 存储类，这意味着它们在函数开始时被创建，在函数结束时被销毁。
+> - 需要注意的是，*auto* 只能用在函数内，即 *auto* 只能修饰局部变量。
+
+```c
+{
+   int mount;
+   auto int month;
+}
+```
+
+### 2.6.2 *register* 存储类
+
+>[!TIP]
+>
+>- *register* 存储类用于定义存储在寄存器中而不是内存（RAM）中的局部变量。这意味着变量的最大尺寸等于寄存器的大小（通常是一个字），且不能对它应用一元的 `&` 运算符（因为它没有内存位置）。
+>- 由于 *register* 存储类定义存储在寄存器，所以 *register* 变量的访问速度更快，但是它不能直接取地址，因为它不是存储在 RAM 内存中的。如果一个变量需要频繁访问，那么使用 *register* 修饰该变量可以提高程序的运行速度。
+>- 计算机的寄存器是很珍贵的，因此 *register* 存储类只用于需要快速访问的变量，比如计数器。还应注意的是，定义 *register* 并不意味着变量将被存储在寄存器中，它仅仅意味着变量可能存储在寄存器中，这取决于硬件平台和编译器的实现和限制。
+
+```c
+{
+   register int  miles;
+}
+```
+
+### 2.6.3 static 存储类
+
+> [!TIP]
+>
+> *static* 存储类用于指示编译器在程序的生命周期内保持局部变量的存在，而不需要在每次它进入和离开作用域时进行创建和销毁。因此，使用 *static* 修饰局部变量可以在函数调用之间保持局部变量的值。简单来说，对于一个局部变量，使用 *static* 修饰之后，它的作用域（可见性）不会改变，但是生命周期会变成和全局变量一样，这样的变量也称为“静态变量”。
+
+```c
+#include <stdio.h>
+ 
+/* function declaration */
+void func(void);
+ 
+static int count = 5; /* global variable */
+
+int main(void) 
+{
+    while (count--)
+    {
+        func();
+    }
+
+   return 0;
+}
+
+/* function definition */
+void func(void)
+{
+    static int i = 5; /* local static variable */
+    i++;
+    
+    printf("i is %d and count is %d\n", i, count);
+}
+```
+
+### 2.6.4 extern 存储类
+
+> [!TIP]
+>
+> - *extern* 存储类用于定义在其他文件中声明的全局变量或函数。当使用 *extern* 关键字时，不会为变量分配任何存储空间，而只是指示编译器该变量在其他文件中定义。也就是说，这是一个声明，而不是定义。
+> - *extern* 存储类用于提供一个全局变量的引用，全局变量对所有的程序文件都是可见的。当你使用 *extern* 时，对于无法初始化的变量，会把变量名指向一个之前定义过的存储位置。
+
+## 2.7  运算符与优先级
+
+> [!TIP]
+>
+> 运算符是一种告诉编译器执行特定的数学或逻辑操作的符号，在 C 语言中内置了丰富的运算符。
+
+| **类别**       | **运算符**                   | **描述**                       | **结合性** | **优先级** |
+| -------------- | ---------------------------- | ------------------------------ | ---------- | ---------- |
+| **算术运算符** | `++` `--`（后缀）            | 自增、自减（后置）             | 左→右      | 1（高）    |
+|                | `+` `-` `++` `--`（前缀）    | 正、负、自增、自减（前置）     | 右→左      | 2          |
+|                | `*` `/` `%`                  | 乘、除、取模                   | 左→右      | 3          |
+|                | `+` `-`                      | 加、减                         | 左→右      | 4          |
+| **关系运算符** | `<` `<=` `>` `>=`            | 小于、小于等于、大于、大于等于 | 左→右      | 5          |
+|                | `==` `!=`                    | 等于、不等于                   | 左→右      | 6          |
+| **位运算符**   | `~`                          | 按位取反                       | 右→左      | 2          |
+|                | `<<` `>>`                    | 左移、右移                     | 左→右      | 5          |
+|                | `&`                          | 按位与                         | 左→右      | 7          |
+|                | `^`                          | 按位异或                       | 左→右      | 8          |
+|                | `|`                          | 按位或                         | 左→右      | 9          |
+| **逻辑运算符** | `!`                          | 逻辑非                         | 右→左      | 2          |
+|                | `&&`                         | 逻辑与                         | 左→右      | 10         |
+|                | `||`                         | 逻辑或                         | 左→右      | 11         |
+| **赋值运算符** | `=` `+=` `-=` `*=` `/=` `%=` | 赋值及复合赋值                 | 右→左      | 14（低）   |
+|                | `<<=` `>>=` `&=` `^=` `|=`   | 位运算复合赋值                 | 右→左      | 14         |
+| **条件运算符** | `?:`                         | 三元运算符（`a ? b : c`）      | 右→左      | 13         |
+| **其他运算符** | `sizeof`                     | 计算变量/类型大小              | 右→左      | 2          |
+|                | `&`                          | 取地址                         | 右→左      | 2          |
+|                | `*`                          | 指针解引用                     | 右→左      | 2          |
+|                | `,`                          | 逗号运算符（顺序求值）         | 左→右      | 15（最低） |
+
+```c
+int a = 5, b = 3, c = 2;
+int result = a + b * c;  // * 优先级高于 +，先算 b * c
+int logical = !a && b;   // ! 优先级高于 &&，先算 !a
+int bitwise = a << 2 | b; // << 优先级高于 |，先算 a << 2
+```
+
+> [!WARNING]
+>
+> C 语言中，运算符的运算规则是：**优先级高的运算符先执行，优先级低的运算符后执行，同一优先级的运算符按照从左到右的顺序进行。**
+>
+> 需要注意的是，C 语言中大部分运算符都是从左向右执行的，只有单目运算符、赋值运算符它们是从右向左执行的。如果有小括号 `()`，则小括号的优先级最高。
+
+## 2.8 条件语句
+
+> [!WARNING]
+>
+> C 语言任何**非零**和**非空**的值假定为 **true**，把**零**或 **null** 假定为 **false**。
+
+![C语言条件语句/判断语句](images/c-decision-making.jpg)
+
+### 2.8.1 IF 语句
+
+> 一个 `if` 语句包含一个或多个条件组成的布尔表达式（Boolean expression）。
+
+- 语法
+
+```c
+if (boolean_expression) {
+   /* statement(s) will execute if the boolean expression is true */
+}
+```
+
+如果布尔表达式的值为 **true**，那么 `if` 语句后面由大括号包裹的语句块将被执行。如果布尔表达式的值为 **false**，那么将执行整个 `if` 语句后的代码，也就是 `}` 后的第一行代码。值得一提的是，如果 `if` 语句的语句块中只有一行代码，那么大括号 `{ }` 是可以省略的。但对于新手来说，不建议省略，因为很容易出错。
+
+![C语言 if 语句](images/c-if-statement.jpg)
+
+```c
+#include <stdio.h>
+ 
+int main(void)
+{
+   /* local variable definition */
+   int a = 10;
+ 
+   /* check the boolean condition using if statement */
+	
+   if (a < 20) {
+      /* if condition is true then print the following */
+      printf("a is less than 20\n" );
+   }
+   
+   printf("value of a is : %d\n", a);
+ 
+   return 0;
+}
+```
+
+### 2.8.2 if...else 语句
+
+一个 `if` 语句后面可以带上一个 `else` 语句，这样就能覆盖所有的条件，条件为 **true** 则执行 `if` 语句后面的语句块，条件为 **false** 则执行 `else` 语句后面的语句块。
+
+- 语法
+
+```c
+if (boolean_expression) {
+   /* statement(s) will execute if the boolean expression is true */
+} else {
+   /* statement(s) will execute if the boolean expression is false */
+}
+```
+
+![C语言 if...else 语句](images/c-if-else-statement.jpg)
+
+```c
+#include <stdio.h>
+ 
+int main(void)
+{
+   /* local variable definition */
+   int a = 100;
+ 
+   /* check the boolean condition */
+   if (a < 20) {
+      /* if condition is true then print the following */
+      printf("a is less than 20\n" );
+   } else {
+      /* if condition is false then print the following */
+      printf("a is not less than 20\n" );
+   }
+   
+   printf("value of a is : %d\n", a);
+ 
+   return 0;
+}
+```
+
+### 2.8.3 f...else if 语句
+
+一个 `if` 语句后面还可以带多个 `else if` 语句，进行多种条件判断。这种结构是非常有用的，因为它比单一的 `if...else` 语句更丰富。如果末尾带上 `else` 语句，就形成了一个条件 100% 覆盖的 `if...else if...else` 语句。
+
+使用 `if...else if...else` 语句时，有以下几点需要注意：
+
+- 一个 `if` 后可跟零个或一个 `else`，`else` 必须在所有 `else if` 之后；
+- 一个 `if` 后可跟零个或多个 `else if`，`else if` 必须在 `else` 之前；
+- 一旦某个 `else if` 匹配成功，其他的 `else if` 或 `else` 将不会被测试。
+
+> 语法
+
+```c
+if (boolean_expression 1) {
+   /* Executes when the boolean expression 1 is true */
+} else if (boolean_expression 2) {
+   /* Executes when the boolean expression 2 is true */
+} else if (boolean_expression 3) {
+   /* Executes when the boolean expression 3 is true */
+} else {
+   /* executes when the none of the above condition is true */
+}
+```
+
+```c
+#include <stdio.h>
+
+int main(void) 
+{
+   /* local variable definition */
+   int a = 100;
+ 
+   /* check the boolean condition */
+   if (a == 10) {
+      /* if condition is true then print the following */
+      printf("Value of a is 10\n" );
+   } else if (a == 20) {
+      /* if else if condition is true */
+      printf("Value of a is 20\n" );
+   } else if (a == 30) {
+      /* if else if condition is true  */
+      printf("Value of a is 30\n" );
+   } else {
+      /* if none of the conditions is true */
+      printf("None of the values is matching\n" );
+   }
+   
+   printf("Exact value of a is: %d\n", a );
+ 
+   return 0;
+}
+```
+
+### 2.8.4 嵌套 if 语句
+
+在 C 语言中，嵌套 `if` 语句是合法的。也就是说，你可以在一个 `if` 或 `else if` 或 `else` 语句的语句块中再使用另一个 `if` 语句，而在该 `if` 语句中又可以继续使用另一个 `if` 语句。这种语法就称为“嵌套 if 语句”。
+
+> 语法
+
+```c
+if (boolean_expression 1) {
+
+   /* Executes when the boolean expression 1 is true */
+   if (boolean_expression 2) {
+      /* Executes when the boolean expression 2 is true */
+   }
+   else if (boolean_expression 3) {
+      /* Executes when the boolean expression 3 is true */
+   } else {
+      /* executes when the none of the above condition is true */
+   }
+}
+```
+
+```c
+#include <stdio.h>
+ 
+int main (void) {
+
+   /* local variable definition */
+   int a = 100;
+   int b = 200;
+ 
+   /* check the boolean condition */
+   if (a == 100) {
+   
+      /* if condition is true then check the following */
+      if (b == 200) {
+         /* if condition is true then print the following */
+         printf("Value of a is 100 and b is 200\n" );
+      }
+   }
+   
+   printf("Exact value of a is : %d\n", a );
+   printf("Exact value of b is : %d\n", b );
+ 
+   return 0;
+}
+```
+
+### 2.8.5 switch 语句
+
+如果程序需要处理多级判断时，使用 `if...else if..else` 语句会显得非常冗长，因此 C 语言提供了 `switch` 语句。一个 `switch` 语句用于测试一个变量等于多个值时的情况，每个值称为一个 **case**。
+
+> 语法
+>
+> `switch` 语句必须遵循下面的规则：
+>
+> - `switch` 语句中的 `expression` 是一个常量表达式，必须是一个整型或枚举类型；
+> - 在一个 `switch` 中可以有任意数量的 `case` 语句。每个 `case` 后跟一个要比较的值和一个冒号；
+> - `case` 的 *constant-expression* 必须与 `switch` 中的变量具有相同的数据类型，且**必须是一个常量或字面量**。
+> - 当被测试的变量等于 `case` 中的常量时，`case` 后跟的语句将被执行，直到遇到 `break` 语句为止；
+> - 当遇到 `break` 语句时，`switch` 终止，控制流将跳转到 `switch` 语句后的下一行；
+> - 不是每一个 `case` 都需要包含 `break`。如果 `case` 语句不包含 `break`，控制流将会继续后续的 `case`，直到遇到 `break` 为止；
+> - 一个 `switch` 语句可以有一个可选的 **default** case，出现在 `switch` 的结尾。`default` 可用于在上面所有 `case` 都不为真时执行一个任务；
+> - `default` 中的 `break` 语句不是必需的。
+
+```c
+switch (expression) {
+
+   case constant-expression  :
+      statement(s);
+      break; /* optional */
+	
+   case constant-expression  :
+      statement(s);
+      break; /* optional */
+  
+   /* you can have any number of case statements */
+   default : /* Optional */
+   statement(s);
+}
+```
+
+![C语言switch语句](images/c-switch-statement.jpg)
+
+```c
+#include <stdio.h>
+ 
+int main(void)
+{
+   /* local variable definition */
+   char grade = 'B';
+
+   switch (grade) {
+      case 'A' :
+         printf("Excellent!\n" );
+         break;
+      case 'B' :
+      case 'C' :
+         printf("Well done\n" );
+         break;
+      case 'D' :
+         printf("You passed\n" );
+         break;
+      case 'F' :
+         printf("Better try again\n" );
+         break;
+      default :
+         printf("Invalid grade\n" );
+   }
+   
+   printf("Your grade is  %c\n", grade );
+ 
+   return 0;
+}
+```
+
+### 2.8.6 三目运算符 ? :
+
+> 语法
+>
+> 这里的 `Exp1`、`Exp2` 和 `Exp3` 都是表达式，由问号 `?` 和冒号 `:` 分隔。
+>
+> `?` 表达式的值由 `Exp1` 决定：
+>
+> - 如果 `Exp1` 为 **true**，则计算 `Exp2` 的值，`Exp2` 的结果即为整个表达式的值；
+> - 如果 `Exp1` 为 **false**，则计算 `Exp3` 的值，`Exp3` 的结果即为整个表达式的值。
+
+```c
+Exp1 ? Exp2 : Exp3;
+```
+
+## 2.9 循环语句
+
+循环结构是程序设计中的另一种常用结构，比如在某些场景，你需要重复执行某一段代码很多次，这时候就需要用到循环语句了。
+
+### 2.9.1 while 循环
+
+> 语法
+>
+> 这里的 `condition` 可以是任意的表达式，当为任意非零值时都为 *true*。当条件为 *true* 时执行循环。 当条件为 *false* 时，退出循环，程序流将继续执行紧接着循环的下一条语句。
+>
+> `statement(s)` 可以是一个单独的语句，也可以是几个语句组成的代码块。如果是单条语句，可以不使用大括号包裹。
+
+```c
+while (condition) {
+    statement(s);
+}
+```
+
+![C语言 while 循环](images/c-while-loop.jpg)
+
+```c
+#include <stdio.h>
+ 
+int main(void)
+{
+    /* local variable definition */
+    int a = 10;
+    
+    /* while loop execution */
+    while (a < 20) {
+        printf("value of a: %d\n", a);
+        a++;
+    }
+    
+    return 0;
+}
+```
+
+### 2.9.2 for 循环
+
+> 语法
+>
+> 1. 首先执行 **init** 部分，并且只会执行一次。你可以在这里声明并初始化任何循环控制变量，也可以不在这里写任何语句，只要有一个分号出现即可。
+> 2. 接下来，会判断 **condition** 表达式。如果为真，则执行循环主体。如果为假，则不执行循环主体，且控制流会跳转到紧接着 for 循环的下一条语句。
+> 3. 在执行完 for 循环主体后，控制流会跳回上面的 **increment** 语句。通常会在这里更新循环控制变量，该语句可以留空，只要在条件后有一个分号出现即可。
+> 4. 条件再次被判断。如果为真，则执行循环，这个过程会不断重复（循环主体，然后增加步值，再然后重新判断条件）。在条件变为假时，for 循环终止。
+
+```c
+for (init; condition; increment) {
+    statement(s);
+}
+```
+
+![C语言 for 循环](images/c-for-loop.jpg)
+
+```c
+#include <stdio.h>
+ 
+int main(void)
+{
+    int a;
+    
+    /* for loop execution */
+    for (a = 10; a < 20; a = a + 1) {
+        printf("value of a: %d\n", a);
+    }
+    
+    return 0;
+}
+```
+
+### 2.9.3 循环控制语句
+
+> 有时候，我们并不希望程序执行完整的循环，比如说当满足某个条件时，就跳出循环。这时候就需要用到循环控制语句，来改变代码的执行顺序。
+>
+> C 语言提供了三种循环控制语句，包括 break、continue 和 goto 语句。goto 有点特殊，我们以后再介绍，这里先介绍前两种。
+>
+> - break 语句：终止循环或 switch 语句，程序流将继续执行紧接着循环或 switch 的下一条语句。
+> - continue 语句：告诉一个循环体立刻停止本次循环迭代，重新开始下次循环迭代。
+> - goto 语句：将控制转移到被标记的语句，但是不建议在程序中使用 goto 语句。

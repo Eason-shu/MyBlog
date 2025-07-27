@@ -75,6 +75,7 @@ const vitePressOptions = {
                     {text: '编程工具', link: '/Tools/Code/'},
                     {text: 'OAuth 2.0', link: '/Design/OAuth/'},
                     {text: '摄影教程', link: '/Tools/Photo/'},
+                    {text: '扣子教程', link: '/Tools/Coze/'},
                 ]
             },
             {
