@@ -57,7 +57,6 @@ const vitePressOptions = {
                 items: [
                     {text: '基础知识', link: '/Python/Base/'},
                     {text: '数据分析', link: '/Python/DataAnalysis/'},
-                    {text: '量化交易', link: '/Python/Quantization/'},
                 ]
             },
             {
