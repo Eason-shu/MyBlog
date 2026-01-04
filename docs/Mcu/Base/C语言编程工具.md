@@ -1,26 +1,22 @@
 ---
-description: CLion是一个强大的IDE，可以帮助你编写和调试C语言程序。
-title: CLion编程工具
+description: 对比了几种常用的C语言编程工具，包括DEV C++、小熊猫 DEV、Visual Studio、VSCode和CLion。
+title: C语言编程工具
 categories: 
    - 工具
+   - 对比
    - C语言
 tags: 
    - 学习
-sticky: 1
+   - 嵌入式
+sticky: 99
 outline: [1,2]
-top: 1
+top: -100
 recommend: 1
-date: 2025-07-20
+date: 2026-01-04
 ---
-
-
-# CLion
-
-- https://www.jetbrains.com.cn/clion/promo
+# C语言编程工具
 
 > [!TIP]
->
-> `CLion`是一个强大的IDE，可以帮助你编写和调试C语言程序。
 >
 > 首先是各种工具的对比：
 >
@@ -29,6 +25,49 @@ date: 2025-07-20
 > - `Visual Studio`：没怎么深入体验过，那大 10 个 G 看了还是……呵呵
 > - `VSCode`：可以说编程工具里的瑞士军刀，什么都能写，体验也还不错，美中不足的就是……安装配置 C 语言真的**很麻烦**。
 > - `CLion`：安装好之后应该在 1G 左右，收费（北航邮箱可以免费使用教育版），有一定的学习成本，但是让我最欣赏的是它真的特别**人性化**，写起代码相当便捷流畅。而且学校机房是可以使用 `CLion `的（`VSCode`和小熊猫用不了，万一到机房考试还是一夜回到解放前）。
+
+# VSCode(代码编辑)+GCC（编译器)
+
+## 1.1 安装VSCode
+- VSCode安装非常简单，可自行在官网下载安装包Visual Studio Code - Code Editing. Redefined，下载完成后，一路下一步即可安装完成。
+- 如果官网下载过慢，这里也提供安装包可自行下载。
+- 安装完成后，打开VSCode，点击左侧的扩展图标，搜索并安装C/C++插件，该插件提供了C语言的语法高亮、代码补全、调试等功能。
+![alt text](images/image.png)
+
+## 1.2 安装GCC
+
+- GCC（GNU Compiler Collection）是一个开源的编译器集合，支持多种编程语言，包括C、C++、Objective-C、Fortran、Ada等。
+- 在Windows上安装GCC可以使用MinGW或TDM-GCC等工具链。
+- 安装完成后，将GCC添加到系统环境变量中，即可在VSCode中使用GCC编译C语言程序。
+- 为了在 Windows 上安装 GCC，您需要安装 MinGW。为了安装 MinGW，请访问 MinGW 的主页 mingw-w64.org，进入 MinGW 下载页面，下载 MinGW 安装程序。
+
+![image-20260104125033090](images/image-20260104125033090.png)
+
+![image-20260104125045302](images/image-20260104125045302.png)
+
+> 解压完成后，将 MinGW 安装目录添加到系统环境变量中，即可在 VSCode 中使用 GCC 编译 C 语言程序。
+
+![image-20260104125715112](images/image-20260104125715112.png)
+
+![image-20260104125907255](images/image-20260104125907255.png)
+
+> 验证安装是否成功，打开 VSCode，创建一个新的 C 文件，输入如下代码：
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    printf("Hello, World!\n");
+    return 0;
+}
+```
+
+
+# CLion
+
+- https://www.jetbrains.com.cn/clion/promo
+
+
 
 ![image-20250725195950300](images/image-20250725195950300.png)
 

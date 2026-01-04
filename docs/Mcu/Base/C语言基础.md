@@ -15,9 +15,13 @@ date: 2025-07-20
 
 # C语言基础
 
+![nano-banana-free-sS9rSrou74qBfACupkITbFH6OhlYDYte9qH](images/nano-banana-free-sS9rSrou74qBfACupkITbFH6OhlYDYte9qH-1767500499151-2.png)
+
 > [!TIP]
 >
 > 参考教程： https://getiot.tech/c/
+
+
 
 # 一 介绍
 
