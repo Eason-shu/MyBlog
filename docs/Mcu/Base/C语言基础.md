@@ -433,62 +433,99 @@ double d;
 > - **定义** —— 所谓的定义就是编译器创建一个对象，为这个对象分配一块内存并给它取上一个名字，这个名字就是我们所说的变量名/对象名。这个名字一旦和这块内存匹配起来，它们就同生共死，终生不离不弃，并且这块内存的位置也不能被改变。一个变量或对象在一定区域内（涉及作用域和生命周期）只能被定义一次，如果定义多次，编译器会提示你重复定义同一个变量或对象。
 > - **声明** —— 告诉编译器，这个名字已经匹配到一块内存上了，所以你不能再用它作为将要定义的变量名/对象名。和变量的定义不同，变量的声明是可以出现多次的，并且在多个源文件中使用该变量之前都应该先声明。
 
+```c
+// C 中的变量
+// 变量是程序中用于存储数据的命名内存位置
+// 每个变量都有一个数据类型，决定了它可以存储的数据种类和大小
+// 声明： 数据类型 变量名;
+// 初始化： 数据类型 变量名 = 初始值;
+// 赋值： 变量名 = 新值;
+// 可以在声明时初始化，也可以稍后赋值
+// 初始化时可以使用常量表达式，也可以使用其他变量的值
+
+// 案例：计算圆的面积
+#include <stdio.h>
+
+int main() {
+    const float PI = 3.14159f;      // 定义常量π
+    float radius = 5.0f;            // 声明并初始化半径
+    float area;                     // 声明面积变量
+
+    area = PI * radius * radius;    // 计算面积
+    printf("半径为 %.2f 的圆面积是 %.2f\n", radius, area);
+
+    return 0;
+}
+
+```
+
+![image-20260104172619549](images/image-20260104172619549.png)
+
 **声明：**用来告诉编译器变量的名称和类型，而**不分配内存，不赋初值**。
 
 **定义：**为了给变量分配内存，**可以为变量赋初值**。
 
 注：定义要为变量分配内存空间；而声明不需要为变量分配内存空间。
 
-无论是否有extern修饰，赋初值便是定义。如下两种方式是等价的，必为定义！！！
+> - extern 关键字 用于声明在其他文件中已经定义的全局变量或函数
+> - 它告诉编译器："这个变量/函数在其他地方定义，编译时不要报错，链接时会找到它"
+> - 只有声明，没有定义，不会分配内存
+> - 可以跨多个文件访问同一个全局变量
 
-external.c
+- global.c
 
 ```c
+// global.c - 定义全局变量
 #include <stdio.h>
 
-// 定义外部变量
-int external_var = 42;
+// 定义全局变量
+int global_radius = 10;
+float global_pi = 3.14159f;
 
-// 定义外部函数
-void external_function() {
-    printf("这是来自external.c的函数调用\n");
-    printf("当前external_var的值为: %d\n", external_var);
+// 定义全局函数
+void print_global_values() {
+    printf("全局变量值: global_radius = %d, global_pi = %.2f\n", global_radius, global_pi);
 }
 ```
 
-main.c
+- main_extern.c
 
 ```c
+// main_extern.c - 使用 extern 声明访问其他文件的全局变量
 #include <stdio.h>
-#include "shared.h"
 
-// 声明外部变量(在external.c中定义)
-extern int external_var;
+// 使用 extern 声明在 global.c 中定义的全局变量
+extern int global_radius;
+extern float global_pi;
 
-// 声明外部函数(在external.c中定义)
-extern void external_function();
+// 使用 extern 声明在 global.c 中定义的全局函数
+extern void print_global_values();
 
 int main() {
-    printf("=== extern关键字演示程序 ===\n\n");
+    // 使用 extern 声明的全局变量计算圆的面积
+    float area = global_pi * global_radius * global_radius;
+    printf("使用外部全局变量计算的圆面积：\n");
+    printf("半径 = %d\n", global_radius);
+    printf("π = %.2f\n", global_pi);
+    printf("面积 = %.2f\n\n", area);
     
-    // 1. 使用extern变量
-    printf("1. 使用extern变量:\n");
-    printf("外部变量初始值: %d\n", external_var);
-    external_var = 100;
-    printf("修改后外部变量值: %d\n\n", external_var);
+    // 修改外部全局变量的值
+    global_radius = 15;
+    global_pi = 3.14f;
     
-    // 2. 使用extern函数
-    printf("2. 使用extern函数:\n");
-    external_function();
+    // 调用外部全局函数
+    printf("修改后的值：\n");
+    print_global_values();
     
-    // 3. 使用共享头文件中的变量和函数
-    printf("\n3. 使用共享头文件中的变量和函数:\n");
-    printf("共享变量初始值: %d\n", shared_var);
-    shared_function();
+    // 再次计算面积
+    area = global_pi * global_radius * global_radius;
+    printf("新的面积 = %.2f\n", area);
     
     return 0;
 }
 ```
+
+![image-20260104173427863](images/image-20260104173427863.png)
 
 - 左值和右值
 
@@ -500,10 +537,138 @@ int main() {
 > 变量是左值，因此它们可能出现在赋值语句的左侧。数字常量是右值，因此它们可能不会被赋值，也不能出现在左侧。
 
 ```c
-int g = 20; // valid statement
+// lvalue_rvalue.c - 左值和右值概念演示
+#include <stdio.h>
+#include <stdlib.h>
 
-10 = 20; // invalid statement; would generate compile-time error
+// 函数声明
+int add(int a, int b);      // 接受右值参数
+void modify(int *ptr);       // 接受指针（左值地址）
+
+// 全局变量
+int global_var = 100;
+
+// 返回左值的函数（通过指针间接实现）
+int* return_lvalue_ptr() {
+    return &global_var;
+}
+
+// 接受右值参数的函数
+int add(int a, int b) {
+    return a + b;
+}
+
+// 接受指针（左值地址）的函数
+void modify(int *ptr) {
+    *ptr = 200;
+}
+
+// 主函数
+int main() {
+    printf("=== 左值和右值概念演示 ===\n\n");
+    
+    // 1. 左值基本概念：可以放在赋值号左边的值
+    int x = 5;       // x是左值，5是右值
+    printf("1. 左值基本示例：\n");
+    printf("   int x = 5;  // x是左值，5是右值\n");
+    printf("   x = 10;     // 正确：x是左值，可以被赋值\n");
+    x = 10;
+    printf("   当前x的值：%d\n\n", x);
+    
+    // 2. 右值基本概念：只能放在赋值号右边的值
+    printf("2. 右值基本示例：\n");
+    printf("   5 = x;       // 错误：5是右值，不能被赋值\n");
+    printf("   10 + x = 20; // 错误：表达式10 + x是右值，不能被赋值\n");
+    printf("   x = 10 + 5;  // 正确：10 + 5是右值，可以赋值给左值x\n");
+    x = 10 + 5;
+    printf("   当前x的值：%d\n\n", x);
+    
+    // 3. 左值和右值的区别
+    printf("3. 左值和右值的区别：\n");
+    printf("   - 左值：有持久的存储位置，可以被取地址\n");
+    printf("   - 右值：临时值，没有持久的存储位置，不能被取地址\n");
+    printf("   &x = 0;      // 错误：&x是右值（地址值），不能被赋值\n");
+    printf("   x = &global_var; // 错误：类型不匹配，但&global_var是右值\n");
+    printf("   int *ptr = &x;  // 正确：&x是右值，可以赋值给左值ptr\n");
+    int *ptr = &x;
+    printf("   ptr指向的值：%d\n\n", *ptr);
+    
+    // 4. 函数调用中的左值和右值
+    printf("4. 函数调用中的左值和右值：\n");
+    printf("   add(5, 10) = 20; // 错误：函数返回值是右值，不能被赋值\n");
+    printf("   x = add(5, 10);   // 正确：函数返回值是右值，可以赋值给左值x\n");
+    x = add(5, 10);
+    printf("   add(5, 10)的结果：%d\n\n", x);
+    
+    // 5. 可以返回左值的函数（通过指针）
+    printf("5. 返回左值的函数（通过指针）：\n");
+    printf("   *return_lvalue_ptr() = 300; // 正确：函数返回指针，解引用后是左值\n");
+    *return_lvalue_ptr() = 300;
+    printf("   global_var的值：%d\n\n", global_var);
+    
+    // 6. 左值在表达式中的使用
+    printf("6. 左值在表达式中的使用：\n");
+    int y = 20;
+    printf("   int y = 20;\n");
+    printf("   x = y;       // 正确：y是左值，赋值给左值x\n");
+    x = y;
+    printf("   x = 40;      // 正确：直接给左值x赋值\n");
+    x = 40;
+    printf("   x的值：%d, y的值：%d\n\n", x, y);
+    
+    // 7. 数组名作为左值
+    printf("7. 数组名作为左值：\n");
+    int arr[5] = {1, 2, 3, 4, 5};
+    printf("   int arr[5] = {1, 2, 3, 4, 5};\n");
+    printf("   arr = {6, 7, 8, 9, 10}; // 错误：数组名是常量左值，不能被重新赋值\n");
+    printf("   arr[0] = 100; // 正确：数组元素是左值，可以被赋值\n");
+    arr[0] = 100;
+    printf("   arr[0]的值：%d\n\n", arr[0]);
+    
+    // 8. 指针与左值
+    printf("8. 指针与左值：\n");
+    int z = 50;
+    int *pz = &z;
+    printf("   int z = 50; int *pz = &z;\n");
+    printf("   *pz = 150; // 正确：*pz是左值，可以被赋值\n");
+    *pz = 150;
+    printf("   z的值：%d\n", *pz);
+    printf("   pz = &global_var; // 正确：pz是左值，可以被赋值\n");
+    pz = &global_var;
+    printf("   pz现在指向global_var：%d\n\n", *pz);
+    
+    // 9. const左值
+    printf("9. const左值：\n");
+    const int const_var = 100;
+    printf("   const int const_var = 100;\n");
+    printf("   const_var = 200; // 错误：const左值不能被修改\n");
+    printf("   const_var是左值，可以取地址：%p\n\n", &const_var);
+    
+    // 10. 字符串字面量
+    printf("10. 字符串字面量：\n");
+    char *str_ptr = "hello"; // 字符串字面量是const左值
+    printf("   char *str_ptr = \"hello\";");
+    printf("   // \"hello\"是const左值，str_ptr指向它\n");
+    printf("   *str_ptr = 'H'; // 错误：字符串字面量是const左值，不能被修改\n");
+    printf("   str_ptr = \"world\"; // 正确：str_ptr是左值，可以指向新的字符串字面量\n");
+    str_ptr = "world";
+    printf("   str_ptr现在指向：%s\n\n", str_ptr);
+    
+    // 11. 复合字面量（C99+）
+    printf("11. 复合字面量（C99+）：\n");
+    int *comp_ptr = (int[]){1, 2, 3, 4, 5};
+    printf("   int *comp_ptr = (int[]){1, 2, 3, 4, 5};\n");
+    printf("   comp_ptr[0] = 10; // 正确：复合字面量是左值，可以被修改\n");
+    comp_ptr[0] = 10;
+    printf("   复合字面量第一个元素：%d\n\n", comp_ptr[0]);
+    
+    printf("=== 演示结束 ===\n");
+    
+    return 0;
+}
 ```
+
+![image-20260104173853894](images/image-20260104173853894.png)
 
 - 1、左值
   左值就是那些可以出现在赋值符号左边的东西，它标识了一个可以存储结果值的地点。
