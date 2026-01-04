@@ -6,11 +6,11 @@ categories:
    - C语言
 tags: 
    - 学习
-sticky: 1
+sticky: 98
 outline: [1,2]
-top: 1
+top: -101
 recommend: 2
-date: 2025-07-20
+date: 2026-01-04
 ---
 
 # C语言基础
@@ -134,6 +134,45 @@ int main(void)
 }
 ```
 
+- \#include <stdio.h> 是预处理器指令，告诉 C 编译器在实际编译之前要包含 stdio.h 文件。
+- int main() 是主函数，程序从这里开始执行。
+- {}括号内的是具体代码块
+- /*...*/ 将会被编译器忽略，这里放置程序的注释内容。它们被称为程序的注释。
+- printf(...) 是 C 中另一个可用的函数，会在屏幕上显示消息 "Hello, World!"。
+- return 0; 终止 main() 函数，并返回值 0。 
+
+### 2.1.1 分号
+
+> [!TIP]
+>
+> 在 C 程序中，分号; 是语句结束符。也就是说，代码中的语句必须以分号结束。它表明一个逻辑实体的结束。
+
+```c
+printf("Hello, World! \n");
+return 0;
+```
+
+### 2.1.2 注释
+
+> 注释
+>
+> - C 语言的注释支持**单行注释**和**多行注释**。单行注释以双斜杠 `//` 开头，从双斜杠到行尾都属于注释。注释可以独立一行，也可以放在一行语句的末尾
+> - 多行注释则使用 `/*` 和 `*/` 符号包裹，也就是说，它们之间的内容都属于注释。
+
+```c
+// 这是一行注释
+
+int x = 1; // 这也是注释
+```
+
+```c
+/* 注释 */
+
+/*
+  这是一行注释
+*/
+```
+
 ## 2.2 程序语法
 
 > [!TIP]
@@ -195,26 +234,6 @@ if (x > 0)
 // 缩进两个空格
 if (x > 0)
   printf("is a positive number\n");
-```
-
-> 注释
->
-> - C 语言的注释支持**单行注释**和**多行注释**。单行注释以双斜杠 `//` 开头，从双斜杠到行尾都属于注释。注释可以独立一行，也可以放在一行语句的末尾
-> - 多行注释则使用 `/*` 和 `*/` 符号包裹，也就是说，它们之间的内容都属于注释。
-> - 
-
-```c
-// 这是一行注释
-
-int x = 1; // 这也是注释
-```
-
-```c
-/* 注释 */
-
-/*
-  这是一行注释
-*/
 ```
 
 ## 2.3 数据类型
@@ -309,6 +328,62 @@ int rand(void);
 ```c
 void *malloc( size_t size );
 ```
+
+```c
+/* C 语言基本数据类型介绍
+ * 1. 整型
+ *    - char：通常 1 字节，-128~127（signed）或 0~255（unsigned）
+ *    - short：通常 2 字节
+ *    - int：通常 4 字节
+ *    - long：32 位系统 4 字节，64 位系统 8 字节
+ *    - long long：至少 8 字节
+ *
+ * 2. 浮点型
+ *    - float：单精度，通常 4 字节
+ *    - double：双精度，通常 8 字节
+ *    - long double：扩展精度，字节数依平台而定
+ *
+ * 3. 布尔型（C99 起）
+ *    - 需包含 <stdbool.h>，使用 true / false
+ *
+ * 4. 空类型
+ *    - void：表示“无类型”，用于函数无返回值或空指针
+ *
+ * 5. 枚举型
+ *    - enum：用户自定义的整型常量集合
+ *
+ * 6. 派生类型
+ *    - 指针、数组、结构体(struct)、联合体(union)、函数
+ *
+ * 类型修饰符：signed / unsigned / short / long / const / volatile / restrict
+ * 长度保证：见 <stdint.h> 中的 int32_t、uint64_t 等定宽整数
+ */
+ 
+#include <stdio.h>
+
+int main(void) {
+    /* 演示基本数据类型的字节大小与范围（以常见 64 位 Linux/GCC 为例） */
+    printf("char:          %zu 字节，范围 %d ~ %d\n", sizeof(char),        -128, 127);
+    printf("unsigned char: %zu 字节，范围 %u ~ %u\n", sizeof(unsigned char), 0, 255);
+    printf("short:         %zu 字节\n", sizeof(short));
+    printf("int:           %zu 字节\n", sizeof(int));
+    printf("long:          %zu 字节\n", sizeof(long));
+    printf("long long:     %zu 字节\n", sizeof(long long));
+    printf("float:         %zu 字节\n", sizeof(float));
+    printf("double:        %zu 字节\n", sizeof(double));
+    printf("long double:   %zu 字节\n", sizeof(long double));
+
+    /* 演示布尔类型（C99） */
+    #include <stdbool.h>
+    bool flag = true;
+    printf("bool:          %zu 字节，值：%s\n", sizeof(bool), flag ? "true" : "false");
+
+    return 0;
+}
+
+```
+
+![image-20260104170615992](images/image-20260104170615992.png)
 
 ## 2.4 变量
 
