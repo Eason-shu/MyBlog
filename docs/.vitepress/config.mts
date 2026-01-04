@@ -49,9 +49,7 @@ const vitePressOptions = {
                 text: '​🏗️​​​ 嵌入式',
                 items: [
                     {text: '基础知识', link: '/Mcu/Base/'},
-                    {text: 'STM32', link: '/Mcu/STM32/'},
-                    {text: 'Arduino', link: '/Mcu/Arduino/'},
-                    {text: '其他', link: '/Mcu/Other/'},
+                    {text: '单片机', link: '/Mcu/Snglechip/'},
                 ]
             },
             {
