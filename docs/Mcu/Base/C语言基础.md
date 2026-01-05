@@ -329,6 +329,75 @@ int rand(void);
 void *malloc( size_t size );
 ```
 
+**示例：void 类型的综合使用**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+// 返回void的函数，用于打印信息
+void printMessage(void) {
+    printf("Hello, this is a void function!\n");
+}
+
+// 接受void*参数的函数，用于打印不同类型的数据
+void printData(void *data, char type) {
+    switch(type) {
+        case 'i':
+            printf("Integer: %d\n", *(int*)data);
+            break;
+        case 'f':
+            printf("Float: %.2f\n", *(float*)data);
+            break;
+        case 'c':
+            printf("Character: %c\n", *(char*)data);
+            break;
+        default:
+            printf("Unknown type!\n");
+    }
+}
+
+int main() {
+    // 使用返回void的函数
+    printMessage();
+    
+    // 使用void*指针处理不同类型数据
+    int intValue = 42;
+    float floatValue = 3.14;
+    char charValue = 'A';
+    
+    void *ptr;
+    
+    ptr = &intValue;
+    printData(ptr, 'i');
+    
+    ptr = &floatValue;
+    printData(ptr, 'f');
+    
+    ptr = &charValue;
+    printData(ptr, 'c');
+    
+    // 使用malloc分配内存（返回void*）
+    int *dynamicInt = (int*)malloc(sizeof(int));
+    if (dynamicInt != NULL) {
+        *dynamicInt = 100;
+        printf("Dynamically allocated int: %d\n", *dynamicInt);
+        free(dynamicInt);
+    }
+    
+    return 0;
+}
+```
+
+**输出结果：**
+```
+Hello, this is a void function!
+Integer: 42
+Float: 3.14
+Character: A
+Dynamically allocated int: 100
+```
+
 ```c
 /* C 语言基本数据类型介绍
  * 1. 整型
@@ -707,6 +776,69 @@ const type variable = value;
 const int MAX_VALUE = 100;
 ```
 
+**示例：#define 与 const 的使用对比**
+
+```c
+#include <stdio.h>
+
+// 使用 #define 定义常量
+#define PI 3.1415926
+#define MAX_STUDENTS 50
+#define MESSAGE "Welcome to C Programming!"
+
+// 使用 const 定义常量
+const double EULER = 2.71828;
+const int MIN_VALUE = 0;
+const char NEW_LINE = '\n';
+
+int main() {
+    // 使用 #define 常量
+    printf("PI = %.6f\n", PI);
+    printf("Maximum students: %d\n", MAX_STUDENTS);
+    printf("%s\n", MESSAGE);
+    
+    // 使用 const 常量
+    printf("Euler's number = %.5f\n", EULER);
+    printf("Minimum value: %d\n", MIN_VALUE);
+    printf("New line character: %c%c", NEW_LINE, NEW_LINE);
+    
+    // 计算圆的面积（使用 #define 常量）
+    double radius = 5.0;
+    double area = PI * radius * radius;
+    printf("Area of circle with radius %.1f: %.2f\n", radius, area);
+    
+    // 计算球体的体积（使用 #define 常量）
+    double volume = (4.0 / 3.0) * PI * radius * radius * radius;
+    printf("Volume of sphere with radius %.1f: %.2f\n", radius, volume);
+    
+    // 演示 const 常量的只读特性
+    // const int temp = 10;
+    // temp = 20; // 错误：不能修改 const 常量的值
+    
+    return 0;
+}
+```
+
+**输出结果：**
+```
+PI = 3.141593
+Maximum students: 50
+Welcome to C Programming!
+Euler's number = 2.71828
+Minimum value: 0
+New line character: 
+
+Area of circle with radius 5.0: 78.54
+Volume of sphere with radius 5.0: 523.60
+```
+
+**#define 与 const 的主要区别：**
+1. **处理阶段不同**：#define 在预处理阶段替换，const 在编译阶段处理
+2. **类型检查**：#define 没有类型检查，const 有严格的类型检查
+3. **内存分配**：#define 不分配内存，const 分配内存
+4. **作用域**：#define 全局有效（除非 #undef），const 有块级作用域
+5. **调试**：const 常量可以被调试器识别，#define 不能
+
 ### 2.5.2 整数常量
 
 > [!TIP]
@@ -869,6 +1001,151 @@ void func(void)
 > - *extern* 存储类用于定义在其他文件中声明的全局变量或函数。当使用 *extern* 关键字时，不会为变量分配任何存储空间，而只是指示编译器该变量在其他文件中定义。也就是说，这是一个声明，而不是定义。
 > - *extern* 存储类用于提供一个全局变量的引用，全局变量对所有的程序文件都是可见的。当你使用 *extern* 时，对于无法初始化的变量，会把变量名指向一个之前定义过的存储位置。
 
+**示例：存储类综合演示**
+
+```c
+#include <stdio.h>
+
+// 全局变量（默认extern存储类）
+int global_var = 100;
+
+// static全局变量（只能在当前文件中访问）
+static int static_global_var = 200;
+
+// 函数声明
+void demonstrate_auto(void);
+void demonstrate_register(void);
+void demonstrate_static_local(void);
+extern void demonstrate_extern(void);
+
+int main() {
+    printf("=== 存储类综合演示 ===\n\n");
+    
+    // 访问全局变量
+    printf("1. 全局变量：\n");
+    printf("   global_var = %d\n\n", global_var);
+    
+    // 调用函数演示不同存储类
+    printf("2. auto存储类（局部变量默认）：\n");
+    demonstrate_auto();
+    demonstrate_auto(); // 再次调用，auto变量会重新初始化
+    
+    printf("\n3. register存储类（用于频繁访问的变量）：\n");
+    demonstrate_register();
+    
+    printf("\n4. static局部变量（函数调用间保持值）：\n");
+    demonstrate_static_local();
+    demonstrate_static_local(); // 再次调用，static变量会保持之前的值
+    demonstrate_static_local(); // 第三次调用
+    
+    printf("\n5. static全局变量（只能在当前文件访问）：\n");
+    printf("   static_global_var = %d\n", static_global_var);
+    
+    return 0;
+}
+
+// 演示auto存储类
+void demonstrate_auto(void) {
+    auto int auto_var = 0; // auto关键字可以省略
+    auto_var++;
+    printf("   auto_var = %d (每次调用重新初始化)\n", auto_var);
+}
+
+// 演示register存储类
+void demonstrate_register(void) {
+    // 使用register修饰频繁访问的计数器变量
+    register int counter = 0;
+    
+    // 模拟频繁访问
+    for (int i = 0; i < 100000; i++) {
+        counter++;
+    }
+    
+    printf("   register变量counter经过100000次递增后: %d\n", counter);
+    // 注意：不能对register变量取地址
+    // printf("&counter = %p\n", &counter); // 错误！
+}
+
+// 演示static局部变量
+void demonstrate_static_local(void) {
+    static int static_local_var = 0; // 只初始化一次
+    static_local_var++;
+    printf("   static_local_var = %d (函数调用间保持值)\n", static_local_var);
+}
+```
+
+**输出结果：**
+```
+=== 存储类综合演示 ===
+
+1. 全局变量：
+   global_var = 100
+
+2. auto存储类（局部变量默认）：
+   auto_var = 1 (每次调用重新初始化)
+   auto_var = 1 (每次调用重新初始化)
+
+3. register存储类（用于频繁访问的变量）：
+   register变量counter经过100000次递增后: 100000
+
+4. static局部变量（函数调用间保持值）：
+   static_local_var = 1 (函数调用间保持值)
+   static_local_var = 2 (函数调用间保持值)
+   static_local_var = 3 (函数调用间保持值)
+
+5. static全局变量（只能在当前文件访问）：
+   static_global_var = 200
+```
+
+**extern存储类示例（需要两个文件）：**
+
+- file1.c（定义全局变量）
+```c
+#include <stdio.h>
+
+// 定义全局变量
+int shared_var = 500;
+
+// 定义全局函数
+void print_shared_var(void) {
+    printf("   shared_var = %d\n", shared_var);
+}
+```
+
+- file2.c（使用extern声明和访问）
+```c
+#include <stdio.h>
+
+// 声明在file1.c中定义的全局变量
+extern int shared_var;
+
+// 声明在file1.c中定义的全局函数
+extern void print_shared_var(void);
+
+void demonstrate_extern(void) {
+    printf("\n6. extern存储类（访问其他文件的全局变量）：\n");
+    print_shared_var();
+    
+    // 修改共享变量
+    shared_var = 600;
+    printf("   修改后shared_var = %d\n", shared_var);
+}
+```
+
+**编译和运行：**
+```bash
+gcc file1.c file2.c -o storage_classes
+a.exe  # 或 ./storage_classes（Linux/Mac）
+```
+
+**输出结果（续）：**
+```
+
+6. extern存储类（访问其他文件的全局变量）：
+   shared_var = 500
+   修改后shared_var = 600
+```
+
 ## 2.7  运算符与优先级
 
 > [!TIP]
@@ -911,6 +1188,166 @@ int bitwise = a << 2 | b; // << 优先级高于 |，先算 a << 2
 > C 语言中，运算符的运算规则是：**优先级高的运算符先执行，优先级低的运算符后执行，同一优先级的运算符按照从左到右的顺序进行。**
 >
 > 需要注意的是，C 语言中大部分运算符都是从左向右执行的，只有单目运算符、赋值运算符它们是从右向左执行的。如果有小括号 `()`，则小括号的优先级最高。
+
+**示例：运算符优先级与结合性综合演示**
+
+```c
+#include <stdio.h>
+
+int main() {
+    printf("=== 运算符优先级与结合性综合演示 ===\n\n");
+    
+    int a = 10, b = 5, c = 3, d = 2;
+    int result;
+    
+    printf("初始值: a = %d, b = %d, c = %d, d = %d\n\n", a, b, c, d);
+    
+    // 1. 算术运算符优先级
+    printf("1. 算术运算符优先级演示：\n");
+    result = a + b * c; // 先算乘法，再算加法
+    printf("   a + b * c = %d (相当于 %d + (%d * %d) = %d)\n", result, a, b, c, a + (b * c));
+    
+    result = (a + b) * c; // 括号改变优先级
+    printf("   (a + b) * c = %d (括号优先级最高)\n\n", result);
+    
+    // 2. 自增自减运算符（前缀与后缀）
+    printf("2. 自增自减运算符演示：\n");
+    int x = 5, y = 5;
+    printf("   初始 x = %d, y = %d\n", x, y);
+    printf("   ++x = %d (前缀自增：先增后用)\n", ++x);
+    printf("   y++ = %d (后缀自增：先用后增)\n", y++);
+    printf("   执行后 x = %d, y = %d\n\n", x, y);
+    
+    // 3. 关系运算符与逻辑运算符
+    printf("3. 关系运算符与逻辑运算符演示：\n");
+    result = (a > b) && (c < d); // 关系运算优先于逻辑运算
+    printf("   (a > b) && (c < d) = %d\n", result);
+    
+    result = !(a == b) || (c > d); // 逻辑非优先级高于关系运算
+    printf("   !(a == b) || (c > d) = %d\n\n", result);
+    
+    // 4. 位运算符优先级
+    printf("4. 位运算符优先级演示：\n");
+    unsigned int num = 0b1010; // 二进制 10
+    printf("   num = 0b1010 (十进制 %d)\n", num);
+    
+    result = num << 1 & 0b1111; // 左移优先于按位与
+    printf("   num << 1 & 0b1111 = 0b%04d (十进制 %d)\n", result, result);
+    
+    result = (num << 1) & 0b1111; // 括号明确优先级
+    printf("   (num << 1) & 0b1111 = 0b%04d (十进制 %d)\n\n", result, result);
+    
+    // 5. 赋值运算符结合性（右结合）
+    printf("5. 赋值运算符结合性演示：\n");
+    int m, n;
+    m = n = 100; // 右结合：先执行 n = 100，再执行 m = n
+    printf("   m = n = 100 -> m = %d, n = %d\n\n", m, n);
+    
+    // 6. 复合赋值运算符
+    printf("6. 复合赋值运算符演示：\n");
+    int z = 10;
+    printf("   初始 z = %d\n", z);
+    z += 5; // 相当于 z = z + 5
+    printf("   z += 5 -> z = %d\n", z);
+    z *= 2; // 相当于 z = z * 2
+    printf("   z *= 2 -> z = %d\n", z);
+    z %= 3; // 相当于 z = z % 3
+    printf("   z %%= 3 -> z = %d\n\n", z);
+    
+    // 7. 条件运算符（三元运算符）
+    printf("7. 条件运算符演示：\n");
+    int max = (a > b) ? a : b;
+    printf("   max(a, b) = %d ? %d : %d -> %d\n", a, b, max, max);
+    
+    int min = (c < d) ? c : d;
+    printf("   min(c, d) = %d ? %d : %d -> %d\n\n", c, d, min, min);
+    
+    // 8. sizeof 运算符
+    printf("8. sizeof 运算符演示：\n");
+    printf("   sizeof(int) = %zu 字节\n", sizeof(int));
+    printf("   sizeof(a) = %zu 字节 (a 是 int 类型)\n", sizeof(a));
+    printf("   sizeof(double) = %zu 字节\n\n", sizeof(double));
+    
+    // 9. 逗号运算符（左结合，最低优先级）
+    printf("9. 逗号运算符演示：\n");
+    int p, q;
+    q = (p = 3, p + 5, p * 2); // 逗号运算符从左到右执行，返回最后一个表达式的值
+    printf("   q = (p = 3, p + 5, p * 2) -> p = %d, q = %d\n", p, q);
+    
+    // 10. 复杂表达式优先级综合
+    printf("\n10. 复杂表达式优先级综合：\n");
+    int complex = a++ * 2 + --b / c > d ? 100 : 200;
+    printf("   a++ * 2 + --b / c > d ? 100 : 200 = %d\n", complex);
+    printf("   执行顺序：\n");
+    printf("   1. 后缀自增 a++（先用后增）\n");
+    printf("   2. 前缀自减 --b（先减后用）\n");
+    printf("   3. 乘法 a++ * 2\n");
+    printf("   4. 除法 --b / c\n");
+    printf("   5. 加法 (a++ * 2) + (--b / c)\n");
+    printf("   6. 关系运算 (...) > d\n");
+    printf("   7. 条件运算 (...) ? 100 : 200\n");
+    
+    return 0;
+}
+```
+
+**输出结果：**
+```
+=== 运算符优先级与结合性综合演示 ===
+
+初始值: a = 10, b = 5, c = 3, d = 2
+
+1. 算术运算符优先级演示：
+   a + b * c = 25 (相当于 10 + (5 * 3) = 25)
+   (a + b) * c = 45 (括号优先级最高)
+
+2. 自增自减运算符演示：
+   初始 x = 5, y = 5
+   ++x = 6 (前缀自增：先增后用)
+   y++ = 5 (后缀自增：先用后增)
+   执行后 x = 6, y = 6
+
+3. 关系运算符与逻辑运算符演示：
+   (a > b) && (c < d) = 0
+   !(a == b) || (c > d) = 1
+
+4. 位运算符优先级演示：
+   num = 0b1010 (十进制 10)
+   num << 1 & 0b1111 = 0b00000000000000000000000000000100 (十进制 4)
+   (num << 1) & 0b1111 = 0b00000000000000000000000000000100 (十进制 4)
+
+5. 赋值运算符结合性演示：
+   m = n = 100 -> m = 100, n = 100
+
+6. 复合赋值运算符演示：
+   初始 z = 10
+   z += 5 -> z = 15
+   z *= 2 -> z = 30
+   z %= 3 -> z = 0
+
+7. 条件运算符演示：
+   max(a, b) = 10 ? 5 : 10 -> 10
+   min(c, d) = 3 ? 2 : 2 -> 2
+
+8. sizeof 运算符演示：
+   sizeof(int) = 4 字节
+   sizeof(a) = 4 字节 (a 是 int 类型)
+   sizeof(double) = 8 字节
+
+9. 逗号运算符演示：
+   q = (p = 3, p + 5, p * 2) -> p = 3, q = 6
+
+10. 复杂表达式优先级综合：
+    a++ * 2 + --b / c > d ? 100 : 200 = 100
+    执行顺序：
+    1. 后缀自增 a++（先用后增）
+    2. 前缀自减 --b（先减后用）
+    3. 乘法 a++ * 2
+    4. 除法 --b / c
+    5. 加法 (a++ * 2) + (--b / c)
+    6. 关系运算 (...) > d
+    7. 条件运算 (...) ? 100 : 200
+```
 
 ## 2.8 条件语句
 
@@ -1179,6 +1616,187 @@ int main(void)
 Exp1 ? Exp2 : Exp3;
 ```
 
+**示例：条件语句综合应用**
+
+```c
+#include <stdio.h>
+
+int main() {
+    printf("=== 条件语句综合应用 ===\n\n");
+    
+    // 1. 基本 if 语句
+    printf("1. 基本 if 语句示例：\n");
+    int num = 15;
+    if (num > 10) {
+        printf("   %d 大于 10\n", num);
+    }
+    
+    // 2. if-else 语句
+    printf("\n2. if-else 语句示例：\n");
+    int age = 17;
+    if (age >= 18) {
+        printf("   年龄 %d，已成年\n", age);
+    } else {
+        printf("   年龄 %d，未成年\n", age);
+    }
+    
+    // 3. if-else if-else 语句
+    printf("\n3. if-else if-else 语句示例：\n");
+    int score = 85;
+    printf("   考试成绩：%d\n", score);
+    if (score >= 90) {
+        printf("   等级：A\n");
+    } else if (score >= 80) {
+        printf("   等级：B\n");
+    } else if (score >= 70) {
+        printf("   等级：C\n");
+    } else if (score >= 60) {
+        printf("   等级：D\n");
+    } else {
+        printf("   等级：F\n");
+    }
+    
+    // 4. 嵌套 if 语句
+    printf("\n4. 嵌套 if 语句示例：\n");
+    int x = 10, y = 20;
+    if (x > 0) {
+        if (y > 0) {
+            printf("   x = %d 和 y = %d 都是正数\n", x, y);
+        } else {
+            printf("   x = %d 是正数，y = %d 不是正数\n", x, y);
+        }
+    }
+    
+    // 5. switch 语句示例（菜单选择）
+    printf("\n5. switch 语句示例（菜单选择）：\n");
+    char choice = '2';
+    printf("   菜单选项：\n");
+    printf("   1. 新建文件\n");
+    printf("   2. 打开文件\n");
+    printf("   3. 保存文件\n");
+    printf("   4. 退出\n");
+    printf("   你的选择：%c\n", choice);
+    
+    switch (choice) {
+        case '1':
+            printf("   执行新建文件操作\n");
+            break;
+        case '2':
+            printf("   执行打开文件操作\n");
+            break;
+        case '3':
+            printf("   执行保存文件操作\n");
+            break;
+        case '4':
+            printf("   执行退出操作\n");
+            break;
+        default:
+            printf("   无效的选择\n");
+    }
+    
+    // 6. switch 语句示例（无 break 穿透）
+    printf("\n6. switch 语句示例（无 break 穿透）：\n");
+    int month = 2;
+    printf("   月份：%d\n", month);
+    switch (month) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            printf("   该月份有 31 天\n");
+            break;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            printf("   该月份有 30 天\n");
+            break;
+        case 2:
+            printf("   该月份有 28 或 29 天\n");
+            break;
+        default:
+            printf("   无效的月份\n");
+    }
+    
+    // 7. 三目运算符示例
+    printf("\n7. 三目运算符示例：\n");
+    int a = 5, b = 8;
+    int max_val = (a > b) ? a : b;
+    int min_val = (a < b) ? a : b;
+    printf("   a = %d, b = %d\n", a, b);
+    printf("   最大值：%d\n", max_val);
+    printf("   最小值：%d\n", min_val);
+    
+    // 8. 复杂条件表达式
+    printf("\n8. 复杂条件表达式示例：\n");
+    int num1 = 10, num2 = 20, num3 = 15;
+    if (num1 > num2 && num1 > num3) {
+        printf("   %d 是三个数中的最大值\n", num1);
+    } else if (num2 > num1 && num2 > num3) {
+        printf("   %d 是三个数中的最大值\n", num2);
+    } else {
+        printf("   %d 是三个数中的最大值\n", num3);
+    }
+    
+    // 9. 逻辑运算符的短路特性
+    printf("\n9. 逻辑运算符的短路特性：\n");
+    int flag = 0;
+    int result = 5;
+    if (flag && (result = 10)) {
+        // 由于 flag 为 0，&& 后面的表达式不会执行
+        printf("   这个不会执行\n");
+    }
+    printf("   result = %d（说明短路特性生效）\n", result);
+    
+    return 0;
+}
+```
+
+**输出结果：**
+```
+=== 条件语句综合应用 ===
+
+1. 基本 if 语句示例：
+   15 大于 10
+
+2. if-else 语句示例：
+   年龄 17，未成年
+
+3. if-else if-else 语句示例：
+   考试成绩：85
+   等级：B
+
+4. 嵌套 if 语句示例：
+   x = 10 和 y = 20 都是正数
+
+5. switch 语句示例（菜单选择）：
+   菜单选项：
+   1. 新建文件
+   2. 打开文件
+   3. 保存文件
+   4. 退出
+   你的选择：2
+   执行打开文件操作
+
+6. switch 语句示例（无 break 穿透）：
+   月份：2
+   该月份有 28 或 29 天
+
+7. 三目运算符示例：
+   a = 5, b = 8
+   最大值：8
+   最小值：5
+
+8. 复杂条件表达式示例：
+   20 是三个数中的最大值
+
+9. 逻辑运算符的短路特性：
+   result = 5（说明短路特性生效）
+```
+
 ## 2.9 循环语句
 
 循环结构是程序设计中的另一种常用结构，比如在某些场景，你需要重复执行某一段代码很多次，这时候就需要用到循环语句了。
@@ -1259,6 +1877,171 @@ int main(void)
 > - break 语句：终止循环或 switch 语句，程序流将继续执行紧接着循环或 switch 的下一条语句。
 > - continue 语句：告诉一个循环体立刻停止本次循环迭代，重新开始下次循环迭代。
 > - goto 语句：将控制转移到被标记的语句，但是不建议在程序中使用 goto 语句。
+
+**示例：循环语句综合应用**
+
+```c
+#include <stdio.h>
+
+int main() {
+    printf("=== 循环语句综合应用 ===\n\n");
+    
+    // 1. while 循环示例
+    printf("1. while 循环示例：\n");
+    printf("   从 1 数到 5：\n   ");
+    int i = 1;
+    while (i <= 5) {
+        printf("%d ", i);
+        i++;
+    }
+    printf("\n\n");
+    
+    // 2. do-while 循环示例
+    printf("2. do-while 循环示例：\n");
+    printf("   从 5 倒数到 1：\n   ");
+    int j = 5;
+    do {
+        printf("%d ", j);
+        j--;
+    } while (j >= 1);
+    printf("\n\n");
+    
+    // 3. for 循环示例
+    printf("3. for 循环示例：\n");
+    printf("   打印 1 到 10 之间的偶数：\n   ");
+    for (int k = 1; k <= 10; k++) {
+        if (k % 2 == 0) {
+            printf("%d ", k);
+        }
+    }
+    printf("\n\n");
+    
+    // 4. 嵌套 for 循环示例
+    printf("4. 嵌套 for 循环示例：\n");
+    printf("   打印 5x5 乘法表：\n");
+    for (int row = 1; row <= 5; row++) {
+        for (int col = 1; col <= 5; col++) {
+            printf("%d×%d=%-2d ", row, col, row * col);
+        }
+        printf("\n");
+    }
+    printf("\n");
+    
+    // 5. break 语句示例
+    printf("5. break 语句示例：\n");
+    printf("   寻找第一个大于 100 的 13 的倍数：\n   ");
+    int num = 1;
+    while (1) { // 无限循环
+        if (num % 13 == 0 && num > 100) {
+            printf("找到：%d\n", num);
+            break; // 跳出循环
+        }
+        num++;
+    }
+    printf("\n");
+    
+    // 6. continue 语句示例
+    printf("6. continue 语句示例：\n");
+    printf("   打印 1 到 20 之间不是 3 的倍数的数：\n   ");
+    for (int m = 1; m <= 20; m++) {
+        if (m % 3 == 0) {
+            continue; // 跳过本次循环，继续下一次
+        }
+        printf("%d ", m);
+    }
+    printf("\n\n");
+    
+    // 7. 循环控制语句综合示例
+    printf("7. 循环控制语句综合示例：\n");
+    printf("   从 1 开始累加，直到和大于 50：\n   ");
+    int sum = 0;
+    int n = 1;
+    while (n <= 100) { // 上限设为100防止无限循环
+        sum += n;
+        if (sum > 50) {
+            printf("加到 %d 时，和为 %d，超过了 50\n", n, sum);
+            break;
+        }
+        if (n % 5 == 0) {
+            printf("%d ", n);
+        }
+        n++;
+    }
+    printf("\n\n");
+    
+    // 8. for 循环的省略形式
+    printf("8. for 循环的省略形式：\n");
+    printf("   无限循环，使用 break 终止：\n   ");
+    int count = 0;
+    for (;;) { // 省略所有三个表达式
+        count++;
+        if (count > 5) {
+            break;
+        }
+        printf("循环第 %d 次\n", count);
+    }
+    printf("\n");
+    
+    // 9. 使用循环计算阶乘
+    printf("9. 使用循环计算阶乘：\n");
+    int factorial = 1;
+    int number = 5;
+    for (int p = 1; p <= number; p++) {
+        factorial *= p;
+    }
+    printf("   %d! = %d\n", number, factorial);
+    
+    return 0;
+}
+```
+
+**输出结果：**
+```
+=== 循环语句综合应用 ===
+
+1. while 循环示例：
+   从 1 数到 5：
+   1 2 3 4 5 
+
+2. do-while 循环示例：
+   从 5 倒数到 1：
+   5 4 3 2 1 
+
+3. for 循环示例：
+   打印 1 到 10 之间的偶数：
+   2 4 6 8 10 
+
+4. 嵌套 for 循环示例：
+   打印 5x5 乘法表：
+   1×1=1  1×2=2  1×3=3  1×4=4  1×5=5  
+   2×1=2  2×2=4  2×3=6  2×4=8  2×5=10 
+   3×1=3  3×2=6  3×3=9  3×4=12 3×5=15 
+   4×1=4  4×2=8  4×3=12 4×4=16 4×5=20 
+   5×1=5  5×2=10 5×3=15 5×4=20 5×5=25 
+
+5. break 语句示例：
+   寻找第一个大于 100 的 13 的倍数：
+   找到：104
+
+6. continue 语句示例：
+   打印 1 到 20 之间不是 3 的倍数的数：
+   1 2 4 5 7 8 10 11 13 14 16 17 19 20 
+
+7. 循环控制语句综合示例：
+   从 1 开始累加，直到和大于 50：
+   5 10 加到 10 时，和为 55，超过了 50
+
+8. for 循环的省略形式：
+   无限循环，使用 break 终止：
+   循环第 1 次
+   循环第 2 次
+   循环第 3 次
+   循环第 4 次
+   循环第 5 次
+
+9. 使用循环计算阶乘：
+   5! = 120
+```
 
 ## 2.10 函数
 
@@ -1779,6 +2562,220 @@ Element[1] = 101
 Element[2] = 102
 Element[3] = 103
 Element[4] = 104
+```
+
+**示例：数组综合操作**
+
+```c
+#include <stdio.h>
+
+// 函数声明：数组作为函数参数
+void printArray(int arr[], int size);
+void bubbleSort(int arr[], int size);
+int findMax(int arr[], int size);
+int findMin(int arr[], int size);
+int calculateSum(int arr[], int size);
+float calculateAverage(int arr[], int size);
+
+int main() {
+    printf("=== 数组综合操作示例 ===\n\n");
+    
+    // 1. 数组的声明和初始化
+    printf("1. 数组的声明和初始化：\n");
+    
+    // 方式1：声明并初始化
+    int arr1[5] = {1, 2, 3, 4, 5};
+    printf("   方式1 - 声明并初始化：");
+    printArray(arr1, 5);
+    
+    // 方式2：声明后逐个初始化
+    int arr2[5];
+    for (int i = 0; i < 5; i++) {
+        arr2[i] = i * 2;
+    }
+    printf("   方式2 - 声明后逐个初始化：");
+    printArray(arr2, 5);
+    
+    // 方式3：省略大小，由初始化列表决定
+    int arr3[] = {10, 20, 30, 40, 50, 60};
+    int size3 = sizeof(arr3) / sizeof(arr3[0]);
+    printf("   方式3 - 省略大小：");
+    printArray(arr3, size3);
+    
+    // 方式4：部分初始化，剩余元素自动为0
+    int arr4[5] = {1, 2};
+    printf("   方式4 - 部分初始化：");
+    printArray(arr4, 5);
+    
+    // 2. 数组元素的访问和修改
+    printf("\n2. 数组元素的访问和修改：\n");
+    printf("   修改前 arr1[2] = %d\n", arr1[2]);
+    arr1[2] = 100;
+    printf("   修改后 arr1[2] = %d\n", arr1[2]);
+    printf("   修改后数组：");
+    printArray(arr1, 5);
+    
+    // 3. 数组的遍历
+    printf("\n3. 数组的遍历：\n");
+    printf("   使用 for 循环：");
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", arr1[i]);
+    }
+    printf("\n");
+    
+    // 4. 数组的常见操作
+    printf("\n4. 数组的常见操作：\n");
+    
+    int numbers[] = {5, 2, 9, 1, 7, 6, 3, 8, 4};
+    int size = sizeof(numbers) / sizeof(numbers[0]);
+    printf("   原数组：");
+    printArray(numbers, size);
+    
+    // 查找最大值
+    int max = findMax(numbers, size);
+    printf("   最大值：%d\n", max);
+    
+    // 查找最小值
+    int min = findMin(numbers, size);
+    printf("   最小值：%d\n", min);
+    
+    // 计算总和
+    int sum = calculateSum(numbers, size);
+    printf("   总和：%d\n", sum);
+    
+    // 计算平均值
+    float avg = calculateAverage(numbers, size);
+    printf("   平均值：%.2f\n", avg);
+    
+    // 冒泡排序
+    bubbleSort(numbers, size);
+    printf("   排序后数组：");
+    printArray(numbers, size);
+    
+    // 5. 多维数组
+    printf("\n5. 多维数组：\n");
+    
+    // 声明并初始化二维数组
+    int matrix[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    
+    // 遍历二维数组
+    printf("   3x3 矩阵：\n");
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+    
+    // 计算二维数组的和
+    int matrixSum = 0;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            matrixSum += matrix[i][j];
+        }
+    }
+    printf("   矩阵元素总和：%d\n", matrixSum);
+    
+    return 0;
+}
+
+// 函数定义：打印数组
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// 函数定义：冒泡排序
+void bubbleSort(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // 交换元素
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// 函数定义：查找最大值
+int findMax(int arr[], int size) {
+    int max = arr[0];
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+// 函数定义：查找最小值
+int findMin(int arr[], int size) {
+    int min = arr[0];
+    for (int i = 1; i < size; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    return min;
+}
+
+// 函数定义：计算总和
+int calculateSum(int arr[], int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
+
+// 函数定义：计算平均值
+float calculateAverage(int arr[], int size) {
+    int sum = calculateSum(arr, size);
+    return (float)sum / size;
+}
+```
+
+**输出结果：**
+```
+=== 数组综合操作示例 ===
+
+1. 数组的声明和初始化：
+   方式1 - 声明并初始化：1 2 3 4 5 
+   方式2 - 声明后逐个初始化：0 2 4 6 8 
+   方式3 - 省略大小：10 20 30 40 50 60 
+   方式4 - 部分初始化：1 2 0 0 0 
+
+2. 数组元素的访问和修改：
+   修改前 arr1[2] = 3
+   修改后 arr1[2] = 100
+   修改后数组：1 2 100 4 5 
+
+3. 数组的遍历：
+   使用 for 循环：1 2 100 4 5 
+
+4. 数组的常见操作：
+   原数组：5 2 9 1 7 6 3 8 4 
+   最大值：9
+   最小值：1
+   总和：45
+   平均值：5.00
+   排序后数组：1 2 3 4 5 6 7 8 9 
+
+5. 多维数组：
+   3x3 矩阵：
+   1 2 3 
+   4 5 6 
+   7 8 9 
+   矩阵元素总和：45
+```
 Element[5] = 105
 Element[6] = 106
 Element[7] = 107
@@ -2311,3 +3308,430 @@ int main(void)
     #define VERSION "1.0.0"
 #endif
 ```
+
+## 2.17 TypeOf
+
+> [!DANGER] 
+>
+> `typeof` 关键字是GCC（GNU Compiler Collection）扩展的一部分，并不是C标准的一部分。在GCC中，`typeof` 用于获取表达式的类型，使得编写代码时能够根据表达式的类型动态生成代码。这在进行类型推导和宏编程时非常有用。需要注意的是，`typeof` 关键字在标准C语言中并不存在，仅在GCC及其兼容编译器中可用。
+
+### 2.17.1 基本语法
+
+```javascript
+typeof(expression)
+```
+
+- `expression`：可以是任何有效的C表达式。
+- `typeof(expression)`：返回 `expression` 的类型。
+
+```javascript
+#include <stdio.h>
+
+int main() {
+    int x = 5;
+    typeof(x) y = 10; // y 的类型与 x 相同，即 int
+    printf("y: %d\n", y); // 输出: y: 10
+    return 0;
+}
+```
+
+**解释**：
+
+- `typeof(x)` 返回 `x` 的类型，即 `int`。
+- `y` 的类型与 `x` 相同，因此 `y` 也是 `int` 类型。
+
+
+
+```javascript
+y: 10
+```
+
+### 2.17.2 实际应用
+
+`typeof` 可以用于动态定义与现有变量类型相同的新变量，使得代码更具灵活性。
+
+```javascript
+#include <stdio.h>
+
+int main() {
+    double pi = 3.14159;
+    typeof(pi) radius = 2.0; // radius 的类型与 pi 相同，即 double
+    typeof(pi) area = pi * radius * radius; // area 的类型也是 double
+
+    printf("Area: %f\n", area); // 输出: Area: 12.566370
+    return 0;
+}
+```
+
+**解释**：
+
+- `typeof(pi)` 返回 `pi` 的类型，即 `double`。
+- `radius` 和 `area` 的类型都与 `pi` 相同，因此它们都是 `double` 类型。
+
+**输出**：
+
+```javascript
+Area: 12.566370
+```
+
+## 2.18 文件读写
+
+> [!DANGER] 
+>
+> 无论它是文本文件还是二进制文件，都是代表了一系列的字节。C 语言不仅提供了访问顶层的函数，也提供了底层（OS）调用来处理存储设备上的文件。
+
+### 2.18.1 打开文件
+
+您可以使用 **fopen( )** 函数来创建一个新的文件或者打开一个已有的文件，这个调用会初始化类型 **FILE** 的一个对象，类型 **FILE** 包含了所有用来控制流的必要的信息。下面是这个函数调用的原型：
+
+```
+FILE *fopen( const char *filename, const char *mode );
+```
+
+在这里，**filename** 是字符串，用来命名文件，访问模式 **mode** 的值可以是下列值中的一个：
+
+| 模式 | 描述                                                         |
+| :--- | :----------------------------------------------------------- |
+| r    | 打开一个已有的文本文件，允许读取文件。                       |
+| w    | 打开一个文本文件，允许写入文件。如果文件不存在，则会创建一个新文件。在这里，您的程序会从文件的开头写入内容。如果文件存在，文件内容会被清空（即文件长度被截断为0）。 |
+| a    | 打开一个文本文件，以追加模式写入文件。如果文件不存在，则会创建一个新文件。在这里，您的程序会在已有的文件内容中追加内容。 |
+| r+   | 打开一个文本文件，允许读写文件。                             |
+| w+   | 打开一个文本文件，允许读写文件。如果文件已存在，则文件会被截断为零长度，如果文件不存在，则会创建一个新文件。 |
+| a+   | 打开一个文本文件，允许读写文件。如果文件不存在，则会创建一个新文件。读取会从文件的开头开始，写入则只能是追加模式。 |
+
+如果处理的是二进制文件，则需使用下面的访问模式来取代上面的访问模式：
+
+```
+"rb", "wb", "ab", "rb+", "r+b", "wb+", "w+b", "ab+", "a+b"
+```
+
+### 2.18.2 关闭文件
+
+为了关闭文件，请使用 fclose( ) 函数。函数的原型如下：
+
+```
+ int fclose( FILE *fp );
+```
+
+如果成功关闭文件，**fclose( )** 函数返回零，如果关闭文件时发生错误，函数返回 **EOF**。这个函数实际上，会清空缓冲区中的数据，关闭文件，并释放用于该文件的所有内存。EOF 是一个定义在头文件 **stdio.h** 中的常量。
+
+C 标准库提供了各种函数来按字符或者以固定长度字符串的形式读写文件。
+
+### 2.18.3 写入文件
+
+下面是把字符写入到流中的最简单的函数：
+
+```
+int fputc( int c, FILE *fp );
+```
+
+函数 **fputc()** 把参数 c 的字符值写入到 fp 所指向的输出流中。如果写入成功，它会返回写入的字符，如果发生错误，则会返回 **EOF**。您可以使用下面的函数来把一个以 null 结尾的字符串写入到流中：
+
+```
+int fputs( const char *s, FILE *fp );
+```
+
+函数 **fputs()** 把字符串 **s** 写入到 fp 所指向的输出流中。如果写入成功，它会返回一个非负值，如果发生错误，则会返回 **EOF**。您也可以使用 **int fprintf(FILE \*fp,const char \*format, ...)** 函数把一个字符串写入到文件中。尝试下面的实例：
+
+> **注意：**请确保您有可用的 **tmp** 目录，如果不存在该目录，则需要在您的计算机上先创建该目录。
+>
+> **/tmp** 一般是 Linux 系统上的临时目录，如果你在 Windows 系统上运行，则需要修改为本地环境中已存在的目录，例如: **C:\tmp**、**D:\tmp**等。
+
+### 2.18.4 读取文件
+
+下面是从文件读取单个字符的最简单的函数：
+
+```
+int fgetc( FILE * fp );
+```
+
+**fgetc()** 函数从 fp 所指向的输入文件中读取一个字符。返回值是读取的字符，如果发生错误则返回 **EOF**。下面的函数允许您从流中读取一个字符串：
+
+```
+char *fgets( char *buf, int n, FILE *fp );
+```
+
+函数 **fgets()** 从 fp 所指向的输入流中读取 n - 1 个字符。它会把读取的字符串复制到缓冲区 **buf**，并在最后追加一个 **null** 字符来终止字符串。
+
+如果这个函数在读取最后一个字符之前就遇到一个换行符 '\n' 或文件的末尾 EOF，则只会返回读取到的字符，包括换行符。您也可以使用 **int fscanf(FILE fp, const char format, ...)** 函数来从文件中读取字符串，但是在遇到第一个空格和换行符时，它会停止读取。
+
+**示例：文件读写综合操作**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// 函数声明
+void writeTextFile();
+void readTextFile();
+void appendToFile();
+void binaryFileOperation();
+void copyFile();
+
+int main() {
+    printf("=== 文件读写综合操作示例 ===\n\n");
+    
+    // 1. 写入文本文件
+    printf("1. 写入文本文件：\n");
+    writeTextFile();
+    
+    // 2. 读取文本文件
+    printf("\n2. 读取文本文件：\n");
+    readTextFile();
+    
+    // 3. 追加内容到文件
+    printf("\n3. 追加内容到文件：\n");
+    appendToFile();
+    
+    // 4. 再次读取文件验证追加结果
+    printf("\n4. 再次读取文件验证追加结果：\n");
+    readTextFile();
+    
+    // 5. 二进制文件操作
+    printf("\n5. 二进制文件操作：\n");
+    binaryFileOperation();
+    
+    // 6. 文件复制
+    printf("\n6. 文件复制操作：\n");
+    copyFile();
+    
+    printf("\n=== 文件操作完成 ===\n");
+    return 0;
+}
+
+// 函数定义：写入文本文件
+void writeTextFile() {
+    FILE *fp;
+    
+    // 打开文件进行写入
+    fp = fopen("test.txt", "w");
+    if (fp == NULL) {
+        printf("   错误：无法打开文件！\n");
+        return;
+    }
+    
+    // 使用 fputs 写入字符串
+    fputs("Hello, C Programming!\n", fp);
+    fputs("This is a text file example.\n", fp);
+    fputs("Line 3 of the file.\n", fp);
+    
+    // 使用 fprintf 写入格式化字符串
+    int number = 123;
+    float pi = 3.14159;
+    fprintf(fp, "Number: %d\n", number);
+    fprintf(fp, "Pi: %.5f\n", pi);
+    
+    // 关闭文件
+    if (fclose(fp) == 0) {
+        printf("   文件写入成功！\n");
+    } else {
+        printf("   文件关闭失败！\n");
+    }
+}
+
+// 函数定义：读取文本文件
+void readTextFile() {
+    FILE *fp;
+    char buffer[255];
+    
+    // 打开文件进行读取
+    fp = fopen("test.txt", "r");
+    if (fp == NULL) {
+        printf("   错误：无法打开文件！\n");
+        return;
+    }
+    
+    // 使用 fgets 读取文件内容
+    printf("   文件内容：\n");
+    printf("   -----------------------------------\n");
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        printf("   %s", buffer);
+    }
+    printf("   -----------------------------------\n");
+    
+    // 关闭文件
+    fclose(fp);
+}
+
+// 函数定义：追加内容到文件
+void appendToFile() {
+    FILE *fp;
+    
+    // 打开文件进行追加
+    fp = fopen("test.txt", "a");
+    if (fp == NULL) {
+        printf("   错误：无法打开文件！\n");
+        return;
+    }
+    
+    // 追加内容
+    fputs("\n--- 追加的内容 ---\n", fp);
+    fputs("This line was appended later.\n", fp);
+    fputs("Another appended line.\n", fp);
+    
+    // 关闭文件
+    if (fclose(fp) == 0) {
+        printf("   内容追加成功！\n");
+    } else {
+        printf("   文件关闭失败！\n");
+    }
+}
+
+// 函数定义：二进制文件操作
+void binaryFileOperation() {
+    // 定义一个结构体用于测试
+    struct Student {
+        int id;
+        char name[20];
+        float score;
+    };
+    
+    struct Student stu1 = {101, "Alice", 95.5};
+    struct Student stu2 = {102, "Bob", 88.0};
+    struct Student stu3;
+    
+    FILE *fp;
+    
+    // 写入二进制文件
+    fp = fopen("students.dat", "wb");
+    if (fp == NULL) {
+        printf("   错误：无法创建二进制文件！\n");
+        return;
+    }
+    
+    fwrite(&stu1, sizeof(struct Student), 1, fp);
+    fwrite(&stu2, sizeof(struct Student), 1, fp);
+    fclose(fp);
+    printf("   二进制文件写入成功！\n");
+    
+    // 读取二进制文件
+    fp = fopen("students.dat", "rb");
+    if (fp == NULL) {
+        printf("   错误：无法打开二进制文件！\n");
+        return;
+    }
+    
+    // 跳过第一个结构体，读取第二个
+    fseek(fp, sizeof(struct Student), SEEK_SET);
+    fread(&stu3, sizeof(struct Student), 1, fp);
+    fclose(fp);
+    
+    printf("   从二进制文件读取的学生信息：\n");
+    printf("   ID: %d\n", stu3.id);
+    printf("   Name: %s\n", stu3.name);
+    printf("   Score: %.1f\n", stu3.score);
+}
+
+// 函数定义：文件复制
+void copyFile() {
+    FILE *source, *destination;
+    char ch;
+    
+    // 打开源文件进行读取
+    source = fopen("test.txt", "r");
+    if (source == NULL) {
+        printf("   错误：无法打开源文件！\n");
+        return;
+    }
+    
+    // 创建目标文件进行写入
+    destination = fopen("test_copy.txt", "w");
+    if (destination == NULL) {
+        printf("   错误：无法创建目标文件！\n");
+        fclose(source);
+        return;
+    }
+    
+    // 逐个字符复制文件内容
+    while ((ch = fgetc(source)) != EOF) {
+        fputc(ch, destination);
+    }
+    
+    // 关闭文件
+    fclose(source);
+    fclose(destination);
+    
+    printf("   文件复制成功！\n");
+    printf("   源文件：test.txt\n");
+    printf("   目标文件：test_copy.txt\n");
+}
+```
+
+**输出结果：**
+```
+=== 文件读写综合操作示例 ===
+
+1. 写入文本文件：
+   文件写入成功！
+
+2. 读取文本文件：
+   文件内容：
+   -----------------------------------
+   Hello, C Programming!
+   This is a text file example.
+   Line 3 of the file.
+   Number: 123
+   Pi: 3.14159
+   -----------------------------------
+
+3. 追加内容到文件：
+   内容追加成功！
+
+4. 再次读取文件验证追加结果：
+   文件内容：
+   -----------------------------------
+   Hello, C Programming!
+   This is a text file example.
+   Line 3 of the file.
+   Number: 123
+   Pi: 3.14159
+
+   --- 追加的内容 ---
+   This line was appended later.
+   Another appended line.
+   -----------------------------------
+
+5. 二进制文件操作：
+   二进制文件写入成功！
+   从二进制文件读取的学生信息：
+   ID: 102
+   Name: Bob
+   Score: 88.0
+
+6. 文件复制操作：
+   文件复制成功！
+   源文件：test.txt
+   目标文件：test_copy.txt
+
+=== 文件操作完成 ===
+```
+
+**示例说明：**
+
+1. **写入文本文件**：使用 `fopen("test.txt", "w")` 创建/打开文件，使用 `fputs()` 和 `fprintf()` 写入内容，最后使用 `fclose()` 关闭文件。
+
+2. **读取文本文件**：使用 `fopen("test.txt", "r")` 打开文件，使用 `fgets()` 逐行读取内容并打印。
+
+3. **追加内容**：使用 `fopen("test.txt", "a")` 以追加模式打开文件，添加新内容。
+
+4. **二进制文件操作**：
+   - 使用 `fopen("students.dat", "wb")` 创建二进制文件
+   - 使用 `fwrite()` 写入结构体数据
+   - 使用 `fopen("students.dat", "rb")` 读取二进制文件
+   - 使用 `fseek()` 定位到第二个结构体
+   - 使用 `fread()` 读取结构体数据
+
+5. **文件复制**：
+   - 使用 `fgetc()` 逐个字符读取源文件
+   - 使用 `fputc()` 将字符写入目标文件
+   - 实现了完整的错误处理
+
+**注意事项：**
+
+- 在实际开发中，总是要检查文件操作函数的返回值，以处理可能的错误
+- 使用 `fclose()` 关闭文件是良好的编程习惯，可以防止资源泄漏
+- 二进制文件和文本文件的打开模式不同，二进制文件使用 `b` 标志
+- 对于大型文件，逐个字符复制效率较低，可以考虑使用缓冲区提高效率
+- 在 Windows 系统上，文本文件的换行符是 `\r\n`，而在 Linux 系统上是 `\n`，C 标准库会自动处理这种差异
+
