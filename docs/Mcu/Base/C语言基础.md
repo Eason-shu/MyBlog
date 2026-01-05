@@ -1262,6 +1262,8 @@ int main(void)
 
 ## 2.10 函数
 
+![image-20260105153559772](images/image-20260105153559772.png)
+
 > 函数是 C 程序中的基本模块单元，通常设计为执行一项特定任务，由一系列语句组成。
 
 ### 2.10.1 概念
@@ -1452,6 +1454,8 @@ void swap(int *x, int *y)
 - **地址传递（指针）**：适用于需要修改原始变量，或者处理大型结构体、数组等，避免复制大量数据。
 
 ## 2.12 指针
+
+![image-20260105153223661](images/image-20260105153223661.png)
 
 > 指针是 C 语言中最强大、最灵活，也最容易让初学者困惑的概念之一。
 >
@@ -1675,3 +1679,635 @@ printf("%d\n", **pp);  // 输出 10
 
 > 常用于：二维数组、动态二维数组、函数修改指针本身。
 
+## 2.13 数组
+
+![image-20260105153334488](images/image-20260105153334488.png)
+
+### 2.13.1 定义
+
+> [!DANGER] 
+>
+> C 语言支持**数组**数据结构，它可以存储一个固定大小的相同类型元素的顺序集合。数组是用来存储一系列数据，但它往往被认为是一系列相同类型的变量。
+>
+> 数组的声明并不是声明一个个单独的变量，比如 runoob0、runoob1、...、runoob99，而是声明一个数组变量，比如 runoob，然后使用 runoob[0]、runoob[1]、...、runoob[99] 来代表一个个单独的变量。
+
+![image-20260105151734315](images/image-20260105151734315.png)
+
+### 2.1.3.2 声明
+
+在 C 中要声明一个数组，需要指定元素的类型和元素的数量，如下所示：
+
+```C
+type arrayName [ arraySize ];
+```
+
+这叫做一维数组。**arraySize** 必须是一个大于零的整数常量，**type** 可以是任意有效的 C 数据类型。例如，要声明一个类型为 double 的包含 10 个元素的数组 **balance**，声明语句如下：
+
+```C
+double balance[10];
+现在 balance 是一个可用的数组，可以容纳 10 个类型为 double 的数字。
+  
+```
+
+> 初始化数组
+
+在 C 中，您可以逐个初始化数组，也可以使用一个初始化语句，如下所示：
+
+```C
+double balance[5] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+```
+
+大括号 { } 之间的值的数目不能大于我们在数组声明时在方括号 [ ] 中指定的元素数目。
+
+如果您省略掉了数组的大小，数组的大小则为初始化时元素的个数。因此，如果：
+
+```C
+double balance[] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+```
+
+您将创建一个数组，它与前一个实例中所创建的数组是完全相同的。下面是一个为数组中某个元素赋值的实例：
+
+```C
+balance[4] = 50.0;
+```
+
+上述的语句把数组中第五个元素的值赋为 50.0。所有的数组都是以 0 作为它们第一个元素的索引，数组的最后一个索引是数组的总大小减去 1。以下是上面所讨论的数组的的图形表示：
+
+![img](images/1767597540306-1.png)
+
+下图是一个长度为 **10** 的数组，第一个元素的索引值为 **0**，第九个元素 **runoob** 的索引值为 **8**:
+
+![img](images/1767597544948-4.png)
+
+>  访问数组元素
+
+数组元素可以通过数组名称加索引进行访问。元素的索引是放在方括号内，跟在数组名称的后边。例如：
+
+double salary = balance[9];
+
+上面的语句将把数组中第 10 个元素的值赋给 salary 变量。下面的实例使用了上述的三个概念，即，声明数组、数组赋值、访问数组：
+
+```C
+#include <stdio.h>
+ 
+int main ()
+{
+   int n[ 10 ]; /* n 是一个包含 10 个整数的数组 */
+   int i,j;
+ 
+   /* 初始化数组元素 */         
+   for ( i = 0; i < 10; i++ )
+   {
+      n[ i ] = i + 100; /* 设置元素 i 为 i + 100 */
+   }
+   
+   /* 输出数组中每个元素的值 */
+   for (j = 0; j < 10; j++ )
+   {
+      printf("Element[%d] = %d\n", j, n[j] );
+   }
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```C
+Element[0] = 100
+Element[1] = 101
+Element[2] = 102
+Element[3] = 103
+Element[4] = 104
+Element[5] = 105
+Element[6] = 106
+Element[7] = 107
+Element[8] = 108
+Element[9] = 109
+```
+
+> 获取数组长度
+
+数组长度可以使用 **sizeof** 运算符来获取数组的长度，例如：
+
+```C
+#include <stdio.h>
+
+int main() {
+    int array[] = {1, 2, 3, 4, 5};
+    int length = sizeof(array) / sizeof(array[0]);
+    printf("数组长度为: %d\n", length);
+    return 0;
+}
+```
+
+以上实例输出结果为：
+
+```C
+数组长度为: 5
+```
+
+## 2.14 字符串
+
+> [!DANGER] 
+>
+> 在 C 语言中，字符串实际上是使用空字符 **\0** 结尾的一维字符数组。
+
+下面的声明和初始化创建了一个 xiaozhi字符串。由于在数组的末尾存储了空字符 **\0**，所以字符数组的大小比单词 xiaozhi的字符数多一个。
+
+```C
+char site[8] = {'x', 'i', 'a', 'o', 'z', 'h', 'i','\0'};
+```
+
+依据数组初始化规则，您可以把上面的语句写成以下语句,C 编译器会在初始化数组时，自动把 **\0** 放在字符串的末尾。：
+
+char site[] = "xiaozhi";
+
+以下是 C/C++ 中定义的字符串的内存表示：
+
+| 索引 | 0    | 1    | 2    | 3    | 4    | 5    | 6    | 7    |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| 变量 | x    | i    | a    | o    | z    | h    | i    | \0   |
+
+```C
+#include <stdio.h>
+ 
+int main ()
+{
+   char site[8] = "xiaozhi";
+ 
+   printf("%s\n", site );
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+xiaozhi
+```
+
+C 中有大量操作字符串的函数：
+
+| 序号 | 函数 & 目的                                                  |
+| ---- | ------------------------------------------------------------ |
+| 1    | strcpy(s1, s2); 复制字符串 s2 到字符串 s1。                  |
+| 2    | strcat(s1, s2); 连接字符串 s2 到字符串 s1 的末尾。           |
+| 3    | strlen(s1); 返回字符串 s1 的长度。                           |
+| 4    | strcmp(s1, s2); 如果 s1 和 s2 是相同的，则返回 0；如果 s1<s2 则返回小于 0；如果 s1>s2 则返回大于 0。 |
+
+下面的实例使用了上述的一些函数：
+
+```C
+#include <stdio.h>
+#include <string.h>
+ 
+int main ()
+{
+   char str1[14] = "xiaozhi";
+   char str2[14] = "google";
+   char str3[14];
+   int  len ;
+ 
+   /* 复制 str1 到 str3 */
+   strcpy(str3, str1);
+   printf("strcpy( str3, str1) :  %s\n", str3 );
+ 
+   /* 连接 str1 和 str2 */
+   strcat( str1, str2);
+   printf("strcat( str1, str2):   %s\n", str1 );
+ 
+   /* 连接后，str1 的总长度 */
+   len = strlen(str1);
+   printf("strlen(str1) :  %d\n", len );
+ 
+   return 0;
+}
+```
+
+## 2.15 结构体
+
+![image-20260105153447441](images/image-20260105153447441.png)
+
+> [!DANGER] 
+>
+> 数组：可存储相同类型数据。
+>
+> 结构体：可存储不同类型数据。
+>
+> **C 语言中用于**封装不同类型数据**的核心自定义数据类型，解决了基本数据类型（int、char 等）无法表示复杂实体的问题，是构建复杂数据结构（如链表、树）的基础。**
+
+```C
+Title 标题
+Author 作者
+Book ID id
+```
+### 2.15.1 定义
+
+结构体定义由关键字 **struct** 和结构体名组成，结构体名可以根据需要自行定义。
+
+struct 语句定义了一个包含多个成员的新的数据类型，struct 语句的格式如下：
+
+```C
+struct tag { 
+    member1；
+    member2；
+    ...
+} variable-list ;
+```
+
+**tag** 是结构体标签。
+
+**member1** 是标准的变量定义，比如 **int i;** 或者 **float** **f;**，或者其他有效的变量定义。
+
+**variable-list** 结构变量，定义在结构的末尾。
+
+下面是声明 Book 结构的方式：
+
+```C
+建议写法：
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+};
+其它写法：
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+} book;
+```
+
+###  2.15.2 结构体变量的初始化
+
+和其它类型变量一样，对结构体变量可以在定义时指定初始值。
+
+```C
+#include <stdio.h>
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+};
+int main()
+{
+    struct Books book = {"C 语言", "RUNOOB", "编程语言", 123456};
+    printf("title : %s\nauthor: %s\nsubject: %s\nbook_id: %d\n", book.title, book.author, book.subject, book.book_id);
+}
+或
+#include <stdio.h>
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+} book = {"C 语言", "RUNOOB", "编程语言", 123456};
+int main()
+{
+    printf("title : %s\nauthor: %s\nsubject: %s\nbook_id: %d\n", book.title, book.author, book.subject, book.book_id);
+}
+```
+
+执行输出结果为：
+
+```C
+title : C 语言
+author: RUNOOB
+subject: 编程语言
+book_id: 123456
+```
+
+### 2.15.3 结构作为函数参数
+
+您可以把结构作为函数参数，传参方式与其他类型的变量或指针类似。您可以使用上面实例中的方式来访问结构变量：
+
+```C
+#include <stdio.h>
+#include <string.h>
+ 
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+};
+ 
+void printBook( struct Books book )
+{
+   printf( "Book title : %s\n", book.title);
+   printf( "Book author : %s\n", book.author);
+   printf( "Book subject : %s\n", book.subject);
+   printf( "Book book_id : %d\n", book.book_id);
+}
+
+int main( )
+{
+   struct Books Book1;        /* 声明 Book1，类型为 Books */
+   struct Books Book2;        /* 声明 Book2，类型为 Books */
+ 
+   /* Book1 详述 */
+   strcpy( Book1.title, "C Programming");
+   strcpy( Book1.author, "Nuha Ali"); 
+   strcpy( Book1.subject, "C Programming Tutorial");
+   Book1.book_id = 6495407;
+ 
+   /* Book2 详述 */
+   strcpy( Book2.title, "Telecom Billing");
+   strcpy( Book2.author, "Zara Ali");
+   strcpy( Book2.subject, "Telecom Billing Tutorial");
+   Book2.book_id = 6495700;
+ 
+   /* 输出 Book1 信息 */
+   printBook( Book1 );
+ 
+   /* 输出 Book2 信息 */
+   printBook( Book2 );
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```C
+Book title : C Programming
+Book author : Nuha Ali
+Book subject : C Programming Tutorial
+Book book_id : 6495407
+Book title : Telecom Billing
+Book author : Zara Ali
+Book subject : Telecom Billing Tutorial
+Book book_id : 6495700
+```
+
+### 2.15.4 指向结构的指针
+
+您可以定义指向结构的指针，方式与定义指向其他类型变量的指针相似，如下所示：
+
+```C
+struct Books *struct_pointer;
+```
+
+现在，您可以在上述定义的指针变量中存储结构变量的地址。为了查找结构变量的地址，请把 & 运算符放在结构名称的前面，如下所示：
+
+```C
+struct_pointer = &Book1;
+```
+
+为了使用指向该结构的指针访问结构的成员，您必须使用 -> 运算符，如下所示：
+
+```C
+struct_pointer->title;
+#include <stdio.h>
+#include <string.h>
+ 
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+};
+ 
+void printBook( struct Books *book )
+{
+   printf( "Book title : %s\n", book->title);
+   printf( "Book author : %s\n", book->author);
+   printf( "Book subject : %s\n", book->subject);
+   printf( "Book book_id : %d\n", book->book_id);
+}
+
+int main( )
+{
+   struct Books Book1;        /* 声明 Book1，类型为 Books */
+   struct Books Book2;        /* 声明 Book2，类型为 Books */
+ 
+   /* Book1 详述 */
+   strcpy( Book1.title, "C Programming");
+   strcpy( Book1.author, "Nuha Ali"); 
+   strcpy( Book1.subject, "C Programming Tutorial");
+   Book1.book_id = 6495407;
+ 
+   /* Book2 详述 */
+   strcpy( Book2.title, "Telecom Billing");
+   strcpy( Book2.author, "Zara Ali");
+   strcpy( Book2.subject, "Telecom Billing Tutorial");
+   Book2.book_id = 6495700;
+ 
+   /* 通过传 Book1 的地址来输出 Book1 信息 */
+   printBook( &Book1 );
+ 
+   /* 通过传 Book2 的地址来输出 Book2 信息 */
+   printBook( &Book2 );
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```C
+Book title : C Programming
+Book author : Nuha Ali
+Book subject : C Programming Tutorial
+Book book_id : 6495407
+Book title : Telecom Billing
+Book author : Zara Ali
+Book subject : Telecom Billing Tutorial
+Book book_id : 6495700
+```
+
+**更多用法**
+
+结构体的成员可以包含其他结构体，也可以包含指向自己结构体类型的指针，而通常这种指针的应用是为了实现一些更高级的数据结构如链表和树等。
+
+```C
+struct SIMPLE
+{
+    int id;
+};
+//此结构体的声明包含了其他的结构体
+struct COMPLEX
+{
+    char string[100];
+    struct SIMPLE a;
+};
+
+//初始化
+struct COMPLEX complex;
+//赋值
+complex.a.id = 1000;
+
+```
+
+## 2.16 预处理指令
+
+![image-20260105154528715](images/image-20260105154528715.png)
+
+> [!DANGER] 
+>
+> 代码在我们按下编译按钮时，会执行预处理，编译，汇编，链接，最终生成可执行文件。
+
+![img](images/1767599106913-7.png)
+
+> 预处理，它在编译代码之前对源代码进行处理。  预处理器的主要任务是执行以 # 开头的代码替换。 然后生成一个新的中间代码文件，然后将其传递给编译器进行编译。 预处理功能可以帮助程序员简化代码、提高代码的可读性和可维护性。
+>
+>  **下方是常用的预处理器指令：**
+>
+> | 指令     | 描述                                        |
+> | -------- | ------------------------------------------- |
+> | #include | 头文件包含                                  |
+> | #define  | 宏定义                                      |
+> | #ifdef   | 条件编译 ，如果宏已经定义，则编译此部分内容 |
+> | #ifndef  | 条件编译 ，如果宏没有定义，则编译此部分内容 |
+> | #endif   | 结束一个条件编译块                          |
+
+### 2.16.1 define基本用法
+
+\#define关键词的作用主要是提高代码可读性和可维护性。
+
+- 1.1、对象宏定义
+
+```C
+格式：
+#define 宏名称 替换体
+说明：
+宏名称： 通常使用全大写以区分变量。
+替换体： 在预处理阶段，源代码中所有的“宏名称”都会被替换为的“替换体”。它可以是数字、表达式、字符串等。
+
+示例：
+#define NAME "xiaozhi"
+#define MAX_SIZE 100
+#define PI 3.14159
+```
+
+接着，我们看下代码中如何使用 *#define* 定义常量来增强可读性、方便代码维护。
+
+```C
+#include <stdio.h>
+
+#define NAME "John Doe"
+#define MAX_SIZE 100
+
+int main(void)
+{
+   int array[MAX_SIZE];
+   printf("name is: %s\n", NAME);   
+   return 0;
+}
+```
+
+### 2.16.2 **函数宏定义**
+
+C语言一个强大的功能是可以使用参数化的宏来模拟函数。例如，下方是一个返回输入值平方的函数：
+
+```C
+int square(int x) {
+   return x * x;
+}
+```
+
+这个函数，我们可以使用#define宏定义实现
+
+```C
+格式：
+#define 宏名称(参数列表) 替换体
+参数列表： 一个或多个参数，用逗号分隔。参数名不能带类型。
+替换体： 包含参数的表达式。强烈建议将参数和整个替换体用括号括起来，以避免运算符优先级导致的意外错误。
+
+我们可以使用宏重写上面的代码，如下：
+#define SQUARE(x) ((x) * (x))
+```
+
+在使用带有参数的宏之前，必须使用 **#define** 指令定义。参数列表是括在圆括号内，且必须紧跟在宏名称的后边。宏名称和左圆括号之间不允许有空格。例如：
+
+```C
+#include <stdio.h>
+ 
+#define SQUARE(x) ((x) * (x))
+ 
+int main(void)
+{
+   printf("10*10=%d\n", SQUARE(10));  
+   return 0;
+}
+```
+
+**常见陷阱**
+
+```C++
+// 错误示例：缺少括号
+#define SQUARE(x) x * x
+int wrong = SQUARE(1 + 2);  // 展开为 1 + 2 * 1 + 2 = 5
+
+// 正确写法
+#define SQUARE(x) ((x) * (x))
+int correct = SQUARE(1 + 2); // 展开为 ((1 + 2) * (1 + 2)) = 9
+
+```
+
+### 1.16.3 #**ifdef、#ifndef  用法**
+
+\#ifdef、#ifndef被叫做条件编译，它的作用包括
+
+- 调试代码控制
+- 功能模块开关
+- 平台特定代码
+
+```C
+格式：
+#ifdef 宏定义名称
+   //如果定义了宏，会编译放在此处的代码
+#else //可省略
+   //如果未定义宏，会编译放在此处的代码
+#endif
+
+例如：
+#ifdef DEBUG
+    // 调试模式下执行的代码
+    printf("Debug: value = %d\n", value);
+#endif
+```
+
+这个指令告诉 CPP 如果定义了 DEBUG宏，则打印调试信息，例如下发工程，如果我们只希望在调试时打印信息，正式发布不打印信息。
+
+```C
+#include <stdio.h>
+
+#define DEBUG 1
+
+int main(void)
+{
+   printf("main run\n"); 
+   #ifdef DEBUG
+       // 调试模式下执行的代码
+       printf("Here is the debug message\n"); 
+   #endif
+   return 0;
+}
+```
+
+同理#ifndef则刚好相反
+
+```C++
+#ifndef 宏定义名称
+   //如果未定义宏，会编译放在此处的代码
+#else //可省略
+   //如果定义宏，会编译放在此处的代码
+#endif
+
+例如：
+#ifndef VERSION
+    #define VERSION "1.0.0"
+#endif
+```
