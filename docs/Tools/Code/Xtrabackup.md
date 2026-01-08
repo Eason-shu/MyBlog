@@ -1,3 +1,20 @@
+---
+description:  Xtrabackup 是由 Percona 公司开源的一款 MySQL 物理热备份工具，以实现对 MySQL 或 MariaDB这类数据库的数据库进行物理备份。
+title: Xtrabackup 备份工具
+categories: 
+   - 学习
+   - 数据库
+tags: 
+   - Xtrabackup
+sticky: 4
+outline: [2,3]
+top: 1
+recommend: 4 
+date: 2025-01-13
+---
+
+
+
 # Xtrabackup MYSQL 备份工具
 > [!DANGER]
 > Xtrabackup 是由 Percona 公司开源的一款 MySQL 物理热备份工具，以实现对 MySQL 或 MariaDB这类数据库的数据库进行物理备份。

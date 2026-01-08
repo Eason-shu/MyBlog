@@ -11,7 +11,7 @@ tags:
 sticky: 4
 outline: [2,3]
 top: 1
-recommend: 3
+recommend: 1
 date: 2025-01-12
 ---
 ![ChatGPT](images/2134756.png)
