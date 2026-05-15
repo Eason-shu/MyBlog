@@ -40,33 +40,15 @@ const vitePressOptions = {
                 ]
             },
             {
-                text: '​🏯​​ Android',
+                text: '🤖 大模型开发',
                 items: [
-                    {text: 'Jetpack', link: '/Android/Jetpack/'},
+                    {text: 'LLM基础', link: '/Llm/Base/'},
+                    {text: 'RAG技术', link: '/Llm/Rag/'},
+                    {text: 'Agent开发', link: '/Llm/Agent/'},
                 ]
             },
-            {
-                text: '​🏗️​​​ 嵌入式',
-                items: [
-                    {text: '基础知识', link: '/Mcu/Base/'},
-                    {text: '单片机', link: '/Mcu/Snglechip/'},
-                ]
-            },
-            {
-                text: '​⚒️​​​ Tools',
-                items: [
-                    {text: '编程工具', link: '/Tools/Code/'},
-                    {text: 'OAuth 2.0', link: '/Design/OAuth/'},
-                    {text: '摄影教程', link: '/Tools/Photo/'},
-                ]
-            },
-            {
-                text: '​📚​​​ Life',
-                items: [
-                    {text: '微信读书', link: '/Book/WeiXin/'},
-                    {text: '汽车检测业务', link: '/Design/Car/'},
-                ]
-            },
+           
+            
         ],
         socialLinks: [
             {
